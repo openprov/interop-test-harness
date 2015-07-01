@@ -28,7 +28,7 @@ class Converter(ConfigurableComponent):
   """Base class for converters."""
 
   def __init__(self):
-    """Create component.
+    """Create converter.
     Can be overriden by sub-classes.
     """
     super(ConfigurableComponent, self).__init__()
