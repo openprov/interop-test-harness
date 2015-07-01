@@ -1,4 +1,4 @@
-"""Base class for configurable components.
+"""Base class, and related classes, for configurable components.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -23,24 +23,42 @@
 # SOFTWARE.  
 
 class ConfigurableComponent(object):
-  """Base class for configurable components.
-  """
+  """Base class for configurable components."""
 
   def __init__(self):
-    """Subclass-specific initialisation.
-    :param self: Object reference
-    :type self: ConfigurableComponent
+    """Create component.
+    Can be overriden by sub-classes.
     """
+    print("ConfigurableComponent.__init__")
     pass
 
   def configure(self, config):
-    """Subclass-specific configuration.
-    Extracts sub-class-specific configuration from config, ignore the
-    rest.
-    :param self: Object reference
-    :type self: ConfigurableComponent
-    :param config: Configuration
-    :type config: dictionary
-    :raises ConfigError: if there is missing or invalid configuration
+    """Configure component.
+    Can be overriden by sub-classes.
+
+    :param config: Configuration.
+    :type config: dict.
+    :raises ConfigError: if config is not a dict.
     """
-    pass
+    print("ConfigurableComponent.configure")
+    if not type(config) is dict:
+      raise ConfigError("config must be a dictionary");
+
+class ConfigError(Exception):
+  """Configuration error."""
+
+  def __init__(self, value):
+    """Create configuration error.
+
+    :param value: Value holding information about error.
+    :type value: str or unicode or list of str or unicode
+    """
+    self._value = value
+
+  def __str__(self):
+    """Get error as formatted string.
+
+    :returns: formatted string.
+    :rtype: str or unicode.
+    """
+    return repr(self._value)
