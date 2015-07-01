@@ -29,7 +29,6 @@ class ConfigurableComponent(object):
     """Create component.
     Can be overriden by sub-classes.
     """
-    print("ConfigurableComponent.__init__")
     pass
 
   def configure(self, config):
@@ -40,7 +39,6 @@ class ConfigurableComponent(object):
     :type config: dict
     :raises ConfigError: if config is not a dict
     """
-    print("ConfigurableComponent.configure")
     if not type(config) is dict:
       raise ConfigError("config must be a dictionary");
 

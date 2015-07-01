@@ -32,7 +32,6 @@ class Converter(ConfigurableComponent):
     Can be overriden by sub-classes.
     """
     super(ConfigurableComponent, self).__init__()
-    print("Converter.__init__")
 
   def get_input_formats(self):
     """Gets list of input formats supported by the converter.
