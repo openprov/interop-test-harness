@@ -36,9 +36,9 @@ class ConfigurableComponent(object):
     """Configure component.
     Can be overriden by sub-classes.
 
-    :param config: Configuration.
-    :type config: dict.
-    :raises ConfigError: if config is not a dict.
+    :param config: Configuration
+    :type config: dict
+    :raises ConfigError: if config is not a dict
     """
     print("ConfigurableComponent.configure")
     if not type(config) is dict:
@@ -50,7 +50,7 @@ class ConfigError(Exception):
   def __init__(self, value):
     """Create configuration error.
 
-    :param value: Value holding information about error.
+    :param value: Value holding information about error
     :type value: str or unicode or list of str or unicode
     """
     self._value = value
@@ -58,7 +58,7 @@ class ConfigError(Exception):
   def __str__(self):
     """Get error as formatted string.
 
-    :returns: formatted string.
-    :rtype: str or unicode.
+    :returns: formatted string
+    :rtype: str or unicode
     """
     return repr(self._value)
