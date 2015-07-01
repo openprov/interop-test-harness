@@ -74,7 +74,7 @@ class Converter(ConfigurableComponent):
     :type out_format: str or unicode
     :returns: True (success) or False (fail)
     :rtype: bool
-    :raises ConverterError: if there are problems invoking the converter 
+    :raises ConversionError: if there are problems invoking the converter 
     """
     pass
 
