@@ -8,13 +8,11 @@ converter-tests:
 comparators:
   ProvPyComparator: 
     class: prov.interop.comparator.ProvPyComparator
-    directory: /home/user/prov/scripts
-    executable: prov-convert
-    arguments: [-f, PROV_FORMAT, PROV_INPUT, PROV_OUTPUT]
+    executable: python
+    arguments: [/home/user/prov/scripts/prov-compare, -f, PROV_FORMAT1, -F, PROV_FORMAT2, PROV_FILE1, PROV_FILE2]
     formats: [provx, json]
   ProvToolboxComparator: 
     class: prov.interop.comparator.ProvToolboxComparator
-    directory: /home/user/provToolbox/bin
-    executable: provconvert
+    executable: /home/user/provToolbox/bin/provcompare
     arguments: [-infile, PROV_INPUT, -outfile, PROV_OUTPUT]
     formats: [provn, ttl, trig, provx, json]

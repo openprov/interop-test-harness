@@ -1,9 +1,8 @@
 ---
 ProvPyConverter: 
   class: prov.interop.converter.ProvPyConverter
-  directory: /home/user/prov/scripts
-  executable: prov-convert
-  arguments: [-f, PROV_FORMAT, PROV_INPUT, PROV_OUTPUT]
+  executable: python
+  arguments: [/home/user/prov/scripts/prov-convert, -f, PROV_FORMAT, PROV_INPUT, PROV_OUTPUT]
   inputs: [provn, provx, json]
   outputs: [provn, provx, json]
   skip-tests: [1, 4]

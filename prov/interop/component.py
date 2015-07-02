@@ -49,18 +49,8 @@ class CommandLineComponent(ConfigurableComponent):
     Invokes super-class ``__init__``.
     """
     super(CommandLineComponent, self).__init__()
-    self._directory = ""
     self._executable = ""
     self._arguments = []
-
-  @property
-  def directory(self):
-    """Get the directory.
-    
-    :returns: directory
-    :rtype: str or unicode
-    """
-    return self._directory
 
   @property
   def executable(self):
@@ -86,14 +76,11 @@ class CommandLineComponent(ConfigurableComponent):
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config does not contain a ``directory``
-    (str or unicode), ``executable`` (str or unicode) and
-    ``arguments`` (list of str or unicode or int or float)
+    :raises ConfigError: if config does not contain an``executable``
+    (str or unicode) and ``arguments`` (list of str or unicode or int
+    or float) 
     """
     super(CommandLineComponent, self).configure(config)
-    if not "directory" in config:
-      raise ConfigError("Missing 'directory'");
-    self._directory = config["directory"]
     if not "executable" in config:
       raise ConfigError("Missing 'executable'");
     self._executable = config["executable"]
