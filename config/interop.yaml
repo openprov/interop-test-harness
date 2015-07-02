@@ -1,0 +1,20 @@
+---
+test-cases: /home/user/interop/test-cases
+converter-tests:
+  ProvPy: /home/user/interop/config/provpy.yaml
+  ProvToolBox: /home/user/interop/config/provtoolbox.yaml
+  ProvTranslator: /home/user/interop/config/provtranslator.yaml
+  ProvStore: /home/user/interop/config/provstore.yaml
+comparators:
+  ProvPyComparator: 
+    class: prov.interop.comparator.ProvPyComparator
+    directory: /home/user/prov/scripts
+    executable: prov-convert
+    arguments: [-f, PROV_FORMAT, PROV_INPUT, PROV_OUTPUT]
+    formats: [provx, json]
+  ProvToolboxComparator: 
+    class: prov.interop.comparator.ProvToolboxComparator
+    directory: /home/user/provToolbox/bin
+    executable: provconvert
+    arguments: [-infile, PROV_INPUT, -outfile, PROV_OUTPUT]
+    formats: [provn, ttl, trig, provx, json]
