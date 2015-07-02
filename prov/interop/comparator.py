@@ -31,7 +31,7 @@ class Comparator(ConfigurableComponent):
     """Create comparator.
     Can be overriden by sub-classes.
     """
-    super(ConfigurableComponent, self).__init__()
+    super(Comparator, self).__init__()
 
   def get_formats(self):
     """Gets list of formats supported by the comparator.

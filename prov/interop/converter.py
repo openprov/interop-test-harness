@@ -31,7 +31,7 @@ class Converter(ConfigurableComponent):
     """Create converter.
     Can be overriden by sub-classes.
     """
-    super(ConfigurableComponent, self).__init__()
+    super(Converter, self).__init__()
 
   def get_input_formats(self):
     """Gets list of input formats supported by the converter.
