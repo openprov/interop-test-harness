@@ -90,7 +90,7 @@ class ProvPyConverterTestCase(unittest.TestCase):
     self.config["executable"] = "/nosuchexecutable"
     self.provpy.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix=".json")
-    self.out_file = "convert_os_error.xml"
+    self.out_file = "convert_oserror.xml"
     with self.assertRaises(OSError):
       self.provpy.convert(self.in_file, "json", self.out_file, "xml")
 
