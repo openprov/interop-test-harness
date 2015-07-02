@@ -1,6 +1,6 @@
 ---
 ProvPyConverter: 
-  class: prov.interop.converter.ProvPyConverter
+  class: prov.interop.provpy.converter.ProvPyConverter
   executable: python
   arguments: [/home/user/prov/scripts/prov-convert, -f, PROV_FORMAT, PROV_INPUT, PROV_OUTPUT]
   inputs: [provn, provx, json]

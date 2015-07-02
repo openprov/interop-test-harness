@@ -7,12 +7,7 @@ converter-tests:
   ProvStore: /home/user/interop/config/provstore.yaml
 comparators:
   ProvPyComparator: 
-    class: prov.interop.comparator.ProvPyComparator
+    class: prov.interop.provpy.comparator.ProvPyComparator
     executable: python
-    arguments: [/home/user/prov/scripts/prov-compare, -f, PROV_FORMAT1, -F, PROV_FORMAT2, PROV_FILE1, PROV_FILE2]
+    arguments: [/home/user/prov/scripts/prov-compare, -f, PROV_EXPECTED_FORMAT, -F, PROV_ACTUAL_FORMAT, PROV_EXPECTED_FILE, PROV_ACTUAL_FILE]
     formats: [provx, json]
-  ProvToolboxComparator: 
-    class: prov.interop.comparator.ProvToolboxComparator
-    executable: /home/user/provToolbox/bin/provcompare
-    arguments: [-infile, PROV_INPUT, -outfile, PROV_OUTPUT]
-    formats: [provn, ttl, trig, provx, json]
