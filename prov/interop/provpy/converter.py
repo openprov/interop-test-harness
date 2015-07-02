@@ -22,8 +22,12 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+import os.path
+import subprocess
+
 from prov.interop.component import CommandLineComponent
 from prov.interop.component import ConfigError
+from prov.interop.converter import ConversionError
 from prov.interop.converter import Converter
 
 class ProvPyConverter(Converter, CommandLineComponent):
@@ -66,14 +70,21 @@ class ProvPyConverter(Converter, CommandLineComponent):
     :type out_format: str or unicode
     :returns: True (success) or False (fail)
     :rtype: bool
-    :raises ConversionError: if there are problems invoking the converter 
+    :raises ConversionError: if the input file is not found, the
+    return code is non-zero, or the return code is zero but the output
+    file is not found.
+    :raises OSError: if there are problems invoking the converter
+    e.g. the script is not found at the specified location.
     """
-    # TODO
-    print("Execute " + self._directory + "/" + self._executable + " " +
-        str(self._arguments))
-    # Replace tokens
-    # Execute prov-convert.
-    # Capture return code, standard output, standard error.
-    # Check both return code and existence of output file.
-    # ProvPy's prov-convert returns an exit code of 2 if there is no input file, the input file is not a valid PROV document or the output format is not supported. For these last two situations, it will create an empty output file. However, the exit codes can be used to check for conversion failures.
-    # Sub-classes can replace the tokens with the output format, input and output file names when constructing the command to invoke. 
+    if not os.path.isfile(in_file):
+      raise ConversionError("Input file not found: " + in_file)
+    # Replace tokens in arguments
+    command_line = [in_file if x=="PROV_INPUT" else x for x in self._arguments]
+    command_line = [out_file if x=="PROV_OUTPUT" else x for x in command_line]
+    command_line = [in_format if x=="PROV_FORMAT" else x for x in command_line]
+    command_line.insert(0, self.executable)
+    return_code = subprocess.call(command_line)
+    if return_code != 0:
+      raise ConversionError(self._executable + " returned " + str(return_code))
+    if not os.path.isfile(out_file):
+      raise ConversionError("Output file not found: " + out_file)
