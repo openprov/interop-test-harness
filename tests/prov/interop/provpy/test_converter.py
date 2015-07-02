@@ -82,17 +82,15 @@ class ProvPyConverterTestCase(unittest.TestCase):
 
   def test_convert(self):
     self.provpy.configure(self.config)
-    (_, self.in_file) = tempfile.mkstemp(prefix=str(self.__module__), 
-                                         suffix="json")
+    (_, self.in_file) = tempfile.mkstemp(suffix=".json")
     self.out_file = "convert.xml"
     self.provpy.convert(self.in_file, "json", self.out_file, "xml")
 
   def test_convert_oserror(self):
     self.config["executable"] = "/nosuchexecutable"
     self.provpy.configure(self.config)
-    (_, self.in_file) = tempfile.mkstemp(prefix=str(self.__module__), 
-                                         suffix="json")
-    self.out_file = "convert_oserror.xml"
+    (_, self.in_file) = tempfile.mkstemp(suffix=".json")
+    self.out_file = "convert_os_error.xml"
     with self.assertRaises(OSError):
       self.provpy.convert(self.in_file, "json", self.out_file, "xml")
 
@@ -105,8 +103,7 @@ class ProvPyConverterTestCase(unittest.TestCase):
 
   def test_convert_invalid_input_format(self):
     self.provpy.configure(self.config)
-    (_, self.in_file) = tempfile.mkstemp(prefix=str(self.__module__), 
-                                         suffix="json")
+    (_, self.in_file) = tempfile.mkstemp(suffix=".json")
     self.out_file = "convert_invalid_input_format.xml"
     with self.assertRaises(ConversionError):
       self.provpy.convert(self.in_file, "nosuchformat", self.out_file, "xml")
