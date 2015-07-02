@@ -67,8 +67,7 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
     :raises ConversionError: if there are problems invoking the converter 
     """
     # TODO
-    print("Execute " + self._directory + "/" + self._executable + " " +
-        str(self._arguments))
+    print("Execute " + self._executable + " " + str(self._arguments))
     # Replace tokens
     # Execute prov-convert.
     # Capture return code, standard output, standard error.

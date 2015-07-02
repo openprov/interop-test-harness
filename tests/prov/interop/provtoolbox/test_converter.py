@@ -32,15 +32,13 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
 
   def setUp(self):
     self.config = {}  
-    self.config["directory"] = "/home/user/prov/scripts"
-    self.config["executable"] = "prov-convert"
+    self.config["executable"] = "/home/user/provToolbox/bin/provconvert"
     self.config["arguments"] = ["-infile", "PROV_INPUT", "-outfile", "PROV_OUTPUT"]
     self.config["input_formats"] = ["provn", "ttl", "trig", "provx", "json"]
     self.config["output_formats"] = ["provn", "ttl", "trig", "provx", "json"]
 
   def test_init(self):
     provtoolbox = ProvToolboxConverter()
-    self.assertEquals("", provtoolbox.directory)
     self.assertEquals("", provtoolbox.executable)
     self.assertEquals([], provtoolbox.arguments)
     self.assertEquals([], provtoolbox.input_formats)
@@ -49,7 +47,6 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
   def test_configure(self):
     provtoolbox = ProvToolboxConverter()
     provtoolbox.configure(self.config)
-    self.assertEquals(self.config["directory"], provtoolbox.directory)
     self.assertEquals(self.config["executable"], provtoolbox.executable)
     self.assertEquals(self.config["arguments"], provtoolbox.arguments)
     self.assertEquals(self.config["input_formats"], provtoolbox.input_formats)
@@ -71,7 +68,6 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
     provtoolbox = ProvToolboxConverter()
     provtoolbox.configure(self.config)
     provtoolbox.convert("a", "b", "c", "d")
-    self.assertEquals(self.config["directory"], provtoolbox.directory)
     self.assertEquals(self.config["executable"], provtoolbox.executable)
     self.assertEquals(self.config["arguments"], provtoolbox.arguments)
     self.assertEquals(self.config["input_formats"], provtoolbox.input_formats)
