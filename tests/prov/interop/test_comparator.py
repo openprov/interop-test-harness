@@ -1,4 +1,4 @@
-"""Test class for prov.interop.comparator.Comparator.
+"""Test classes for prov.interop.comparator classes.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -31,13 +31,11 @@ from prov.interop.comparator import ComparisonError
 class ComparatorTestCase(unittest.TestCase):
 
   def test_configure(self):
-    """Test configure method."""
     comp = Comparator()
     comp.configure({})
     self.assertTrue(True)
 
-  def test_configure_throws_error(self):
-    """Test configure method with non-dictionary argument."""
+  def test_configure_non_dict_error(self):
     comp = Comparator()
     with self.assertRaises(ConfigError):
       comp.configure(123)

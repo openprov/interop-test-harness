@@ -36,7 +36,7 @@ class ConfigurableComponentTestCase(unittest.TestCase):
     comp.configure({})
     self.assertTrue(True)
 
-  def test_configure_non_dictionary_error(self):
+  def test_configure_non_dict_error(self):
     comp = ConfigurableComponent()
     with self.assertRaises(ConfigError):
       comp.configure(123)
@@ -58,7 +58,7 @@ class CommandLineComponentTestCase(unittest.TestCase):
     self.assertEquals("b", command_line.executable)
     self.assertEquals(["c", 1], command_line.arguments)
 
-  def test_configure_non_dictionary_error(self):
+  def test_configure_non_dict_error(self):
     command_line = CommandLineComponent()
     with self.assertRaises(ConfigError):
       command_line.configure(123)
@@ -94,7 +94,7 @@ class RestComponentTestCase(unittest.TestCase):
     rest.configure(config)
     self.assertEquals("a", rest.url)
 
-  def test_configure_non_dictionary_error(self):
+  def test_configure_non_dict_error(self):
     rest = RestComponent()
     with self.assertRaises(ConfigError):
       rest.configure(123)

@@ -1,4 +1,4 @@
-"""Test class for prov.interop.converter.Converter.
+"""Test classes for prov.interop.converter classes.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -61,28 +61,23 @@ class Value:
 class FactoryUtilitiesTestCase(unittest.TestCase):
 
   def test_get_class(self):
-    """Test get_class method."""
     my_module = self.__module__
     clazz = FactoryUtilities.get_class(str(self.__module__) + ".Counter")
     self.assertEquals(Counter, clazz, msg="Expected Counter class")
 
   def test_get_class_no_prefix(self):
-    """Test get_class method with no module."""
     with self.assertRaises(ValueError):
       FactoryUtilities.get_class("Counter")
 
   def test_get_class_no_such_module(self):
-    """Test get_class method with non-existant module."""
     with self.assertRaises(ImportError):
       FactoryUtilities.get_class("nosuchmodule.NoSuchClass")
 
   def test_get_class_no_such_class(self):
-    """Test get_class method with non-existant class."""
     with self.assertRaises(AttributeError):
       FactoryUtilities.get_class(str(self.__module__) + ".NoSuchClass")
 
   def test_get_instance(self):
-    """Test get_instance method."""
     my_module = self.__module__
     obj = FactoryUtilities.get_instance(str(self.__module__) + ".Counter")
     self.assertIsInstance(obj, Counter, msg="Expected Counter object")
@@ -91,21 +86,17 @@ class FactoryUtilitiesTestCase(unittest.TestCase):
     self.assertEquals(2, obj.get_counter(), msg="Expected Counter object to have value 2")
 
   def test_get_instance_no_prefix(self):
-    """Test get_instance method with no module."""
     with self.assertRaises(ValueError):
       FactoryUtilities.get_instance("Factory")
 
   def test_get_instance_no_such_module(self):
-    """Test get_instance method with non-existant module."""
     with self.assertRaises(ImportError):
       FactoryUtilities.get_instance("nosuchmodule.NoSuchClass")
 
   def test_get_instance_no_such_class(self):
-    """Test get_instance method with non-existant class."""
     with self.assertRaises(AttributeError):
       FactoryUtilities.get_instance(str(self.__module__) + ".NoSuchClass")
 
   def test_get_instance_non_zero_arity_constructor(self):
-    """Test get_instance method with non-0 arity constructor."""
     with self.assertRaises(TypeError):
       FactoryUtilities.get_instance(str(self.__module__) + ".Value")
