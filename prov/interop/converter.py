@@ -84,8 +84,6 @@ class Converter(ConfigurableComponent):
     :type out_file: str or unicode
     :param out_format: Output format
     :type out_format: str or unicode
-    :returns: True (success) or False (fail)
-    :rtype: bool
     :raises ConversionError: if there are problems invoking the converter 
     """
     pass
