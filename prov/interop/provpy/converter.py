@@ -69,8 +69,8 @@ class ProvPyConverter(Converter, CommandLineComponent):
     :param out_format: Output format
     :type out_format: str or unicode
     :raises ConversionError: if the input file is not found, the
-    return code is non-zero, or the return code is zero but the output
-    file is not found.
+    return code is non-zero, the return code is zero but the output
+    file is not found, the input format is invalid.
     :raises OSError: if there are problems invoking the converter
     e.g. the script is not found at the specified location.
     """
@@ -81,6 +81,7 @@ class ProvPyConverter(Converter, CommandLineComponent):
     command_line = [out_file if x=="PROV_OUTPUT" else x for x in command_line]
     command_line = [in_format if x=="PROV_FORMAT" else x for x in command_line]
     command_line.insert(0, self.executable)
+    # Execute
     return_code = subprocess.call(command_line)
     if return_code != 0:
       raise ConversionError(self._executable + " returned " + str(return_code))
