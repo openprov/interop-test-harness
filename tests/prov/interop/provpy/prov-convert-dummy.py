@@ -1,17 +1,26 @@
 """Dummy ProvPy prov-convert. 
 Mimics the behaviour of ProvPy prov-convert. 
+
 prov-convert returns 2 if: 
 - No input file.
 - Input file is not a valid PROV document.
 - Output format is not supported.
+
 prov-convert returns 0 if: 
 - Conversion is successful.
+
 For:
+
 - Input file is not a valid PROV document.
 - Output format is not supported.
+
 provconvert creates an empty output file. 
-This script behaves the same way. If the inputs are valid it just
-copies the input file to the output file. Usage:
+
+This script behaves similarly (though it does no PROV validation). 
+
+If the inputs are valid it just copies the input file to the output file. 
+
+Usage:
 
     usage: prov-convert-dummy.py [-h] -f [FORMAT] infile outfile
 
