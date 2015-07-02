@@ -68,44 +68,9 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
     :type out_format: str or unicode
     :returns: True (success) or False (fail)
     :rtype: bool
-    :raises ConversionError: if there are problems invoking the converter 
-    """
-    # TODO
-    print("Execute " + self._executable + " " + str(self._arguments))
-    # Replace tokens
-    # Execute prov-convert.
-    # Capture return code, standard output, standard error.
-    # Check both return code and existence of output file.
-    # ProvToolbox's provconvert returns an exit code of 1 if there is no input file, the input file is not a valid PROV document or the input file format is not supported. It returns an exit code of 0 if successful or, problematically, if the output file format is not supported. However, it does not create any output files if any file or file format is invalid, so that allows for conversion failures to be detected.
-    # Sub-classes can replace the tokens with the output format, input and output file names when constructing the command to invoke. 
-
-
-    """
-    super(ProvPyConverter, self).configure(config)
-    if not "PROV_FORMAT" in self._arguments:
-      raise ConfigError("Missing PROV_FORMAT token in 'arguments'")
-    if not "PROV_INPUT" in self._arguments:
-      raise ConfigError("Missing PROV_INPUT token in 'arguments'")
-    if not "PROV_OUTPUT" in self._arguments:
-      raise ConfigError("Missing PROV_OUTPUT token in 'arguments'")
-
-  def convert(self, in_file, in_format, out_file, out_format):
-    """Invoke conversion of input file in given format to output
-    file in given format.
-
-    :param in_file: Input file name
-    :type in_file: str or unicode
-    :param in_format: Input format
-    :type in_format: str or unicode
-    :param out_file: Output file name
-    :type out_file: str or unicode
-    :param out_format: Output format
-    :type out_format: str or unicode
-    :returns: True (success) or False (fail)
-    :rtype: bool
     :raises ConversionError: if the input file is not found, the
-    return code is non-zero, or the return code is zero but the output
-    file is not found.
+    return code is non-zero, the return code is zero but the output
+    file is not found, the input or output formats are invalid.
     :raises OSError: if there are problems invoking the converter
     e.g. the script is not found at the specified location.
     """
@@ -114,8 +79,8 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
     # Replace tokens in arguments
     command_line = [in_file if x=="PROV_INPUT" else x for x in self._arguments]
     command_line = [out_file if x=="PROV_OUTPUT" else x for x in command_line]
-    command_line = [in_format if x=="PROV_FORMAT" else x for x in command_line]
     command_line.insert(0, self.executable)
+    # Execute
     return_code = subprocess.call(command_line)
     if return_code != 0:
       raise ConversionError(self._executable + " returned " + str(return_code))
