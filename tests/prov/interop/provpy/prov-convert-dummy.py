@@ -1,15 +1,21 @@
 """Dummy ProvPy prov-convert. 
-Mimics the behaviour of ProvPy prov-convert. prov-convert returns 2 if: 
+Mimics the behaviour of ProvPy prov-convert. 
+prov-convert returns 2 if: 
 - No input file.
 - Input file is not a valid PROV document.
 - Output format is not supported.
-For the last two, it creates an empty output file. This script behaves
-the same way. If the inputs are valid it just copies the input file to
-the output file. Usage:
+prov-convert returns 0 if: 
+- Conversion is successful.
+For:
+- Input file is not a valid PROV document.
+- Output format is not supported.
+provconvert creates an empty output file. 
+This script behaves the same way. If the inputs are valid it just
+copies the input file to the output file. Usage:
 
     usage: prov-convert-dummy.py [-h] -f [FORMAT] infile outfile
 
-    Mock ProvPy provconvert.
+    Mock ProvPy prov-convert.
 
     positional arguments:
       infile       Input file
@@ -47,19 +53,14 @@ import shutil
 import sys
 
 parser = argparse.ArgumentParser(description="Dummy ProvPy prov-convert.")
-parser.add_argument('-f', metavar="FORMAT", 
-                    help='Output format - one of provn, xml, json', 
-                    nargs='?', 
+parser.add_argument("-f", metavar="FORMAT", 
+                    help="Output format - one of provn, xml, json", 
+                    nargs="?", 
                     required=True)
 parser.add_argument("infile", help="Input file")
 parser.add_argument("outfile", help="Output file")
 args = parser.parse_args()
 print("Running dummy ProvPy prov-convert...")
-# ProvPy prov-convert returns 2 if:
-# - No input file.
-# - Input file is not a valid PROV document.
-# - Output format is not supported.
-# For the last two, it creates an empty output file.
 if not os.path.isfile(args.infile):
   print("No such file " + args.infile)
   sys.exit(2)
