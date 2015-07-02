@@ -42,6 +42,103 @@ class ConfigurableComponent(object):
     if not type(config) is dict:
       raise ConfigError("config must be a dictionary");
 
+
+class CommandLineComponent(ConfigurableComponent):
+  """Base class for configurable command-line components."""
+
+  def __init__(self):
+    """Create component.
+    Can be overriden by sub-classes.
+    """
+    super(CommandLineComponent, self).__init__()
+    self._directory = ""
+    self._executable = ""
+    self._arguments = []
+
+  @property
+  def directory(self):
+    """Get the directory.
+    
+    :returns: directory
+    :rtype: str or unicode
+    """
+    return self._directory
+
+  @property
+  def executable(self):
+    """Get the executable.
+    
+    :returns: executable
+    :rtype: str or unicode
+    """
+    return self._executable
+
+  @property
+  def arguments(self):
+    """Get the arguments.
+    
+    :returns: arguments
+    :rtype: list of str or unicode or int or float
+    """
+    return self._arguments
+
+  def configure(self, config):
+    """Configure component.
+    Can be overriden by sub-classes.
+
+    :param config: Configuration
+    :type config: dict
+    :raises ConfigError: if config is not a dict, or config does not
+    contain a ``directory`` (str or unicode), ``executable`` (str or
+    unicode) and ``arguments`` (list of str or unicode or int or
+    float). 
+    """
+    super(CommandLineComponent, self).configure(config)
+    if not "directory" in config:
+      raise ConfigError("Missing 'directory'");
+    self._directory = config["directory"]
+    if not "executable" in config:
+      raise ConfigError("Missing 'executable'");
+    self._executable = config["executable"]
+    if not "arguments" in config:
+      raise ConfigError("Missing 'arguments'");
+    self._arguments = config["arguments"]
+
+
+class RestComponent(ConfigurableComponent):
+  """Base class for configurable REST-ful components."""
+
+  def __init__(self):
+    """Create component.
+    Can be overriden by sub-classes.
+    """
+    super(RestComponent, self).__init__()
+    self._url = ""
+
+  @property
+  def url(self):
+    """Get the URL.
+    
+    :returns: URL
+    :rtype: str or unicode
+    """
+    return self._url
+
+  def configure(self, config):
+    """Configure component.
+    Can be overriden by sub-classes.
+
+    :param config: Configuration
+    :type config: dict
+    :raises ConfigError: if config is not a dict, or config is does
+    not contain a ``url`` (str or unicode).
+    """
+    super(RestComponent, self).configure(config)
+    if not "url" in config:
+      raise ConfigError("Missing 'url'");
+    self._url = config["url"]
+
+
 class ConfigError(Exception):
   """Configuration error."""
 
