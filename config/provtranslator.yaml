@@ -1,0 +1,7 @@
+---
+ProvTranslatorConverter:
+  class: prov.interop.converter.ProvTranslatorConverter
+  url: https://provenance.ecs.soton.ac.uk/validator/provapi/documents/
+  inputs: [provn, ttl, trig, provx, json]
+  outputs: [provn, ttl, trig, provx, json]
+  skip-tests: []

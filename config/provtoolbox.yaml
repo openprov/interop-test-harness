@@ -1,0 +1,9 @@
+---
+ProvToolboxConverter: 
+  class: prov.interop.converter.ProvToolboxConverter
+  directory: /home/user/provToolbox/bin
+  executable: provconvert
+  arguments: [-infile, PROV_INPUT, -outfile, PROV_OUTPUT]
+  inputs: [provn, ttl, trig, provx, json]
+  outputs: [provn, ttl, trig, provx, json]
+  skip-tests: [2, 5, 6]
