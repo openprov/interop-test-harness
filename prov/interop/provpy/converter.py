@@ -68,8 +68,6 @@ class ProvPyConverter(Converter, CommandLineComponent):
     :type out_file: str or unicode
     :param out_format: Output format
     :type out_format: str or unicode
-    :returns: True (success) or False (fail)
-    :rtype: bool
     :raises ConversionError: if the input file is not found, the
     return code is non-zero, or the return code is zero but the output
     file is not found.
