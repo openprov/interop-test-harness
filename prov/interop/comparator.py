@@ -30,7 +30,7 @@ class Comparator(ConfigurableComponent):
 
   def __init__(self):
     """Create comparator.
-    Can be overriden by sub-classes.
+    Invokes super-class ``__init__``.
     """
     super(Comparator, self).__init__()
     self._formats = []
@@ -46,12 +46,12 @@ class Comparator(ConfigurableComponent):
 
   def configure(self, config):
     """Configure comparator.
-    Can be overriden by sub-classes.
+    Invokes super-class ``configure``.
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config is not a dict, or config does not
-    contain ``formats`` (list of str or unicode).
+    :raises ConfigError: if config does not contain ``formats`` (list
+    of str or unicode)
     """
     super(Comparator, self).configure(config)
     if not "formats" in config:

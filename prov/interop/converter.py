@@ -30,7 +30,7 @@ class Converter(ConfigurableComponent):
 
   def __init__(self):
     """Create converter.
-    Can be overriden by sub-classes.
+    Invokes super-class ``__init__``.
     """
     super(Converter, self).__init__()
     self._input_formats = []
@@ -56,13 +56,13 @@ class Converter(ConfigurableComponent):
 
   def configure(self, config):
     """Configure converter.
-    Can be overriden by sub-classes.
+    Invokes super-class ``configure``.
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config is not a dict, or config does not
-    contain ``input_formats`` (list of str or unicode) and
-    ``output_formats`` (list of str or unicode).
+    :raises ConfigError: if config does not contain ``input_formats``
+    (list of str or unicode) and ``output_formats`` (list of str or
+    unicode)
     """
     super(Converter, self).configure(config)
     if not "input_formats" in config:

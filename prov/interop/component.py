@@ -27,13 +27,11 @@ class ConfigurableComponent(object):
 
   def __init__(self):
     """Create component.
-    Can be overriden by sub-classes.
     """
     pass
 
   def configure(self, config):
     """Configure component.
-    Can be overriden by sub-classes.
 
     :param config: Configuration
     :type config: dict
@@ -48,7 +46,7 @@ class CommandLineComponent(ConfigurableComponent):
 
   def __init__(self):
     """Create component.
-    Can be overriden by sub-classes.
+    Invokes super-class ``__init__``.
     """
     super(CommandLineComponent, self).__init__()
     self._directory = ""
@@ -84,14 +82,13 @@ class CommandLineComponent(ConfigurableComponent):
 
   def configure(self, config):
     """Configure component.
-    Can be overriden by sub-classes.
+    Invokes super-class ``configure``.
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config is not a dict, or config does not
-    contain a ``directory`` (str or unicode), ``executable`` (str or
-    unicode) and ``arguments`` (list of str or unicode or int or
-    float). 
+    :raises ConfigError: if config does not contain a ``directory``
+    (str or unicode), ``executable`` (str or unicode) and
+    ``arguments`` (list of str or unicode or int or float)
     """
     super(CommandLineComponent, self).configure(config)
     if not "directory" in config:
@@ -110,7 +107,7 @@ class RestComponent(ConfigurableComponent):
 
   def __init__(self):
     """Create component.
-    Can be overriden by sub-classes.
+    Invokes super-class ``__init__``.
     """
     super(RestComponent, self).__init__()
     self._url = ""
@@ -126,12 +123,12 @@ class RestComponent(ConfigurableComponent):
 
   def configure(self, config):
     """Configure component.
-    Can be overriden by sub-classes.
+    Invokes super-class ``configure``.
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config is not a dict, or config is does
-    not contain a ``url`` (str or unicode).
+    :raises ConfigError: if config does not contain a ``url`` (str or 
+    unicode)
     """
     super(RestComponent, self).configure(config)
     if not "url" in config:
