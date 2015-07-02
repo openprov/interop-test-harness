@@ -25,17 +25,33 @@
 import unittest
 
 from prov.interop.component import ConfigError
-from prov.interop.converter import ConversionError
 from prov.interop.converter import Converter
 
 class ConverterTestCase(unittest.TestCase):
 
+  def test_init(self):
+    converter = Converter()
+    self.assertEquals([], converter.input_formats)
+    self.assertEquals([], converter.output_formats)
+
   def test_configure(self):
-    comp = Converter()
-    comp.configure({})
-    self.assertTrue(True)
+    converter = Converter()
+    converter.configure({"input_formats": ["a", "b"], 
+                    "output_formats": ["c", "d"]})
+    self.assertEquals(["a", "b"], converter.input_formats)
+    self.assertEquals(["c", "d"], converter.output_formats)
 
   def test_configure_non_dict_error(self):
-    comp = Converter()
+    converter = Converter()
     with self.assertRaises(ConfigError):
-      comp.configure(123)
+      converter.configure(123)
+
+  def test_configure_missing_input_formats(self):
+    converter = Converter()
+    with self.assertRaises(ConfigError):
+      converter.configure({"output_formats": ["c", "d"]})
+
+  def test_configure_missing_output_formats(self):
+    converter = Converter()
+    with self.assertRaises(ConfigError):
+      converter.configure({"input_formats": ["a", "b"]})

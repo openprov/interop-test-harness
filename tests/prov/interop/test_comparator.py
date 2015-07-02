@@ -26,16 +26,24 @@ import unittest
 
 from prov.interop.component import ConfigError
 from prov.interop.comparator import Comparator
-from prov.interop.comparator import ComparisonError
 
 class ComparatorTestCase(unittest.TestCase):
 
+  def test_init(self):
+    comparator = Comparator()
+    self.assertEquals([], comparator.formats)
+
   def test_configure(self):
-    comp = Comparator()
-    comp.configure({})
-    self.assertTrue(True)
+    comparator = Comparator()
+    comparator.configure({"formats": ["a", "b"]})
+    self.assertEquals(["a", "b"], comparator.formats)
 
   def test_configure_non_dict_error(self):
-    comp = Comparator()
+    comparator = Comparator()
     with self.assertRaises(ConfigError):
-      comp.configure(123)
+      comparator.configure(123)
+
+  def test_configure_missing_input_formats(self):
+    comparator = Comparator()
+    with self.assertRaises(ConfigError):
+      comparator.configure({})

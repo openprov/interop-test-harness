@@ -22,6 +22,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+from prov.interop.component import ConfigError
 from prov.interop.component import ConfigurableComponent
 
 class Comparator(ConfigurableComponent):
@@ -32,14 +33,16 @@ class Comparator(ConfigurableComponent):
     Can be overriden by sub-classes.
     """
     super(Comparator, self).__init__()
+    self._formats = []
 
-  def get_formats(self):
+  @property
+  def formats(self):
     """Gets list of formats supported by the comparator.
 
     :returns: formats
     :rtype: list of str or unicode
     """
-    pass
+    return self._formats
 
   def configure(self, config):
     """Configure comparator.
@@ -47,9 +50,13 @@ class Comparator(ConfigurableComponent):
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config is not a dict.
+    :raises ConfigError: if config is not a dict, or config does not
+    contain ``formats`` (list of str or unicode).
     """
     super(Comparator, self).configure(config)
+    if not "formats" in config:
+      raise ConfigError("Missing 'formats'");
+    self._formats = config["formats"]
 
   def compare(self, expected_file, expected_format, actual_file, actual_format):
     """Invoke comparison of expected file in given format to actual

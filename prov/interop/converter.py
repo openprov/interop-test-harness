@@ -22,6 +22,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+from prov.interop.component import ConfigError
 from prov.interop.component import ConfigurableComponent
 
 class Converter(ConfigurableComponent):
@@ -32,22 +33,26 @@ class Converter(ConfigurableComponent):
     Can be overriden by sub-classes.
     """
     super(Converter, self).__init__()
+    self._input_formats = []
+    self._output_formats = []
 
-  def get_input_formats(self):
+  @property
+  def input_formats(self):
     """Gets list of input formats supported by the converter.
 
     :returns: formats
     :rtype: list of str or unicode
     """
-    pass
+    return self._input_formats
 
-  def get_output_formats(self):
+  @property
+  def output_formats(self):
     """Gets list of output formats supported by the converter.
 
     :returns: formats
     :rtype: list of str or unicode
     """
-    pass
+    return self._output_formats
 
   def configure(self, config):
     """Configure converter.
@@ -55,9 +60,17 @@ class Converter(ConfigurableComponent):
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config is not a dict.
+    :raises ConfigError: if config is not a dict, or config does not
+    contain ``input_formats`` (list of str or unicode) and
+    ``output_formats`` (list of str or unicode).
     """
     super(Converter, self).configure(config)
+    if not "input_formats" in config:
+      raise ConfigError("Missing 'input_formats'");
+    self._input_formats = config["input_formats"]
+    if not "output_formats" in config:
+      raise ConfigError("Missing 'output_formats'");
+    self._output_formats = config["output_formats"]
 
   def convert(self, in_file, in_format, out_file, out_format):
     """Invoke conversion of input file in given format to output
