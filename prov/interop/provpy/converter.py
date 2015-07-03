@@ -79,7 +79,7 @@ class ProvPyConverter(Converter, CommandLineComponent):
     if not os.path.isfile(in_file):
       raise ConversionError("Input file not found: " + in_file)
     # Replace tokens in arguments
-    command_line = [in_format if x==ProvPyConverter.FORMAT else x 
+    command_line = [out_format if x==ProvPyConverter.FORMAT else x 
                     for x in self._arguments]
     command_line = [in_file if x==ProvPyConverter.INPUT else x 
                     for x in command_line]

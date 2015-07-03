@@ -92,31 +92,31 @@ class ProvPyConverterTestCase(unittest.TestCase):
   def test_convert(self):
     self.provpy.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
-    self.out_file = "convert.provx"
+    self.out_file = "convert.provn"
     self.provpy.convert(self.in_file, standards.JSON, 
-                        self.out_file, standards.PROVX)
+                        self.out_file, standards.PROVN)
 
   def test_convert_oserror(self):
     self.config[ProvPyConverter.EXECUTABLE] = "/nosuchexecutable"
     self.provpy.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
-    self.out_file = "convert_oserror.provx"
+    self.out_file = "convert_oserror.provn"
     with self.assertRaises(OSError):
       self.provpy.convert(self.in_file, standards.JSON, 
-                          self.out_file, standards.PROVX)
+                          self.out_file, standards.PROVN)
 
   def test_convert_missing_input_file(self):
     self.provpy.configure(self.config)
-    self.in_file = "nosuchfile.provx"
-    self.out_file = "convert_missing_input_file.provx"
+    self.in_file = "nosuchfile.json"
+    self.out_file = "convert_missing_input_file.provn"
     with self.assertRaises(ConversionError):
       self.provpy.convert(self.in_file, standards.JSON, 
-                          self.out_file, standards.PROVX)
+                          self.out_file, standards.PROVN)
 
-  def test_convert_invalid_input_format(self):
+  def test_convert_invalid_output_format(self):
     self.provpy.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
-    self.out_file = "convert_invalid_input_format.provx"
+    self.out_file = "convert_invalid_output_format.nosuchformat"
     with self.assertRaises(ConversionError):
-      self.provpy.convert(self.in_file, "nosuchformat", 
-                          self.out_file, standards.PROVX)
+      self.provpy.convert(self.in_file, standards.JSON, 
+                          self.out_file, "nosuchformat")
