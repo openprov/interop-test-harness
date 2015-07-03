@@ -22,6 +22,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+from prov.interop import standards
 from prov.interop.component import ConfigError
 from prov.interop.component import ConfigurableComponent
 
@@ -65,12 +66,17 @@ class Converter(ConfigurableComponent):
     :type config: dict
     :raises ConfigError: if config does not contain ``input_formats``
     (list of str or unicode) and ``output_formats`` (list of str or
-    unicode)
+    unicode) or any format in ``input_formats`` or ``output_formats``
+    is not a canonical format (see ``standards``)
     """
     super(Converter, self).configure(config)
     Converter.check_configuration(
       config, [Converter.INPUT_FORMATS, Converter.OUTPUT_FORMATS])
-    # TODO - check formats are all canonical
+    standard_formats = set(standards.FORMATS)
+    for format in [Converter.INPUT_FORMATS, Converter.OUTPUT_FORMATS]:
+      formats = set(config[format])
+      if not standard_formats.issuperset(formats):
+        raise ConfigError("One or more " + format + " is unknown")
     self._input_formats = config[Converter.INPUT_FORMATS]
     self._output_formats = config[Converter.OUTPUT_FORMATS]
 

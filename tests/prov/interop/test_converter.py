@@ -8,7 +8,7 @@
 # including without limitation the rights to use, copy, modify, merge,
 # publish, distribute, sublicense, and/or sell copies of the Software,
 # and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions: 
+# subject to the following conditions:
 #
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software. 
@@ -24,6 +24,7 @@
 
 import unittest
 
+from prov.interop import standards
 from prov.interop.component import ConfigError
 from prov.interop.converter import Converter
 
@@ -36,10 +37,12 @@ class ConverterTestCase(unittest.TestCase):
 
   def test_configure(self):
     converter = Converter()
-    converter.configure({Converter.INPUT_FORMATS: ["a", "b"], 
-                         Converter.OUTPUT_FORMATS: ["c", "d"]})
-    self.assertEquals(["a", "b"], converter.input_formats)
-    self.assertEquals(["c", "d"], converter.output_formats)
+    input_formats = [standards.PROVN, standards.JSON]
+    output_formats = [standards.PROVX, standards.TTL]
+    converter.configure({Converter.INPUT_FORMATS: input_formats, 
+                         Converter.OUTPUT_FORMATS: output_formats})
+    self.assertEquals(input_formats, converter.input_formats)
+    self.assertEquals(output_formats, converter.output_formats)
 
   def test_configure_non_dict_error(self):
     converter = Converter()
@@ -48,10 +51,29 @@ class ConverterTestCase(unittest.TestCase):
 
   def test_configure_no_input_formats(self):
     converter = Converter()
+    output_formats = [standards.PROVX, standards.TTL]
     with self.assertRaises(ConfigError):
-      converter.configure({Converter.OUTPUT_FORMATS: ["c", "d"]})
+      converter.configure({Converter.OUTPUT_FORMATS: output_formats})
 
+  def test_configure_non_canonical_input_format(self):
+    converter = Converter()
+    input_formats = [standards.PROVN, standards.JSON, "invalidFormat"]
+    output_formats = [standards.PROVX, standards.TTL]
+    with self.assertRaises(ConfigError):
+      converter.configure({Converter.INPUT_FORMATS: input_formats, 
+                           Converter.OUTPUT_FORMATS: output_formats})
+    
   def test_configure_no_output_formats(self):
     converter = Converter()
+    input_formats = [standards.PROVN, standards.JSON]
     with self.assertRaises(ConfigError):
-      converter.configure({Converter.INPUT_FORMATS: ["a", "b"]})
+      converter.configure({Converter.INPUT_FORMATS: input_formats})
+
+  def test_configure_non_canonical_output_format(self):
+    converter = Converter()
+    input_formats = [standards.PROVN, standards.JSON]
+    output_formats = [standards.PROVX, standards.TTL, "invalidFormat"]
+    with self.assertRaises(ConfigError):
+      converter.configure({Converter.INPUT_FORMATS: input_formats, 
+                           Converter.OUTPUT_FORMATS: output_formats})
+    

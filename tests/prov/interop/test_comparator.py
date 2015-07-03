@@ -24,6 +24,7 @@
 
 import unittest
 
+from prov.interop import standards
 from prov.interop.component import ConfigError
 from prov.interop.comparator import Comparator
 
@@ -35,8 +36,9 @@ class ComparatorTestCase(unittest.TestCase):
 
   def test_configure(self):
     comparator = Comparator()
-    comparator.configure({Comparator.FORMATS: ["a", "b"]})
-    self.assertEquals(["a", "b"], comparator.formats)
+    formats = [standards.PROVN, standards.JSON]
+    comparator.configure({Comparator.FORMATS: formats})
+    self.assertEquals(formats, comparator.formats)
 
   def test_configure_non_dict_error(self):
     comparator = Comparator()
@@ -47,3 +49,9 @@ class ComparatorTestCase(unittest.TestCase):
     comparator = Comparator()
     with self.assertRaises(ConfigError):
       comparator.configure({})
+
+  def test_configure_non_canonical_format(self):
+    comparator = Comparator()
+    formats = [standards.PROVN, standards.JSON, "invalidFormat"]
+    with self.assertRaises(ConfigError):
+      comparator.configure({Comparator.FORMATS: formats})

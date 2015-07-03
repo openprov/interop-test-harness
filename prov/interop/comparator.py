@@ -22,6 +22,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+from prov.interop import standards
 from prov.interop.component import ConfigError
 from prov.interop.component import ConfigurableComponent
 
@@ -53,12 +54,16 @@ class Comparator(ConfigurableComponent):
     :param config: Configuration
     :type config: dict
     :raises ConfigError: if config does not contain ``formats`` (list
-    of str or unicode)
+    of str or unicode) or any format in ``formats`` is not a canonical
+    format (see ``standards``)
     """
     super(Comparator, self).configure(config)
     Comparator.check_configuration(config, [Comparator.FORMATS])
+    standard_formats = set(standards.FORMATS)
+    formats = set(config[Comparator.FORMATS])
+    if not standard_formats.issuperset(formats):
+      raise ConfigError("One or more " + Comparator.FORMATS + " is unknown")
     self._formats = config[Comparator.FORMATS]
-    # TODO - check formats are all canonical
 
   def compare(self, file1, file2):
     """Invoke comparison of files in canonical formats.
