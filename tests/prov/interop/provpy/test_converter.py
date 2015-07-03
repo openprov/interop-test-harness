@@ -27,6 +27,7 @@ import os
 import tempfile
 import unittest
 
+from prov.interop import standards
 from prov.interop.component import ConfigError
 from prov.interop.converter import ConversionError
 from prov.interop.provpy.converter import ProvPyConverter
@@ -46,8 +47,10 @@ class ProvPyConverterTestCase(unittest.TestCase):
       script,
       "-f", ProvPyConverter.FORMAT, 
       ProvPyConverter.INPUT, ProvPyConverter.OUTPUT]
-    self.config[ProvPyConverter.INPUT_FORMATS] = ["provn", "provx", "json"]
-    self.config[ProvPyConverter.OUTPUT_FORMATS] = ["provn", "provx", "json"]
+    self.config[ProvPyConverter.INPUT_FORMATS] = [
+      standards.PROVN, standards.PROVX, standards.JSON]
+    self.config[ProvPyConverter.OUTPUT_FORMATS] = [
+      standards.PROVN, standards.PROVX, standards.JSON]
 
   def tearDown(self):
     for tmp in [self.in_file, self.out_file]:
@@ -88,28 +91,32 @@ class ProvPyConverterTestCase(unittest.TestCase):
 
   def test_convert(self):
     self.provpy.configure(self.config)
-    (_, self.in_file) = tempfile.mkstemp(suffix=".json")
-    self.out_file = "convert.xml"
-    self.provpy.convert(self.in_file, "json", self.out_file, "xml")
+    (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
+    self.out_file = "convert.provx"
+    self.provpy.convert(self.in_file, standards.JSON, 
+                        self.out_file, standards.PROVX)
 
   def test_convert_oserror(self):
     self.config[ProvPyConverter.EXECUTABLE] = "/nosuchexecutable"
     self.provpy.configure(self.config)
-    (_, self.in_file) = tempfile.mkstemp(suffix=".json")
-    self.out_file = "convert_oserror.xml"
+    (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
+    self.out_file = "convert_oserror.provx"
     with self.assertRaises(OSError):
-      self.provpy.convert(self.in_file, "json", self.out_file, "xml")
+      self.provpy.convert(self.in_file, standards.JSON, 
+                          self.out_file, standards.PROVX)
 
   def test_convert_missing_input_file(self):
     self.provpy.configure(self.config)
-    self.in_file = "nosuchfile.xml"
-    self.out_file = "convert_missing_input_file.xml"
+    self.in_file = "nosuchfile.provx"
+    self.out_file = "convert_missing_input_file.provx"
     with self.assertRaises(ConversionError):
-      self.provpy.convert(self.in_file, "json", self.out_file, "xml")
+      self.provpy.convert(self.in_file, standards.JSON, 
+                          self.out_file, standards.PROVX)
 
   def test_convert_invalid_input_format(self):
     self.provpy.configure(self.config)
-    (_, self.in_file) = tempfile.mkstemp(suffix=".json")
-    self.out_file = "convert_invalid_input_format.xml"
+    (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
+    self.out_file = "convert_invalid_input_format.provx"
     with self.assertRaises(ConversionError):
-      self.provpy.convert(self.in_file, "nosuchformat", self.out_file, "xml")
+      self.provpy.convert(self.in_file, "nosuchformat", 
+                          self.out_file, standards.PROVX)

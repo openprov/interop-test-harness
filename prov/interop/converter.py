@@ -41,7 +41,7 @@ class Converter(ConfigurableComponent):
 
   @property
   def input_formats(self):
-    """Gets list of input formats supported by the converter.
+    """Gets list of canonical input formats supported by the converter.
 
     :returns: formats
     :rtype: list of str or unicode
@@ -50,7 +50,7 @@ class Converter(ConfigurableComponent):
 
   @property
   def output_formats(self):
-    """Gets list of output formats supported by the converter.
+    """Gets list of canonical ouput formats supported by the converter.
 
     :returns: formats
     :rtype: list of str or unicode
@@ -79,11 +79,11 @@ class Converter(ConfigurableComponent):
 
     :param in_file: Input file name
     :type in_file: str or unicode
-    :param in_format: Input format
+    :param in_format: Canonical input format
     :type in_format: str or unicode
     :param out_file: Output file name
     :type out_file: str or unicode
-    :param out_format: Output format
+    :param out_format: Canonical output format
     :type out_format: str or unicode
     :raises ConversionError: if there are problems invoking the converter 
     """

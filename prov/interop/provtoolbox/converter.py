@@ -62,11 +62,11 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
 
     :param in_file: Input file name
     :type in_file: str or unicode
-    :param in_format: Input format
+    :param in_format: Canonical input format
     :type in_format: str or unicode
     :param out_file: Output file name
     :type out_file: str or unicode
-    :param out_format: Output format
+    :param out_format: Canonical output format
     :type out_format: str or unicode
     :returns: True (success) or False (fail)
     :rtype: bool

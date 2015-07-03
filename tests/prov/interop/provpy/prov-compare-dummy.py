@@ -13,8 +13,9 @@ prov-compare returns 0 if:
 
 This script behaves similarly (though it does no PROV validation). 
 
-If the inputs are valid and the formats are equal it returns 0 else
-it returns 1 (mimicing two non-equivalent files).
+If the inputs and formats are valid and the file names (after removal
+of their extensions) are equal then it returns 0 else it returns 1
+(mimicing two non-equivalent files).
 
 Usage:
 
@@ -79,7 +80,9 @@ for format in [args.f, args.F]:
   if format not in formats:
     print("Unsupported format " + format)
     sys.exit(2)
-if args.f != args.F:
-    print("Documents do not match")
-    sys.exit(1)
+name1, _ = os.path.splitext(args.file1)
+name2, _ = os.path.splitext(args.file2)
+if name1 != name2:
+  print("Documents do not match")
+  sys.exit(1)
 sys.exit(0)

@@ -39,7 +39,7 @@ class Comparator(ConfigurableComponent):
 
   @property
   def formats(self):
-    """Gets list of formats supported by the comparator.
+    """Gets list of canonical formats supported by the comparator.
 
     :returns: formats
     :rtype: list of str or unicode
@@ -64,11 +64,11 @@ class Comparator(ConfigurableComponent):
 
     :param file1: File name
     :type file1: str or unicode
-    :param format1: File 1 format
+    :param format1: File 1 canonical format
     :type format1: str or unicode
     :param file2: File name
     :type file2: str or unicode
-    :param format2: File 2 format
+    :param format2: File 2 canonical format
     :type format2: str or unicode
     :returns: True (success) if files are equivalent, else False (fail)
     :rtype: bool

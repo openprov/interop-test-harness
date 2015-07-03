@@ -27,6 +27,7 @@ import os
 import tempfile
 import unittest
 
+from prov.interop import standards
 from prov.interop.comparator import ComparisonError
 from prov.interop.component import ConfigError
 from prov.interop.provpy.comparator import ProvPyComparator
@@ -46,7 +47,8 @@ class ProvPyComparatorTestCase(unittest.TestCase):
       script,
       "-f", ProvPyComparator.FORMAT1, "-F", ProvPyComparator.FORMAT2,
       ProvPyComparator.FILE1, ProvPyComparator.FILE2]
-    self.config[ProvPyComparator.FORMATS] = ["provx", "json"]
+    self.config[ProvPyComparator.FORMATS] = [
+      standards.PROVX, standards.JSON]
 
   def tearDown(self):
     for tmp in [self.file1, self.file2]:
@@ -89,54 +91,59 @@ class ProvPyComparatorTestCase(unittest.TestCase):
 
   def test_compare(self):
     self.provpy.configure(self.config)
-    (_, self.file1) = tempfile.mkstemp(suffix=".json")
-    (_, self.file2) = tempfile.mkstemp(suffix=".json")
-    self.assertTrue(self.provpy.compare(self.file1, "json", 
-                                        self.file2, "json"))
+    (_, self.file1) = tempfile.mkstemp(suffix="." + standards.JSON)
+    self.file2 = self.file1
+    # ProvPy prov-compare dummy script considers files with
+    # matching names to be the same.
+    self.assertTrue(self.provpy.compare(self.file1, standards.JSON, 
+                                        self.file2, standards.JSON))
 
   def test_compare_non_equivalent(self):
     self.provpy.configure(self.config)
-    (_, self.file1) = tempfile.mkstemp(suffix=".json")
-    (_, self.file2) = tempfile.mkstemp(suffix=".xml")
+    (_, self.file1) = tempfile.mkstemp(suffix="." + standards.JSON)
+    (_, self.file2) = tempfile.mkstemp(suffix="." + standards.JSON)
     # ProvPy prov-compare dummy script considers files with
-    # non-matching extensions to be different.
-    self.assertFalse(self.provpy.compare(self.file1, "json", 
-                                         self.file2, "xml"))
+    # non-matching names to be different.
+    self.assertFalse(self.provpy.compare(self.file1, standards.JSON, 
+                                         self.file2, standards.JSON))
 
   def test_compare_oserror(self):
     self.config[ProvPyComparator.EXECUTABLE] = "/nosuchexecutable"
     self.provpy.configure(self.config)
-    (_, self.file1) = tempfile.mkstemp(suffix=".json")
-    (_, self.file2) = tempfile.mkstemp(suffix=".json")
+    (_, self.file1) = tempfile.mkstemp(suffix="." + standards.JSON)
+    (_, self.file2) = tempfile.mkstemp(suffix="." + standards.JSON)
     with self.assertRaises(OSError):
-      self.provpy.compare(self.file1, "json", self.file2, "json")
+      self.provpy.compare(self.file1, standards.JSON, 
+                          self.file2, standards.JSON)
 
   def test_compare_missing_file1(self):
     self.provpy.configure(self.config)
     self.file1 = "nosuchfile.json"
-    (_, self.file2) = tempfile.mkstemp(suffix=".json")
+    (_, self.file2) = tempfile.mkstemp(suffix="." + standards.JSON)
     with self.assertRaises(ComparisonError):
-      self.provpy.compare(self.file1, "json", self.file2, "json")
+      self.provpy.compare(self.file1, standards.JSON, 
+                          self.file2, standards.JSON)
 
   def test_compare_missing_file2(self):
     self.provpy.configure(self.config)
-    (_, self.file1) = tempfile.mkstemp(suffix=".json")
+    (_, self.file1) = tempfile.mkstemp(suffix="." + standards.JSON)
     self.file2 = "nosuchfile.json"
     with self.assertRaises(ComparisonError):
-      self.provpy.compare(self.file1, "json", self.file2, "json")
+      self.provpy.compare(self.file1, standards.JSON, 
+                          self.file2, standards.JSON)
 
   def test_compare_invalid_format1(self):
     self.provpy.configure(self.config)
     (_, self.file1) = tempfile.mkstemp(suffix=".nosuchformat")
-    (_, self.file2) = tempfile.mkstemp(suffix=".json")
+    (_, self.file2) = tempfile.mkstemp(suffix="." + standards.JSON)
     with self.assertRaises(ComparisonError):
       self.provpy.compare(self.file1, "nosuchformat", 
-                          self.file2, "json")
+                          self.file2, standards.JSON)
 
   def test_compare_invalid_format2(self):
     self.provpy.configure(self.config)
-    (_, self.file1) = tempfile.mkstemp(suffix=".json")
+    (_, self.file1) = tempfile.mkstemp(suffix="." + standards.JSON)
     (_, self.file2) = tempfile.mkstemp(suffix=".nosuchformat")
     with self.assertRaises(ComparisonError):
-      self.provpy.compare(self.file1, "json", 
+      self.provpy.compare(self.file1, standards.JSON, 
                           self.file2, "nosuchformat")
