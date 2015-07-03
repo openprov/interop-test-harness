@@ -76,10 +76,7 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     :raises OSError: if there are problems invoking the comparator
     e.g. the script is not found at the specified location.
     """
-    if not os.path.isfile(file1):
-      raise ComparisonError("File not found: " + file1)
-    if not os.path.isfile(file2):
-      raise ComparisonError("File not found: " + file2)
+    super(ProvPyComparator, self).compare(file1, file2)
     format1 = os.path.splitext(file1)[1][1:]
     format2 = os.path.splitext(file2)[1][1:]
     # TODO check formats in input/output formats

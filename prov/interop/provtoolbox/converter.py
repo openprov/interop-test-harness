@@ -73,12 +73,7 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
     :raises OSError: if there are problems invoking the converter
     e.g. the script is not found at the specified location.
     """
-    if not os.path.isfile(in_file):
-      raise ConversionError("Input file not found: " + in_file)
-    in_format = os.path.splitext(in_file)[1][1:]
-    out_format = os.path.splitext(out_file)[1][1:]
-    # TODO check formats in input/output formats
-    # TODO map to local format
+    super(ProvToolboxConverter, self).convert(in_file, out_file)
     # Replace tokens in arguments
     command_line = [in_file if x==ProvToolboxConverter.INPUT else x 
                     for x in self._arguments]

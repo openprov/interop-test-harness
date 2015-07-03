@@ -22,6 +22,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+import os
+
 from prov.interop import standards
 from prov.interop.component import ConfigError
 from prov.interop.component import ConfigurableComponent
@@ -91,11 +93,10 @@ class Converter(ConfigurableComponent):
     :type in_file: str or unicode
     :param out_file: Output file name
     :type out_file: str or unicode
-    :raises ConversionError: if there are problems invoking the converter 
+    :raises ConversionError: if either file does not exist
     """
-    # TODO validate input file exists
-    # TODO validate input and output extensions
-    pass
+    if not os.path.isfile(in_file):
+      raise ConversionError("Input file not found: " + in_file)
 
 class ConversionError(Exception):
   """Conversion error."""

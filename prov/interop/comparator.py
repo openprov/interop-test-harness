@@ -22,6 +22,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+import os
+
 from prov.interop import standards
 from prov.interop.component import ConfigError
 from prov.interop.component import ConfigurableComponent
@@ -77,11 +79,11 @@ class Comparator(ConfigurableComponent):
     :type file2: str or unicode
     :returns: True (success) if files are equivalent, else False (fail)
     :rtype: bool
-    :raises ComparisonError: if there are problems invoking the comparator 
+    :raises ComparisonError: if either file does not exist
     """
-    # TODO validate files exist
-    # TODO validate file extensions
-    pass
+    for afile in [file1, file2]:
+      if not os.path.isfile(afile):
+        raise ComparisonError("File not found: " + afile)
 
 class ComparisonError(Exception):
   """Comparison error."""
