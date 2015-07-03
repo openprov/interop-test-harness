@@ -35,7 +35,7 @@ class ComparatorTestCase(unittest.TestCase):
 
   def test_configure(self):
     comparator = Comparator()
-    comparator.configure({"formats": ["a", "b"]})
+    comparator.configure({Comparator.FORMATS: ["a", "b"]})
     self.assertEquals(["a", "b"], comparator.formats)
 
   def test_configure_non_dict_error(self):

@@ -38,14 +38,15 @@ class ProvPyConverterTestCase(unittest.TestCase):
     self.in_file = None
     self.out_file = None
     self.config = {}  
-    self.config["executable"] = "python"
-    self.config["arguments"] = [
+    self.config[ProvPyConverter.EXECUTABLE] = "python"
+    self.config[ProvPyConverter.ARGUMENTS] = [
       os.path.join(
         os.path.dirname(os.path.abspath(inspect.getfile(
               inspect.currentframe()))), "prov-convert-dummy.py"),
-      "-f", "PROV_FORMAT", "PROV_INPUT", "PROV_OUTPUT"]
-    self.config["input_formats"] = ["provn", "provx", "json"]
-    self.config["output_formats"] = ["provn", "provx", "json"]
+      "-f", "PROV_FORMAT", 
+      "PROV_INPUT", "PROV_OUTPUT"]
+    self.config[ProvPyConverter.INPUT_FORMATS] = ["provn", "provx", "json"]
+    self.config[ProvPyConverter.OUTPUT_FORMATS] = ["provn", "provx", "json"]
 
   def tearDown(self):
     for tmp in [self.in_file, self.out_file]:
@@ -60,23 +61,27 @@ class ProvPyConverterTestCase(unittest.TestCase):
 
   def test_configure(self):
     self.provpy.configure(self.config)
-    self.assertEquals(self.config["executable"], self.provpy.executable)
-    self.assertEquals(self.config["arguments"], self.provpy.arguments)
-    self.assertEquals(self.config["input_formats"], self.provpy.input_formats)
-    self.assertEquals(self.config["output_formats"], self.provpy.output_formats)
+    self.assertEquals(self.config[ProvPyConverter.EXECUTABLE], 
+                      self.provpy.executable)
+    self.assertEquals(self.config[ProvPyConverter.ARGUMENTS], 
+                      self.provpy.arguments)
+    self.assertEquals(self.config[ProvPyConverter.INPUT_FORMATS], 
+                      self.provpy.input_formats)
+    self.assertEquals(self.config[ProvPyConverter.OUTPUT_FORMATS], 
+                      self.provpy.output_formats)
 
   def test_configure_no_prov_format(self):
-    self.config["arguments"].remove("PROV_FORMAT")
+    self.config[ProvPyConverter.ARGUMENTS].remove("PROV_FORMAT")
     with self.assertRaises(ConfigError):
       self.provpy.configure(self.config)
 
   def test_configure_no_prov_input(self):
-    self.config["arguments"].remove("PROV_INPUT")
+    self.config[ProvPyConverter.ARGUMENTS].remove("PROV_INPUT")
     with self.assertRaises(ConfigError):
       self.provpy.configure(self.config)
 
   def test_configure_no_prov_output(self):
-    self.config["arguments"].remove("PROV_OUTPUT")
+    self.config[ProvPyConverter.ARGUMENTS].remove("PROV_OUTPUT")
     with self.assertRaises(ConfigError):
       self.provpy.configure(self.config)
 
@@ -87,7 +92,7 @@ class ProvPyConverterTestCase(unittest.TestCase):
     self.provpy.convert(self.in_file, "json", self.out_file, "xml")
 
   def test_convert_oserror(self):
-    self.config["executable"] = "/nosuchexecutable"
+    self.config[ProvPyConverter.EXECUTABLE] = "/nosuchexecutable"
     self.provpy.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix=".json")
     self.out_file = "convert_oserror.xml"

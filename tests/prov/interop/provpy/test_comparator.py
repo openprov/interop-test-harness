@@ -38,14 +38,14 @@ class ProvPyComparatorTestCase(unittest.TestCase):
     self.in_file = None
     self.out_file = None
     self.config = {}  
-    self.config["executable"] = "python"
-    self.config["arguments"] = [
+    self.config[ProvPyComparator.EXECUTABLE] = "python"
+    self.config[ProvPyComparator.ARGUMENTS] = [
       os.path.join(
         os.path.dirname(os.path.abspath(inspect.getfile(
               inspect.currentframe()))), "prov-compare-dummy.py"),
       "-f", "PROV_EXPECTED_FORMAT", "-F", "PROV_ACTUAL_FORMAT",
       "PROV_EXPECTED_FILE", "PROV_ACTUAL_FILE"]
-    self.config["formats"] = ["provx", "json"]
+    self.config[ProvPyComparator.FORMATS] = ["provx", "json"]
 
   def tearDown(self):
     for tmp in [self.in_file, self.out_file]:
@@ -59,27 +59,30 @@ class ProvPyComparatorTestCase(unittest.TestCase):
 
   def test_configure(self):
     self.provpy.configure(self.config)
-    self.assertEquals(self.config["executable"], self.provpy.executable)
-    self.assertEquals(self.config["arguments"], self.provpy.arguments)
-    self.assertEquals(self.config["formats"], self.provpy.formats)
+    self.assertEquals(self.config[ProvPyComparator.EXECUTABLE],
+                      self.provpy.executable) 
+    self.assertEquals(self.config[ProvPyComparator.ARGUMENTS],
+                      self.provpy.arguments) 
+    self.assertEquals(self.config[ProvPyComparator.FORMATS],
+                      self.provpy.formats) 
 
   def test_configure_no_prov_expected_format(self):
-    self.config["arguments"].remove("PROV_EXPECTED_FORMAT")
+    self.config[ProvPyComparator.ARGUMENTS].remove("PROV_EXPECTED_FORMAT")
     with self.assertRaises(ConfigError):
       self.provpy.configure(self.config)
 
   def test_configure_no_prov_actual_format(self):
-    self.config["arguments"].remove("PROV_ACTUAL_FORMAT")
+    self.config[ProvPyComparator.ARGUMENTS].remove("PROV_ACTUAL_FORMAT")
     with self.assertRaises(ConfigError):
       self.provpy.configure(self.config)
 
   def test_configure_no_prov_expected_file(self):
-    self.config["arguments"].remove("PROV_EXPECTED_FILE")
+    self.config[ProvPyComparator.ARGUMENTS].remove("PROV_EXPECTED_FILE")
     with self.assertRaises(ConfigError):
       self.provpy.configure(self.config)
 
   def test_configure_no_prov_actual_file(self):
-    self.config["arguments"].remove("PROV_ACTUAL_FILE")
+    self.config[ProvPyComparator.ARGUMENTS].remove("PROV_ACTUAL_FILE")
     with self.assertRaises(ConfigError):
       self.provpy.configure(self.config)
 
@@ -100,7 +103,7 @@ class ProvPyComparatorTestCase(unittest.TestCase):
                                          self.actual_file, "xml"))
 
   def test_compare_oserror(self):
-    self.config["executable"] = "/nosuchexecutable"
+    self.config[ProvPyComparator.EXECUTABLE] = "/nosuchexecutable"
     self.provpy.configure(self.config)
     (_, self.expected_file) = tempfile.mkstemp(suffix=".json")
     (_, self.actual_file) = tempfile.mkstemp(suffix=".json")

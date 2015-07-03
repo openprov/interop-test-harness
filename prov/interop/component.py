@@ -44,6 +44,9 @@ class ConfigurableComponent(object):
 class CommandLineComponent(ConfigurableComponent):
   """Base class for configurable command-line components."""
 
+  EXECUTABLE = "executable"
+  ARGUMENTS = "arguments"
+
   def __init__(self):
     """Create component.
     Invokes super-class ``__init__``.
@@ -76,21 +79,23 @@ class CommandLineComponent(ConfigurableComponent):
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config does not contain an``executable``
+    :raises ConfigError: if config does not contain ``executable``
     (str or unicode) and ``arguments`` (list of str or unicode or int
     or float) 
     """
     super(CommandLineComponent, self).configure(config)
-    if not "executable" in config:
-      raise ConfigError("Missing 'executable'");
-    self._executable = config["executable"]
-    if not "arguments" in config:
-      raise ConfigError("Missing 'arguments'");
-    self._arguments = config["arguments"]
+    if not CommandLineComponent.EXECUTABLE in config:
+      raise ConfigError("Missing " + CommandLineComponent.EXECUTABLE)
+    self._executable = config[CommandLineComponent.EXECUTABLE]
+    if not CommandLineComponent.ARGUMENTS in config:
+      raise ConfigError("Missing " + CommandLineComponent.ARGUMENTS)
+    self._arguments = config[CommandLineComponent.ARGUMENTS]
 
 
 class RestComponent(ConfigurableComponent):
   """Base class for configurable REST-ful components."""
+
+  URL = "url"
 
   def __init__(self):
     """Create component.
@@ -114,13 +119,13 @@ class RestComponent(ConfigurableComponent):
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config does not contain a ``url`` (str or 
+    :raises ConfigError: if config does not contain ``url`` (str or 
     unicode)
     """
     super(RestComponent, self).configure(config)
-    if not "url" in config:
-      raise ConfigError("Missing 'url'");
-    self._url = config["url"]
+    if not RestComponent.URL in config:
+      raise ConfigError("Missing " + RestComponent.URL);
+    self._url = config[RestComponent.URL]
 
 
 class ConfigError(Exception):

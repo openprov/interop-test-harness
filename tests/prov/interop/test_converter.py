@@ -36,8 +36,8 @@ class ConverterTestCase(unittest.TestCase):
 
   def test_configure(self):
     converter = Converter()
-    converter.configure({"input_formats": ["a", "b"], 
-                    "output_formats": ["c", "d"]})
+    converter.configure({Converter.INPUT_FORMATS: ["a", "b"], 
+                         Converter.OUTPUT_FORMATS: ["c", "d"]})
     self.assertEquals(["a", "b"], converter.input_formats)
     self.assertEquals(["c", "d"], converter.output_formats)
 
@@ -49,9 +49,9 @@ class ConverterTestCase(unittest.TestCase):
   def test_configure_missing_input_formats(self):
     converter = Converter()
     with self.assertRaises(ConfigError):
-      converter.configure({"output_formats": ["c", "d"]})
+      converter.configure({Converter.OUTPUT_FORMATS: ["c", "d"]})
 
   def test_configure_missing_output_formats(self):
     converter = Converter()
     with self.assertRaises(ConfigError):
-      converter.configure({"input_formats": ["a", "b"]})
+      converter.configure({Converter.INPUT_FORMATS: ["a", "b"]})

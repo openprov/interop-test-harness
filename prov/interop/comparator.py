@@ -28,6 +28,8 @@ from prov.interop.component import ConfigurableComponent
 class Comparator(ConfigurableComponent):
   """Base class for comparators."""
 
+  FORMATS = "formats"
+
   def __init__(self):
     """Create comparator.
     Invokes super-class ``__init__``.
@@ -54,11 +56,12 @@ class Comparator(ConfigurableComponent):
     of str or unicode)
     """
     super(Comparator, self).configure(config)
-    if not "formats" in config:
-      raise ConfigError("Missing 'formats'");
-    self._formats = config["formats"]
+    if not Comparator.FORMATS in config:
+      raise ConfigError("Missing " + Comparator.FORMATS);
+    self._formats = config[Comparator.FORMATS]
 
-  def compare(self, expected_file, expected_format, actual_file, actual_format):
+  def compare(self, expected_file, expected_format, 
+              actual_file, actual_format):
     """Invoke comparison of expected file in given format to actual
     file in given format.
 

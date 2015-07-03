@@ -38,14 +38,16 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
     self.in_file = None
     self.out_file = None
     self.config = {}  
-    self.config["executable"] = "python"
-    self.config["arguments"] = [
+    self.config[ProvToolboxConverter.EXECUTABLE] = "python"
+    self.config[ProvToolboxConverter.ARGUMENTS] = [
       os.path.join(
         os.path.dirname(os.path.abspath(inspect.getfile(
               inspect.currentframe()))), "provconvert-dummy.py"),
       "-infile", "PROV_INPUT", "-outfile", "PROV_OUTPUT"]
-    self.config["input_formats"] = ["provn", "ttl", "trig", "provx", "json"]
-    self.config["output_formats"] = ["provn", "ttl", "trig", "provx", "json"]
+    self.config[ProvToolboxConverter.INPUT_FORMATS] = [
+      "provn", "ttl", "trig", "provx", "json"]
+    self.config[ProvToolboxConverter.OUTPUT_FORMATS] = [
+      "provn", "ttl", "trig", "provx", "json"]
 
   def tearDown(self):
     for tmp in [self.in_file, self.out_file]:
@@ -60,20 +62,22 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
 
   def test_configure(self):
     self.provtoolbox.configure(self.config)
-    self.assertEquals(self.config["executable"], self.provtoolbox.executable)
-    self.assertEquals(self.config["arguments"], self.provtoolbox.arguments)
-    self.assertEquals(self.config["input_formats"], 
+    self.assertEquals(self.config[ProvToolboxConverter.EXECUTABLE], 
+                      self.provtoolbox.executable)
+    self.assertEquals(self.config[ProvToolboxConverter.ARGUMENTS], 
+                      self.provtoolbox.arguments)
+    self.assertEquals(self.config[ProvToolboxConverter.INPUT_FORMATS], 
                       self.provtoolbox.input_formats)
-    self.assertEquals(self.config["output_formats"], 
+    self.assertEquals(self.config[ProvToolboxConverter.OUTPUT_FORMATS], 
                       self.provtoolbox.output_formats)
 
   def test_configure_no_prov_input(self):
-    self.config["arguments"].remove("PROV_INPUT")
+    self.config[ProvToolboxConverter.ARGUMENTS].remove("PROV_INPUT")
     with self.assertRaises(ConfigError):
       self.provtoolbox.configure(self.config)
 
   def test_configure_no_prov_output(self):
-    self.config["arguments"].remove("PROV_OUTPUT")
+    self.config[ProvToolboxConverter.ARGUMENTS].remove("PROV_OUTPUT")
     with self.assertRaises(ConfigError):
       self.provtoolbox.configure(self.config)
 
@@ -84,7 +88,7 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
     self.provtoolbox.convert(self.in_file, "json", self.out_file, "xml")
 
   def test_convert_oserror(self):
-    self.config["executable"] = "/nosuchexecutable"
+    self.config[ProvToolboxConverter.EXECUTABLE] = "/nosuchexecutable"
     self.provtoolbox.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix=".json")
     self.out_file = "convert_oserror.xml"
@@ -103,11 +107,13 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
     (_, self.in_file) = tempfile.mkstemp(suffix=".nosuchformat")
     self.out_file = "convert_invalid_input_format.xml"
     with self.assertRaises(ConversionError):
-      self.provtoolbox.convert(self.in_file, "nosuchformat", self.out_file, "xml")
+      self.provtoolbox.convert(self.in_file, "nosuchformat", 
+                               self.out_file, "xml")
 
   def test_convert_invalid_output_format(self):
     self.provtoolbox.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix=".json")
     self.out_file = "convert_invalid_input_format.nosuchformat"
     with self.assertRaises(ConversionError):
-      self.provtoolbox.convert(self.in_file, "json", self.out_file, "nosuchformat")
+      self.provtoolbox.convert(self.in_file, "json", 
+                               self.out_file, "nosuchformat")

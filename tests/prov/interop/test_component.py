@@ -52,7 +52,8 @@ class CommandLineComponentTestCase(unittest.TestCase):
   def test_configure(self):
     command_line = CommandLineComponent()
     command_line.configure(
-      {"executable": "b", "arguments": ["c", 1]})
+      {CommandLineComponent.EXECUTABLE: "b", 
+       CommandLineComponent.ARGUMENTS: ["c", 1]})
     self.assertEquals("b", command_line.executable)
     self.assertEquals(["c", 1], command_line.arguments)
 
@@ -64,12 +65,12 @@ class CommandLineComponentTestCase(unittest.TestCase):
   def test_configure_missing_executable(self):
     command_line = CommandLineComponent()
     with self.assertRaises(ConfigError):
-      command_line.configure({"arguments": ["c", 1]})
+      command_line.configure({CommandLineComponent.ARGUMENTS: ["c", 1]})
 
   def test_configure_missing_arguments(self):
     command_line = CommandLineComponent()
     with self.assertRaises(ConfigError):
-      command_line.configure({"executable": "b"})
+      command_line.configure({CommandLineComponent.EXECUTABLE: "b"})
 
 
 class RestComponentTestCase(unittest.TestCase):
@@ -80,7 +81,7 @@ class RestComponentTestCase(unittest.TestCase):
 
   def test_configure(self):
     rest = RestComponent()
-    rest.configure({"url": "a"})
+    rest.configure({RestComponent.URL: "a"})
     self.assertEquals("a", rest.url)
 
   def test_configure_non_dict_error(self):

@@ -28,6 +28,9 @@ from prov.interop.component import ConfigurableComponent
 class Converter(ConfigurableComponent):
   """Base class for converters."""
 
+  INPUT_FORMATS = "input_formats"
+  OUTPUT_FORMATS = "output_formats"
+
   def __init__(self):
     """Create converter.
     Invokes super-class ``__init__``.
@@ -65,12 +68,12 @@ class Converter(ConfigurableComponent):
     unicode)
     """
     super(Converter, self).configure(config)
-    if not "input_formats" in config:
-      raise ConfigError("Missing 'input_formats'");
-    self._input_formats = config["input_formats"]
-    if not "output_formats" in config:
-      raise ConfigError("Missing 'output_formats'");
-    self._output_formats = config["output_formats"]
+    if not Converter.INPUT_FORMATS in config:
+      raise ConfigError("Missing " + Converter.INPUT_FORMATS);
+    self._input_formats = config[Converter.INPUT_FORMATS]
+    if not Converter.OUTPUT_FORMATS in config:
+      raise ConfigError("Missing " + Converter.OUTPUT_FORMATS);
+    self._output_formats = config[Converter.OUTPUT_FORMATS]
 
   def convert(self, in_file, in_format, out_file, out_format):
     """Invoke conversion of input file in given format to output
