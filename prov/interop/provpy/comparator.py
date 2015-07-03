@@ -54,18 +54,10 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     tokens ``FORMAT1``, ``FORMAT2``, ``FILE1``, ``FILE2``.
     """
     super(ProvPyComparator, self).configure(config)
-    if not ProvPyComparator.FORMAT1 in self._arguments:
-      raise ConfigError("Missing " + ProvPyComparator.FORMAT1 +
-                        " token in " + ProvPyComparator.ARGUMENTS)
-    if not ProvPyComparator.FORMAT2 in self._arguments:
-      raise ConfigError("Missing " + ProvPyComparator.FORMAT2 +
-                        " token in " + ProvPyComparator.ARGUMENTS)
-    if not ProvPyComparator.FILE1 in self._arguments:
-      raise ConfigError("Missing " + ProvPyComparator.FILE1 +
-                        " token in " + ProvPyComparator.ARGUMENTS)
-    if not ProvPyComparator.FILE2 in self._arguments:
-      raise ConfigError("Missing " + ProvPyComparator.FILE2 +
-                        " token in " + ProvPyComparator.ARGUMENTS)
+    ProvPyComparator.check_configuration(
+      self._arguments,
+      [ProvPyComparator.FORMAT1, ProvPyComparator.FORMAT2,
+       ProvPyComparator.FILE1, ProvPyComparator.FILE2])
 
   def compare(self, file1, format1, file2, format2):
     """Invoke comparison of files in given formats.

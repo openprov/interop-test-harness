@@ -68,11 +68,9 @@ class Converter(ConfigurableComponent):
     unicode)
     """
     super(Converter, self).configure(config)
-    if not Converter.INPUT_FORMATS in config:
-      raise ConfigError("Missing " + Converter.INPUT_FORMATS);
+    Converter.check_configuration(
+      config, [Converter.INPUT_FORMATS, Converter.OUTPUT_FORMATS])
     self._input_formats = config[Converter.INPUT_FORMATS]
-    if not Converter.OUTPUT_FORMATS in config:
-      raise ConfigError("Missing " + Converter.OUTPUT_FORMATS);
     self._output_formats = config[Converter.OUTPUT_FORMATS]
 
   def convert(self, in_file, in_format, out_file, out_format):

@@ -52,12 +52,9 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
     tokens ``INPUT``, ``OUTPUT``
     """
     super(ProvToolboxConverter, self).configure(config)
-    if not ProvToolboxConverter.INPUT in self._arguments:
-      raise ConfigError("Missing " + ProvToolboxConverter.INPUT +
-                        " token in " + ProvToolboxConverter.ARGUMENTS)
-    if not ProvToolboxConverter.OUTPUT in self._arguments:
-      raise ConfigError("Missing " + ProvToolboxConverter.OUTPUT +
-                        " token in " + ProvToolboxConverter.ARGUMENTS)
+    ProvToolboxConverter.check_configuration(
+      self._arguments,
+      [ProvToolboxConverter.INPUT, ProvToolboxConverter.OUTPUT])
 
   def convert(self, in_file, in_format, out_file, out_format):
     """Invoke conversion of input file in given format to output

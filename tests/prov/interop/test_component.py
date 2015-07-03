@@ -31,15 +31,30 @@ from prov.interop.component import RestComponent
 
 class ConfigurableComponentTestCase(unittest.TestCase):
 
-  def test_configure(self):
+  def test_configure_empty(self):
     comp = ConfigurableComponent()
     comp.configure({})
+    self.assertTrue(True)
+
+  def test_configure_non_empty(self):
+    comp = ConfigurableComponent()
+    comp.configure({"a":"b", "c":"d", "e":["f", "g", 123]})
     self.assertTrue(True)
 
   def test_configure_non_dict_error(self):
     comp = ConfigurableComponent()
     with self.assertRaises(ConfigError):
       comp.configure(123)
+
+  def test_check_configuration(self):
+    ConfigurableComponent.check_configuration(
+      {"a":"b", "c":"d", "e":"f"}, ["a", "c", "e"])
+    self.assertTrue(True)
+
+  def test_check_configuration_error(self):
+    with self.assertRaises(ConfigError):
+      ConfigurableComponent.check_configuration(
+        {"a":"b", "c":"d", "e":"f"}, ["a", "c", "expectfail"])
 
 
 class CommandLineComponentTestCase(unittest.TestCase):

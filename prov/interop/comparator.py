@@ -56,8 +56,7 @@ class Comparator(ConfigurableComponent):
     of str or unicode)
     """
     super(Comparator, self).configure(config)
-    if not Comparator.FORMATS in config:
-      raise ConfigError("Missing " + Comparator.FORMATS);
+    Comparator.check_configuration(config, [Comparator.FORMATS])
     self._formats = config[Comparator.FORMATS]
 
   def compare(self, file1, format1, file2, format2):

@@ -53,15 +53,10 @@ class ProvPyConverter(Converter, CommandLineComponent):
     tokens ``FORMAT``, ``INPUT``, ``OUTPUT``
     """
     super(ProvPyConverter, self).configure(config)
-    if not ProvPyConverter.FORMAT in self._arguments:
-      raise ConfigError("Missing " + ProvPyConverter.FORMAT +
-                        " token in " + ProvPyConverter.ARGUMENTS)
-    if not ProvPyConverter.INPUT in self._arguments:
-      raise ConfigError("Missing " + ProvPyConverter.INPUT +
-                        " token in " + ProvPyConverter.ARGUMENTS)
-    if not ProvPyConverter.OUTPUT in self._arguments:
-      raise ConfigError("Missing " + ProvPyConverter.OUTPUT +
-                        " token in " + ProvPyConverter.ARGUMENTS)
+    ProvPyConverter.check_configuration(
+      self._arguments,
+      [ProvPyConverter.FORMAT, ProvPyConverter.INPUT,
+       ProvPyConverter.OUTPUT])
 
   def convert(self, in_file, in_format, out_file, out_format):
     """Invoke conversion of input file in given format to output

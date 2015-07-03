@@ -38,7 +38,21 @@ class ConfigurableComponent(object):
     :raises ConfigError: if config is not a dict
     """
     if not type(config) is dict:
-      raise ConfigError("config must be a dictionary");
+      raise ConfigError("config must be a dictionary")
+
+  @staticmethod
+  def check_configuration(config, values):
+    """Check configuration contains values.
+
+    :param config: Configuration
+    :type config: dict or list
+    :param values: Values to check for
+    :type values: list of str or unicode
+    :raises ConfigError: if config does not contain any of the values
+    """
+    for value in values:
+      if not value in config:
+        raise ConfigError("Missing " + value)
 
 
 class CommandLineComponent(ConfigurableComponent):
@@ -84,11 +98,10 @@ class CommandLineComponent(ConfigurableComponent):
     or float) 
     """
     super(CommandLineComponent, self).configure(config)
-    if not CommandLineComponent.EXECUTABLE in config:
-      raise ConfigError("Missing " + CommandLineComponent.EXECUTABLE)
+    CommandLineComponent.check_configuration(
+      config, [CommandLineComponent.EXECUTABLE, 
+               CommandLineComponent.ARGUMENTS])
     self._executable = config[CommandLineComponent.EXECUTABLE]
-    if not CommandLineComponent.ARGUMENTS in config:
-      raise ConfigError("Missing " + CommandLineComponent.ARGUMENTS)
     self._arguments = config[CommandLineComponent.ARGUMENTS]
 
 
@@ -123,8 +136,7 @@ class RestComponent(ConfigurableComponent):
     unicode)
     """
     super(RestComponent, self).configure(config)
-    if not RestComponent.URL in config:
-      raise ConfigError("Missing " + RestComponent.URL);
+    RestComponent.check_configuration(config, [RestComponent.URL])
     self._url = config[RestComponent.URL]
 
 
