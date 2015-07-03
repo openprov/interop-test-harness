@@ -59,10 +59,10 @@ class Comparator(ConfigurableComponent):
     """
     super(Comparator, self).configure(config)
     Comparator.check_configuration(config, [Comparator.FORMATS])
-    standard_formats = set(standards.FORMATS)
-    formats = set(config[Comparator.FORMATS])
-    if not standard_formats.issuperset(formats):
-      raise ConfigError("One or more " + Comparator.FORMATS + " is unknown")
+    for format in config[Comparator.FORMATS]:
+      if not format in standards.FORMATS:
+        raise ConfigError("Unrecognised format in " + Comparator.FORMATS +
+                          ":" + format)
     self._formats = config[Comparator.FORMATS]
 
   def compare(self, file1, file2):

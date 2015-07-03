@@ -72,11 +72,11 @@ class Converter(ConfigurableComponent):
     super(Converter, self).configure(config)
     Converter.check_configuration(
       config, [Converter.INPUT_FORMATS, Converter.OUTPUT_FORMATS])
-    standard_formats = set(standards.FORMATS)
-    for format in [Converter.INPUT_FORMATS, Converter.OUTPUT_FORMATS]:
-      formats = set(config[format])
-      if not standard_formats.issuperset(formats):
-        raise ConfigError("One or more " + format + " is unknown")
+    for key in [Converter.INPUT_FORMATS, Converter.OUTPUT_FORMATS]:
+      for format in config[key]:
+        if not format in standards.FORMATS:
+          raise ConfigError("Unrecognised format in " + key +
+                            ":" + format)
     self._input_formats = config[Converter.INPUT_FORMATS]
     self._output_formats = config[Converter.OUTPUT_FORMATS]
 
