@@ -80,7 +80,7 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     :raises OSError: if there are problems invoking the comparator
     e.g. the script is not found at the specified location.
     """
-    if not os.path.isfile(expect4ed_file):
+    if not os.path.isfile(expected_file):
       raise ComparisonError("Expected file not found: " + expected_file)
     if not os.path.isfile(actual_file):
       raise ComparisonError("Actual file not found: " + actual_file)
@@ -88,17 +88,17 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     command_line = [expected_format if x=="PROV_EXPECTED_FORMAT" 
                     else x for x in self._arguments]
     command_line = [actual_format if x=="PROV_ACTUAL_FORMAT" 
-                    else x for x in self._arguments]
+                    else x for x in command_line]
     command_line = [expected_file if x=="PROV_EXPECTED_FILE" 
-                    else x for x in self._arguments]
+                    else x for x in command_line]
     command_line = [actual_file if x=="PROV_ACTUAL_FILE" 
-                    else x for x in self._arguments]
+                    else x for x in command_line]
     command_line.insert(0, self.executable)
     # Execute
     return_code = subprocess.call(command_line)
     if return_code == 0:
       return True
-    else if return_code == 1:
+    elif return_code == 1:
       return False
     else:
       raise ComparisonError(self._executable + " returned " + str(return_code))
