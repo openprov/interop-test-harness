@@ -22,36 +22,56 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+import os
+import tempfile
 import unittest
 
 from prov.interop import standards
 from prov.interop.component import ConfigError
 from prov.interop.comparator import Comparator
+from prov.interop.comparator import ComparisonError
 
 class ComparatorTestCase(unittest.TestCase):
 
+  def setUp(self):
+    self.comparator = Comparator()
+    self.file1 = None
+    self.file2 = None
+
+  def tearDown(self):
+    for tmp in [self.file1, self.file2]:
+      if tmp != None and os.path.isfile(tmp):
+        os.remove(tmp)
+
   def test_init(self):
-    comparator = Comparator()
-    self.assertEquals([], comparator.formats)
+    self.assertEquals([], self.comparator.formats)
 
   def test_configure(self):
-    comparator = Comparator()
     formats = [standards.PROVN, standards.JSON]
-    comparator.configure({Comparator.FORMATS: formats})
-    self.assertEquals(formats, comparator.formats)
+    self.comparator.configure({Comparator.FORMATS: formats})
+    self.assertEquals(formats, self.comparator.formats)
 
   def test_configure_non_dict_error(self):
-    comparator = Comparator()
     with self.assertRaises(ConfigError):
-      comparator.configure(123)
+      self.comparator.configure(123)
 
   def test_configure_no_formats(self):
-    comparator = Comparator()
     with self.assertRaises(ConfigError):
-      comparator.configure({})
+      self.comparator.configure({})
 
   def test_configure_non_canonical_format(self):
-    comparator = Comparator()
     formats = [standards.PROVN, standards.JSON, "invalidFormat"]
     with self.assertRaises(ConfigError):
-      comparator.configure({Comparator.FORMATS: formats})
+      self.comparator.configure({Comparator.FORMATS: formats})
+
+  def test_compare_missing_file1(self):
+    self.file1 = "nosuchfile." + standards.JSON
+    (_, self.file2) = tempfile.mkstemp(suffix="." + standards.JSON)
+    with self.assertRaises(ComparisonError):
+      self.comparator.compare(self.file1, self.file2)
+
+  def test_compare_missing_file2(self):
+    (_, self.file1) = tempfile.mkstemp(suffix="." + standards.JSON)
+    self.file2 = "nosuchfile." + standards.JSON
+    with self.assertRaises(ComparisonError):
+      self.comparator.compare(self.file1, self.file2)
