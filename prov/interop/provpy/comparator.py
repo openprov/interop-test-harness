@@ -23,8 +23,11 @@
 # SOFTWARE.  
 
 import os.path
+import re
+import shutil
 import subprocess
 
+from prov.interop import standards
 from prov.interop.component import CommandLineComponent
 from prov.interop.component import ConfigError
 from prov.interop.comparator import ComparisonError
@@ -37,6 +40,7 @@ class ProvPyComparator(Comparator, CommandLineComponent):
   FORMAT2 = "FORMAT2"
   FILE1 = "FILE1"
   FILE2 = "FILE2"
+  LOCAL_FORMATS = {standards.PROVX: "xml"}
 
   def __init__(self):
     """Create comparator.
@@ -79,23 +83,44 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     super(ProvPyComparator, self).compare(file1, file2)
     format1 = os.path.splitext(file1)[1][1:]
     format2 = os.path.splitext(file2)[1][1:]
-    # TODO check formats in input/output formats
-    # TODO map to local format
+    for format in [format1, format2]:
+      if not format in self.formats:
+        raise ComparisonError("Unsupported format: " + format)
+    # Map canonical formats to formats supported by prov-compare
+    local_file1 = file1
+    local_format1 = format1
+    if (format1 in ProvPyComparator.LOCAL_FORMATS):
+      local_format1 = ProvPyComparator.LOCAL_FORMATS[format1]
+      local_file1 = re.sub(format1 + "$", local_format1, file1)
+      shutil.copy(file1, local_file1)
+    local_file2 = file2
+    local_format2 = format2
+    if (format2 in ProvPyComparator.LOCAL_FORMATS):
+      local_format2 = ProvPyComparator.LOCAL_FORMATS[format2]
+      local_file2 = re.sub(format2 + "$", local_format2, file2)
+      shutil.copy(file2, local_file2)
     # Replace tokens in arguments
-    command_line = [format1 if x==ProvPyComparator.FORMAT1 else x 
+    command_line = [local_format1 if x==ProvPyComparator.FORMAT1 else x 
                     for x in self._arguments]
-    command_line = [format2 if x==ProvPyComparator.FORMAT2 else x 
+    command_line = [local_format2 if x==ProvPyComparator.FORMAT2 else x 
                     for x in command_line]
-    command_line = [file1 if x==ProvPyComparator.FILE1 else x 
+    command_line = [local_file1 if x==ProvPyComparator.FILE1 else x 
                     for x in command_line]
-    command_line = [file2 if x==ProvPyComparator.FILE2 else x 
+    command_line = [local_file2 if x==ProvPyComparator.FILE2 else x 
                     for x in command_line]
     command_line.insert(0, self.executable)
     # Execute
-    return_code = subprocess.call(command_line)
-    if return_code == 0:
-      return True
-    elif return_code == 1:
-      return False
-    else:
-      raise ComparisonError(self._executable + " returned " + str(return_code))
+    try:
+      return_code = subprocess.call(command_line)
+      print return_code
+      if return_code == 0:
+        return True
+      elif return_code == 1:
+        return False
+      else:
+        raise ComparisonError(self._executable + " returned " + str(return_code))
+    finally:
+      if (local_file1 != file1) and os.path.isfile(local_file1):
+        os.remove(local_file1)
+      if (local_file2 != file2) and os.path.isfile(local_file2):
+        os.remove(local_file2)

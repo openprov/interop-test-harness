@@ -95,6 +95,18 @@ class ProvPyConverterTestCase(unittest.TestCase):
     self.out_file = "convert." + standards.PROVN
     self.provpy.convert(self.in_file, self.out_file)
 
+  def test_convert_non_canonical_input(self):
+    self.provpy.configure(self.config)
+    (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.PROVX)
+    self.out_file = "convert." + standards.JSON
+    self.provpy.convert(self.in_file, self.out_file)
+
+  def test_convert_non_canonical_output(self):
+    self.provpy.configure(self.config)
+    (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
+    self.out_file = "convert." + standards.PROVX
+    self.provpy.convert(self.in_file, self.out_file)
+
   def test_convert_oserror(self):
     self.config[ProvPyConverter.EXECUTABLE] = "/nosuchexecutable"
     self.provpy.configure(self.config)

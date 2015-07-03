@@ -23,8 +23,11 @@
 # SOFTWARE.  
 
 import os.path
+import re
+import shutil
 import subprocess
 
+from prov.interop import standards
 from prov.interop.component import CommandLineComponent
 from prov.interop.component import ConfigError
 from prov.interop.converter import ConversionError
@@ -36,6 +39,7 @@ class ProvPyConverter(Converter, CommandLineComponent):
   FORMAT = "FORMAT"
   INPUT = "INPUT"
   OUTPUT = "OUTPUT"
+  LOCAL_FORMATS = {standards.PROVX: "xml"}
 
   def __init__(self):
     """Create converter.
@@ -78,19 +82,43 @@ class ProvPyConverter(Converter, CommandLineComponent):
     super(ProvPyConverter, self).convert(in_file, out_file)
     in_format = os.path.splitext(in_file)[1][1:]
     out_format = os.path.splitext(out_file)[1][1:]
-    # TODO check formats in input/output formats
-    # TODO map to local format
+    if not in_format in self.input_formats:
+      raise ConversionError("Unsupported input format: " + in_format)
+    if not out_format in self.output_formats:
+      raise ConversionError("Unsupported input format: " + out_format)
+    # Map canonical formats to formats supported by prov-convert
+    local_in_file = in_file
+    local_in_format = in_format
+    if (in_format in ProvPyConverter.LOCAL_FORMATS):
+      local_in_format = ProvPyConverter.LOCAL_FORMATS[in_format]
+      local_in_file = re.sub(in_format + "$", local_in_format, in_file)
+      shutil.copy(in_file, local_in_file)
+    local_out_file = out_file
+    local_out_format = out_format
+    if (out_format in ProvPyConverter.LOCAL_FORMATS):
+      local_out_format = ProvPyConverter.LOCAL_FORMATS[out_format]
+      local_out_file = re.sub(out_format + "$", local_out_format, out_file)
     # Replace tokens in arguments
-    command_line = [out_format if x==ProvPyConverter.FORMAT else x 
+    command_line = [local_out_format if x==ProvPyConverter.FORMAT else x 
                     for x in self._arguments]
-    command_line = [in_file if x==ProvPyConverter.INPUT else x 
+    command_line = [local_in_file if x==ProvPyConverter.INPUT else x 
                     for x in command_line]
-    command_line = [out_file if x==ProvPyConverter.OUTPUT else x 
+    command_line = [local_out_file if x==ProvPyConverter.OUTPUT else x 
                     for x in command_line]
     command_line.insert(0, self.executable)
     # Execute
-    return_code = subprocess.call(command_line)
-    if return_code != 0:
-      raise ConversionError(self._executable + " returned " + str(return_code))
-    if not os.path.isfile(out_file):
-      raise ConversionError("Output file not found: " + out_file)
+    try:
+      return_code = subprocess.call(command_line)
+      if return_code != 0:
+        raise ConversionError(self._executable + " returned " + str(return_code))
+      if not os.path.isfile(local_out_file):
+        raise ConversionError("Output file not found: " + local_out_file)
+      # If using local file extensions, rename output file to have 
+      # canonical extension
+      if (out_format == standards.PROVX):
+        shutil.move(local_out_file, out_file)
+    finally:
+      if (local_in_file != in_file) and os.path.isfile(local_in_file):
+        os.remove(local_in_file)
+      if (local_out_file != out_file) and os.path.isfile(local_out_file):
+        os.remove(local_out_file)

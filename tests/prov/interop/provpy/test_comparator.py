@@ -24,6 +24,7 @@
 
 import inspect
 import os
+import re
 import tempfile
 import unittest
 
@@ -92,17 +93,31 @@ class ProvPyComparatorTestCase(unittest.TestCase):
   def test_compare(self):
     self.provpy.configure(self.config)
     (_, self.file1) = tempfile.mkstemp(suffix="." + standards.JSON)
-    self.file2 = self.file1
-    # ProvPy prov-compare dummy script considers files with
-    # matching names to be the same.
+    (_, self.file2) = tempfile.mkstemp(suffix="." + standards.JSON)
+    with open(self.file1, 'a') as f1:
+      f1.write("FILE")
+    with open(self.file2, 'a') as f2:
+      f2.write("FILE")
+    self.assertTrue(self.provpy.compare(self.file1, self.file2))
+
+  def test_compare_non_canonical_files(self):
+    self.provpy.configure(self.config)
+    (_, self.file1) = tempfile.mkstemp(suffix="." + standards.PROVX)
+    (_, self.file2) = tempfile.mkstemp(suffix="." + standards.PROVX)
+    with open(self.file1, 'a') as f1:
+      f1.write("FILE")
+    with open(self.file2, 'a') as f2:
+      f2.write("FILE")
     self.assertTrue(self.provpy.compare(self.file1, self.file2))
 
   def test_compare_non_equivalent(self):
     self.provpy.configure(self.config)
     (_, self.file1) = tempfile.mkstemp(suffix="." + standards.JSON)
     (_, self.file2) = tempfile.mkstemp(suffix="." + standards.JSON)
-    # ProvPy prov-compare dummy script considers files with
-    # non-matching names to be different.
+    with open(self.file1, 'a') as f1:
+      f1.write("FILE1")
+    with open(self.file2, 'a') as f2:
+      f2.write("FILE2")
     self.assertFalse(self.provpy.compare(self.file1, self.file2))
 
   def test_compare_oserror(self):
