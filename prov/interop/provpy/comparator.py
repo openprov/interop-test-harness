@@ -59,19 +59,17 @@ class ProvPyComparator(Comparator, CommandLineComponent):
       [ProvPyComparator.FORMAT1, ProvPyComparator.FORMAT2,
        ProvPyComparator.FILE1, ProvPyComparator.FILE2])
 
-  def compare(self, file1, format1, file2, format2):
-    """Invoke comparison of files in given formats.
+  def compare(self, file1, file2):
+    """Invoke comparison of files in canonical formats.
+    Each file must have an extension matching one of the canonical
+    file formats.
+    Canonical formats are defined in ``standards``.
 
     :param file1: File name
     :type file1: str or unicode
-    :param format1: File 1 canonical format
-    :type format1: str or unicode
     :param file2: File name
     :type file2: str or unicode
-    :param format2: File 2 canonical format
-    :type format2: str or unicode
-    :returns: True (success) if files are equivalent, else False
-    (fail) if files are not equivalent.
+    :returns: True (success) if files are equivalent, else False (fail)
     :rtype: bool
     :raises ComparisonError: if either of the files are not found,
     or the files or formats are invalid.
@@ -82,6 +80,10 @@ class ProvPyComparator(Comparator, CommandLineComponent):
       raise ComparisonError("File not found: " + file1)
     if not os.path.isfile(file2):
       raise ComparisonError("File not found: " + file2)
+    format1 = os.path.splitext(file1)[1][1:]
+    format2 = os.path.splitext(file2)[1][1:]
+    # TODO check formats in input/output formats
+    # TODO map to local format
     # Replace tokens in arguments
     command_line = [format1 if x==ProvPyComparator.FORMAT1 else x 
                     for x in self._arguments]

@@ -56,20 +56,17 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
       self._arguments,
       [ProvToolboxConverter.INPUT, ProvToolboxConverter.OUTPUT])
 
-  def convert(self, in_file, in_format, out_file, out_format):
-    """Invoke conversion of input file in given format to output
-    file in given format.
+  def convert(self, in_file, out_file):
+    """Invoke conversion of input file in a canonical format to output
+    file in a canonical format. 
+    Each file must have an extension matching one of the canonical
+    file formats.
+    Canonical formats are defined in ``standards``.
 
     :param in_file: Input file name
     :type in_file: str or unicode
-    :param in_format: Canonical input format
-    :type in_format: str or unicode
     :param out_file: Output file name
     :type out_file: str or unicode
-    :param out_format: Canonical output format
-    :type out_format: str or unicode
-    :returns: True (success) or False (fail)
-    :rtype: bool
     :raises ConversionError: if the input file is not found, the
     return code is non-zero, the return code is zero but the output
     file is not found, the input or output formats are invalid.
@@ -78,6 +75,10 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
     """
     if not os.path.isfile(in_file):
       raise ConversionError("Input file not found: " + in_file)
+    in_format = os.path.splitext(in_file)[1][1:]
+    out_format = os.path.splitext(out_file)[1][1:]
+    # TODO check formats in input/output formats
+    # TODO map to local format
     # Replace tokens in arguments
     command_line = [in_file if x==ProvToolboxConverter.INPUT else x 
                     for x in self._arguments]

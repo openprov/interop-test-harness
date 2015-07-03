@@ -58,22 +58,24 @@ class Comparator(ConfigurableComponent):
     super(Comparator, self).configure(config)
     Comparator.check_configuration(config, [Comparator.FORMATS])
     self._formats = config[Comparator.FORMATS]
+    # TODO - check formats are all canonical
 
-  def compare(self, file1, format1, file2, format2):
-    """Invoke comparison of files in given formats.
+  def compare(self, file1, file2):
+    """Invoke comparison of files in canonical formats.
+    Each file must have an extension matching one of the canonical
+    file formats.
+    Canonical formats are defined in ``standards``.
 
     :param file1: File name
     :type file1: str or unicode
-    :param format1: File 1 canonical format
-    :type format1: str or unicode
     :param file2: File name
     :type file2: str or unicode
-    :param format2: File 2 canonical format
-    :type format2: str or unicode
     :returns: True (success) if files are equivalent, else False (fail)
     :rtype: bool
     :raises ComparisonError: if there are problems invoking the comparator 
     """
+    # TODO validate files exist
+    # TODO validate file extensions
     pass
 
 class ComparisonError(Exception):

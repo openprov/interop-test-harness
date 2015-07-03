@@ -86,39 +86,34 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
   def test_convert(self):
     self.provtoolbox.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
-    self.out_file = "convert.provx"
-    self.provtoolbox.convert(self.in_file, standards.JSON, 
-                             self.out_file, standards.PROVX)
+    self.out_file = "convert." + standards.PROVX
+    self.provtoolbox.convert(self.in_file, self.out_file)
 
   def test_convert_oserror(self):
     self.config[ProvToolboxConverter.EXECUTABLE] = "/nosuchexecutable"
     self.provtoolbox.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
-    self.out_file = "convert_oserror.provx"
+    self.out_file = "convert_oserror." + standards.PROVX
     with self.assertRaises(OSError):
-      self.provtoolbox.convert(self.in_file, standards.JSON, 
-                               self.out_file, standards.PROVX)
+      self.provtoolbox.convert(self.in_file, self.out_file)
 
   def test_convert_missing_input_file(self):
     self.provtoolbox.configure(self.config)
-    self.in_file = "nosuchfile.provx"
-    self.out_file = "convert_missing_input_file.provx"
+    self.in_file = "nosuchfile.provx." + standards.PROVX
+    self.out_file = "convert_missing_input_file." + standards.PROVX
     with self.assertRaises(ConversionError):
-      self.provtoolbox.convert(self.in_file, standards.JSON, 
-                               self.out_file, standards.PROVX)
+      self.provtoolbox.convert(self.in_file, self.out_file)
 
   def test_convert_invalid_input_format(self):
     self.provtoolbox.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix=".nosuchformat")
-    self.out_file = "convert_invalid_input_format.provx"
+    self.out_file = "convert_invalid_input_format." + standards.PROVX
     with self.assertRaises(ConversionError):
-      self.provtoolbox.convert(self.in_file, "nosuchformat", 
-                               self.out_file, standards.PROVX)
+      self.provtoolbox.convert(self.in_file, self.out_file)
 
   def test_convert_invalid_output_format(self):
     self.provtoolbox.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
     self.out_file = "convert_invalid_input_format.nosuchformat"
     with self.assertRaises(ConversionError):
-      self.provtoolbox.convert(self.in_file, standards.JSON, 
-                               self.out_file, "nosuchformat")
+      self.provtoolbox.convert(self.in_file, self.out_file)

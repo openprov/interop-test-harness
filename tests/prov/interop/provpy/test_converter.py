@@ -92,31 +92,27 @@ class ProvPyConverterTestCase(unittest.TestCase):
   def test_convert(self):
     self.provpy.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
-    self.out_file = "convert.provn"
-    self.provpy.convert(self.in_file, standards.JSON, 
-                        self.out_file, standards.PROVN)
+    self.out_file = "convert." + standards.PROVN
+    self.provpy.convert(self.in_file, self.out_file)
 
   def test_convert_oserror(self):
     self.config[ProvPyConverter.EXECUTABLE] = "/nosuchexecutable"
     self.provpy.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
-    self.out_file = "convert_oserror.provn"
+    self.out_file = "convert_oserror." + standards.PROVN
     with self.assertRaises(OSError):
-      self.provpy.convert(self.in_file, standards.JSON, 
-                          self.out_file, standards.PROVN)
+      self.provpy.convert(self.in_file, self.out_file)
 
   def test_convert_missing_input_file(self):
     self.provpy.configure(self.config)
     self.in_file = "nosuchfile.json"
-    self.out_file = "convert_missing_input_file.provn"
+    self.out_file = "convert_missing_input_file." + standards.PROVN
     with self.assertRaises(ConversionError):
-      self.provpy.convert(self.in_file, standards.JSON, 
-                          self.out_file, standards.PROVN)
+      self.provpy.convert(self.in_file, self.out_file)
 
   def test_convert_invalid_output_format(self):
     self.provpy.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
     self.out_file = "convert_invalid_output_format.nosuchformat"
     with self.assertRaises(ConversionError):
-      self.provpy.convert(self.in_file, standards.JSON, 
-                          self.out_file, "nosuchformat")
+      self.provpy.convert(self.in_file, self.out_file)

@@ -70,23 +70,25 @@ class Converter(ConfigurableComponent):
     super(Converter, self).configure(config)
     Converter.check_configuration(
       config, [Converter.INPUT_FORMATS, Converter.OUTPUT_FORMATS])
+    # TODO - check formats are all canonical
     self._input_formats = config[Converter.INPUT_FORMATS]
     self._output_formats = config[Converter.OUTPUT_FORMATS]
 
-  def convert(self, in_file, in_format, out_file, out_format):
-    """Invoke conversion of input file in given format to output
-    file in given format.
+  def convert(self, in_file, out_file):
+    """Invoke conversion of input file in a canonical format to output
+    file in a canonical format. 
+    Each file must have an extension matching one of the canonical
+    file formats.
+    Canonical formats are defined in ``standards``.
 
     :param in_file: Input file name
     :type in_file: str or unicode
-    :param in_format: Canonical input format
-    :type in_format: str or unicode
     :param out_file: Output file name
     :type out_file: str or unicode
-    :param out_format: Canonical output format
-    :type out_format: str or unicode
     :raises ConversionError: if there are problems invoking the converter 
     """
+    # TODO validate input file exists
+    # TODO validate input and output extensions
     pass
 
 class ConversionError(Exception):
