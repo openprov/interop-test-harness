@@ -43,7 +43,7 @@ class ComparatorTestCase(unittest.TestCase):
     with self.assertRaises(ConfigError):
       comparator.configure(123)
 
-  def test_configure_missing_input_formats(self):
+  def test_configure_no_formats(self):
     comparator = Comparator()
     with self.assertRaises(ConfigError):
       comparator.configure({})

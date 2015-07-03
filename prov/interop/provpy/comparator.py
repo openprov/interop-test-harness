@@ -33,6 +33,11 @@ from prov.interop.comparator import Comparator
 class ProvPyComparator(Comparator, CommandLineComponent):
   """Manages invocation of ProvPy prov-compare script."""
 
+  FORMAT1 = "FORMAT1"
+  FORMAT2 = "FORMAT2"
+  FILE1 = "FILE1"
+  FILE2 = "FILE2"
+
   def __init__(self):
     """Create comparator.
     Invokes super-classes ``__init__``.
@@ -46,53 +51,54 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     :param config: Configuration
     :type config: dict
     :raises ConfigError: if config ``arguments`` does not contain the
-    tokens ``PROV_EXPECTED_FORMAT``, ``PROV_ACTUAL_FORMAT``, 
-    ``PROV_EXPECTED_FILE``, ``PROV_ACTUAL_FILE``
+    tokens ``FORMAT1``, ``FORMAT2``, ``FILE1``, ``FILE2``.
     """
     super(ProvPyComparator, self).configure(config)
-    if not "PROV_EXPECTED_FORMAT" in self._arguments:
-      raise ConfigError("Missing PROV_EXPECTED_FORMAT token in 'arguments'")
-    if not "PROV_ACTUAL_FORMAT" in self._arguments:
-      raise ConfigError("Missing PROV_FORMAT token in 'arguments'")
-    if not "PROV_EXPECTED_FILE" in self._arguments:
-      raise ConfigError("Missing PROV_EXPECTED_FILE token in 'arguments'")
-    if not "PROV_ACTUAL_FILE" in self._arguments:
-      raise ConfigError("Missing PROV_ACTUAL_FILE token in 'arguments'")
+    if not ProvPyComparator.FORMAT1 in self._arguments:
+      raise ConfigError("Missing " + ProvPyComparator.FORMAT1 +
+                        " token in " + ProvPyComparator.ARGUMENTS)
+    if not ProvPyComparator.FORMAT2 in self._arguments:
+      raise ConfigError("Missing " + ProvPyComparator.FORMAT2 +
+                        " token in " + ProvPyComparator.ARGUMENTS)
+    if not ProvPyComparator.FILE1 in self._arguments:
+      raise ConfigError("Missing " + ProvPyComparator.FILE1 +
+                        " token in " + ProvPyComparator.ARGUMENTS)
+    if not ProvPyComparator.FILE2 in self._arguments:
+      raise ConfigError("Missing " + ProvPyComparator.FILE2 +
+                        " token in " + ProvPyComparator.ARGUMENTS)
 
-  def compare(self, expected_file, expected_format, actual_file, actual_format
-):
-    """Invoke comparison of expected file in given format to actual
-    file in given format.
+  def compare(self, file1, format1, file2, format2):
+    """Invoke comparison of files in given formats.
 
-    :param expected_file: Expected file name
-    :type expected_file: str or unicode
-    :param expected_format: Expected format
-    :type expected_format: str or unicode
-    :param actual_file: Actual file name
-    :type actual_file: str or unicode
-    :param actual_format: Actual format
-    :type actual_format: str or unicode
+    :param file1: File name
+    :type file1: str or unicode
+    :param format1: File 1 format
+    :type format1: str or unicode
+    :param file2: File name
+    :type file2: str or unicode
+    :param format2: File 2 format
+    :type format2: str or unicode
     :returns: True (success) if files are equivalent, else False
     (fail) if files are not equivalent.
     :rtype: bool
     :raises ComparisonError: if either of the files are not found,
-    or the input files or formats are invalid.
+    or the files or formats are invalid.
     :raises OSError: if there are problems invoking the comparator
     e.g. the script is not found at the specified location.
     """
-    if not os.path.isfile(expected_file):
-      raise ComparisonError("Expected file not found: " + expected_file)
-    if not os.path.isfile(actual_file):
-      raise ComparisonError("Actual file not found: " + actual_file)
+    if not os.path.isfile(file1):
+      raise ComparisonError("File not found: " + file1)
+    if not os.path.isfile(file2):
+      raise ComparisonError("File not found: " + file2)
     # Replace tokens in arguments
-    command_line = [expected_format if x=="PROV_EXPECTED_FORMAT" 
-                    else x for x in self._arguments]
-    command_line = [actual_format if x=="PROV_ACTUAL_FORMAT" 
-                    else x for x in command_line]
-    command_line = [expected_file if x=="PROV_EXPECTED_FILE" 
-                    else x for x in command_line]
-    command_line = [actual_file if x=="PROV_ACTUAL_FILE" 
-                    else x for x in command_line]
+    command_line = [format1 if x==ProvPyComparator.FORMAT1 else x 
+                    for x in self._arguments]
+    command_line = [format2 if x==ProvPyComparator.FORMAT2 else x 
+                    for x in command_line]
+    command_line = [file1 if x==ProvPyComparator.FILE1 else x 
+                    for x in command_line]
+    command_line = [file2 if x==ProvPyComparator.FILE2 else x 
+                    for x in command_line]
     command_line.insert(0, self.executable)
     # Execute
     return_code = subprocess.call(command_line)

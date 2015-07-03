@@ -60,19 +60,17 @@ class Comparator(ConfigurableComponent):
       raise ConfigError("Missing " + Comparator.FORMATS);
     self._formats = config[Comparator.FORMATS]
 
-  def compare(self, expected_file, expected_format, 
-              actual_file, actual_format):
-    """Invoke comparison of expected file in given format to actual
-    file in given format.
+  def compare(self, file1, format1, file2, format2):
+    """Invoke comparison of files in given formats.
 
-    :param expected_file: Expected file name
-    :type expected_file: str or unicode
-    :param expected_format: Expected format
-    :type expected_format: str or unicode
-    :param actual_file: Actual file name
-    :type actual_file: str or unicode
-    :param actual_format: Actual format
-    :type actual_format: str or unicode
+    :param file1: File name
+    :type file1: str or unicode
+    :param format1: File 1 format
+    :type format1: str or unicode
+    :param file2: File name
+    :type file2: str or unicode
+    :param format2: File 2 format
+    :type format2: str or unicode
     :returns: True (success) if files are equivalent, else False (fail)
     :rtype: bool
     :raises ComparisonError: if there are problems invoking the comparator 

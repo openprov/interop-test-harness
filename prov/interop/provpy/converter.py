@@ -33,6 +33,10 @@ from prov.interop.converter import Converter
 class ProvPyConverter(Converter, CommandLineComponent):
   """Manages invocation of ProvPy prov-convert script."""
 
+  FORMAT = "FORMAT"
+  INPUT = "INPUT"
+  OUTPUT = "OUTPUT"
+
   def __init__(self):
     """Create converter.
     Invokes super-classes ``__init__``.
@@ -46,15 +50,18 @@ class ProvPyConverter(Converter, CommandLineComponent):
     :param config: Configuration
     :type config: dict
     :raises ConfigError: if config ``arguments`` does not contain the
-    tokens ``PROV_FORMAT``, ``PROV_INPUT``, ``PROV_OUTPUT``
+    tokens ``FORMAT``, ``INPUT``, ``OUTPUT``
     """
     super(ProvPyConverter, self).configure(config)
-    if not "PROV_FORMAT" in self._arguments:
-      raise ConfigError("Missing PROV_FORMAT token in 'arguments'")
-    if not "PROV_INPUT" in self._arguments:
-      raise ConfigError("Missing PROV_INPUT token in 'arguments'")
-    if not "PROV_OUTPUT" in self._arguments:
-      raise ConfigError("Missing PROV_OUTPUT token in 'arguments'")
+    if not ProvPyConverter.FORMAT in self._arguments:
+      raise ConfigError("Missing " + ProvPyConverter.FORMAT +
+                        " token in " + ProvPyConverter.ARGUMENTS)
+    if not ProvPyConverter.INPUT in self._arguments:
+      raise ConfigError("Missing " + ProvPyConverter.INPUT +
+                        " token in " + ProvPyConverter.ARGUMENTS)
+    if not ProvPyConverter.OUTPUT in self._arguments:
+      raise ConfigError("Missing " + ProvPyConverter.OUTPUT +
+                        " token in " + ProvPyConverter.ARGUMENTS)
 
   def convert(self, in_file, in_format, out_file, out_format):
     """Invoke conversion of input file in given format to output
@@ -77,9 +84,12 @@ class ProvPyConverter(Converter, CommandLineComponent):
     if not os.path.isfile(in_file):
       raise ConversionError("Input file not found: " + in_file)
     # Replace tokens in arguments
-    command_line = [in_file if x=="PROV_INPUT" else x for x in self._arguments]
-    command_line = [out_file if x=="PROV_OUTPUT" else x for x in command_line]
-    command_line = [in_format if x=="PROV_FORMAT" else x for x in command_line]
+    command_line = [in_format if x==ProvPyConverter.FORMAT else x 
+                    for x in self._arguments]
+    command_line = [in_file if x==ProvPyConverter.INPUT else x 
+                    for x in command_line]
+    command_line = [out_file if x==ProvPyConverter.OUTPUT else x 
+                    for x in command_line]
     command_line.insert(0, self.executable)
     # Execute
     return_code = subprocess.call(command_line)

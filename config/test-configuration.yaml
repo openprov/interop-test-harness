@@ -9,5 +9,5 @@ comparators:
   ProvPyComparator: 
     class: prov.interop.provpy.comparator.ProvPyComparator
     executable: python
-    arguments: [/home/user/prov/scripts/prov-compare, -f, PROV_EXPECTED_FORMAT, -F, PROV_ACTUAL_FORMAT, PROV_EXPECTED_FILE, PROV_ACTUAL_FILE]
+    arguments: [/home/user/prov/scripts/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
     formats: [provx, json]

@@ -58,19 +58,19 @@ import shutil
 import sys
 
 parser = argparse.ArgumentParser(description="Dummy ProvPy prov-compare.")
-parser.add_argument("-f", metavar="EXPECTED FORMAT", 
-                    help="Expected format - one of xml, json", 
+parser.add_argument("-f", metavar="FORMAT1",
+                    help="File 1 format - one of xml, json", 
                     nargs="?", 
                     required=True)
-parser.add_argument("-F", metavar="ACTUAL FORMAT", 
-                    help="Actual format - one of xml, json", 
+parser.add_argument("-F", metavar="FORMAT2", 
+                    help="Fole 2 format - one of xml, json", 
                     nargs="?", 
                     required=True)
-parser.add_argument("expectedfile", help="Expected file")
-parser.add_argument("actualfile", help="Actual file")
+parser.add_argument("file1", help="File 1")
+parser.add_argument("file2", help="File 2")
 args = parser.parse_args()
 print("Running dummy ProvPy prov-compare...")
-for file_name in [args.expectedfile, args.actualfile]:
+for file_name in [args.file1, args.file2]:
   if not os.path.isfile(file_name):
     print("No such file " + file_name)
     sys.exit(2)

@@ -46,12 +46,12 @@ class ConverterTestCase(unittest.TestCase):
     with self.assertRaises(ConfigError):
       converter.configure(123)
 
-  def test_configure_missing_input_formats(self):
+  def test_configure_no_input_formats(self):
     converter = Converter()
     with self.assertRaises(ConfigError):
       converter.configure({Converter.OUTPUT_FORMATS: ["c", "d"]})
 
-  def test_configure_missing_output_formats(self):
+  def test_configure_no_output_formats(self):
     converter = Converter()
     with self.assertRaises(ConfigError):
       converter.configure({Converter.INPUT_FORMATS: ["a", "b"]})

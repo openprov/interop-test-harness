@@ -62,12 +62,12 @@ class CommandLineComponentTestCase(unittest.TestCase):
     with self.assertRaises(ConfigError):
       command_line.configure(123)
 
-  def test_configure_missing_executable(self):
+  def test_configure_no_executable(self):
     command_line = CommandLineComponent()
     with self.assertRaises(ConfigError):
       command_line.configure({CommandLineComponent.ARGUMENTS: ["c", 1]})
 
-  def test_configure_missing_arguments(self):
+  def test_configure_no_arguments(self):
     command_line = CommandLineComponent()
     with self.assertRaises(ConfigError):
       command_line.configure({CommandLineComponent.EXECUTABLE: "b"})
@@ -89,7 +89,7 @@ class RestComponentTestCase(unittest.TestCase):
     with self.assertRaises(ConfigError):
       rest.configure(123)
 
-  def test_configure_missing_url(self):
+  def test_configure_no_url(self):
     rest = RestComponent()
     with self.assertRaises(ConfigError):
       rest.configure({})

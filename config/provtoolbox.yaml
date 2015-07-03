@@ -2,7 +2,7 @@
 ProvToolboxConverter: 
   class: prov.interop.provtoolbox.converter.ProvToolboxConverter
   executable: /home/user/provToolbox/bin/provconvert
-  arguments: [-infile, PROV_INPUT, -outfile, PROV_OUTPUT]
+  arguments: [-infile, INPUT, -outfile, OUTPUT]
   inputs: [provn, ttl, trig, provx, json]
   outputs: [provn, ttl, trig, provx, json]
   skip-tests: [2, 5, 6]

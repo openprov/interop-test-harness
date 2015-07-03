@@ -39,11 +39,12 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
     self.out_file = None
     self.config = {}  
     self.config[ProvToolboxConverter.EXECUTABLE] = "python"
+    script = os.path.join(
+      os.path.dirname(os.path.abspath(inspect.getfile(
+            inspect.currentframe()))), "provconvert-dummy.py")
     self.config[ProvToolboxConverter.ARGUMENTS] = [
-      os.path.join(
-        os.path.dirname(os.path.abspath(inspect.getfile(
-              inspect.currentframe()))), "provconvert-dummy.py"),
-      "-infile", "PROV_INPUT", "-outfile", "PROV_OUTPUT"]
+      script,
+      "-infile", ProvToolboxConverter.INPUT, "-outfile", ProvToolboxConverter.OUTPUT]
     self.config[ProvToolboxConverter.INPUT_FORMATS] = [
       "provn", "ttl", "trig", "provx", "json"]
     self.config[ProvToolboxConverter.OUTPUT_FORMATS] = [
@@ -71,13 +72,15 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
     self.assertEquals(self.config[ProvToolboxConverter.OUTPUT_FORMATS], 
                       self.provtoolbox.output_formats)
 
-  def test_configure_no_prov_input(self):
-    self.config[ProvToolboxConverter.ARGUMENTS].remove("PROV_INPUT")
+  def test_configure_no_input(self):
+    self.config[ProvToolboxConverter.ARGUMENTS].remove(
+      ProvToolboxConverter.INPUT)
     with self.assertRaises(ConfigError):
       self.provtoolbox.configure(self.config)
 
-  def test_configure_no_prov_output(self):
-    self.config[ProvToolboxConverter.ARGUMENTS].remove("PROV_OUTPUT")
+  def test_configure_no_output(self):
+    self.config[ProvToolboxConverter.ARGUMENTS].remove(
+      ProvToolboxConverter.OUTPUT)
     with self.assertRaises(ConfigError):
       self.provtoolbox.configure(self.config)
 
