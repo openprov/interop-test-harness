@@ -24,45 +24,40 @@
 
 import importlib
 
-class FactoryUtilities:
-  """Factory utilities for dynamic object creation."""
+def get_class(name):
+  """Load class given a module-prefixed class name.
+  A valid module-prefixed class name is ``prov.interop.component.Component``.
+  An invalid class name is ``Component``.
+  
+  :param name: Module-prefixed class name
+  :type name: str or unicode
+  :returns: Class specified in name
+  :rtype: classobj
+  :raises ValueError: if ``name`` is not module-prefixed
+  :raises ImportError: if module cannot be loaded
+  :raises AttributeError: if class cannot be found
+  """
+  module_class = name.rsplit(".",1)
+  if len(module_class) != 2:
+    raise ValueError("Class name must be module-prefixed")
+  (module_name, class_name) = module_class
+  module = importlib.import_module(module_name)
+  clazz = getattr(module, class_name)
+  return clazz
 
-  @staticmethod
-  def get_class(name):
-    """Load class given a module-prefixed class name.
-    A valid module-prefixed class name is ``prov.interop.component.Component``.
-    An invalid class name is ``Component``.
-    
-    :param name: Module-prefixed class name
-    :type name: str or unicode
-    :returns: Class specified in name
-    :rtype: classobj
-    :raises ValueError: if ``name`` is not module-prefixed
-    :raises ImportError: if module cannot be loaded
-    :raises AttributeError: if class cannot be found
-    """
-    module_class = name.rsplit(".",1)
-    if len(module_class) != 2:
-      raise ValueError("Class name must be module-prefixed")
-    (module_name, class_name) = module_class
-    module = importlib.import_module(module_name)
-    clazz = getattr(module, class_name)
-    return clazz
-
-  @staticmethod
-  def get_instance(name):
-    """Return instance of class given a module-prefixed class name.
-    A valid module-prefixed class name is ``prov.interop.component.Component``.
-    An invalid class name is ``Component``.
-    Assumes class haz a 0-arity constructor.
-    
-    :param name: Module-prefixed class name
-    :type name: str or unicode
-    :returns: Instance of class specified in name
-    :rtype: Instance of class specified in name
-    :raises ValueError: if ``name`` is not module-prefixed
-    :raises ImportError: if module cannot be loaded
-    :raises AttributeError: if class cannot be found
-    :raises TypeError: if class constructor has non-0 arity constructor
-    """
-    return FactoryUtilities.get_class(name)()
+def get_instance(name):
+  """Return instance of class given a module-prefixed class name.
+  A valid module-prefixed class name is ``prov.interop.component.Component``.
+  An invalid class name is ``Component``.
+  Assumes class haz a 0-arity constructor.
+  
+  :param name: Module-prefixed class name
+  :type name: str or unicode
+  :returns: Instance of class specified in name
+  :rtype: Instance of class specified in name
+  :raises ValueError: if ``name`` is not module-prefixed
+  :raises ImportError: if module cannot be loaded
+  :raises AttributeError: if class cannot be found
+  :raises TypeError: if class constructor has non-0 arity constructor
+  """
+  return get_class(name)()

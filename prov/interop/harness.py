@@ -27,7 +27,7 @@ import os
 from prov.interop.comparator import Comparator
 from prov.interop.component import ConfigError
 from prov.interop.component import ConfigurableComponent
-from prov.interop.factory import FactoryUtilities
+import prov.interop.factory as factory
 
 class HarnessConfiguration(ConfigurableComponent):
   """Interoperability test harness configuration."""
@@ -101,7 +101,7 @@ class HarnessConfiguration(ConfigurableComponent):
       HarnessConfiguration.check_configuration(
         config, [HarnessConfiguration.CLASS_NAME])
       class_name = config[HarnessConfiguration.CLASS_NAME]
-      comparator = FactoryUtilities.get_instance(class_name)
+      comparator = factory.get_instance(class_name)
       comparator.configure(config)
       self._comparators[comparator_name] = comparator
       for format in comparator.formats:
