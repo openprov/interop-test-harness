@@ -1,4 +1,4 @@
-"""Base class, and related classes, for converters.
+"""Interoperability test harness configuration.
 """
 # Copyright (c) 2015 University of Southampton
 #

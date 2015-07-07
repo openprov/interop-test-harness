@@ -1,4 +1,4 @@
-"""Test classes for prov.interop.configuration classes.
+"""Test classes for prov.interop.harness classes.
 """
 # Copyright (c) 2015 University of Southampton
 #
