@@ -23,6 +23,7 @@
 # SOFTWARE.  
 
 import os
+import yaml
 
 from prov.interop.comparator import Comparator
 from prov.interop.component import ConfigError
@@ -126,3 +127,21 @@ class HarnessConfiguration(ConfigurableComponent):
     self._configuration = config
     self._test_cases = config[HarnessConfiguration.TEST_CASES]
     self.register_comparators(config[HarnessConfiguration.COMPARATORS])
+
+harness_configuration = None
+
+def configure_harness_from_file(file_name = None):
+  ## throws IO or OSError if file problem
+  ## what if YAML problem
+  ## ConfigError
+  if harness_configuration is None:
+    harness_configuration = HarnessConfiguration()
+    if (file_name is None):
+      # TODO get from environment
+      pass
+    with open(file_name, 'r') as f:
+      config = yaml.load(f)
+      print("----Configuration----")
+      print(data)
+      print(data.keys())
+      harness_configuration.configure(config)

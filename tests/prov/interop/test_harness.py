@@ -100,3 +100,8 @@ class HarnessConfigurationTestCase(unittest.TestCase):
       ProvPyComparator.__name__][ProvPyComparator.EXECUTABLE]
     with self.assertRaises(ConfigError):
       self.harness.configure(self.config)
+
+class HarnessTestCase(unittest.TestCase):
+
+  def test_configure_harness_from_file(self):
+    pass
