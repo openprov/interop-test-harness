@@ -157,13 +157,5 @@ def configure_harness_from_file(file_name = None):
   global CONFIGURATION_FILE
   global DEFAULT_CONFIGURATION_FILE
   configuration = HarnessConfiguration()
-  if (file_name is None):
-    try:
-      file_name = os.environ[CONFIGURATION_FILE]
-    except KeyError:
-      file_name = DEFAULT_CONFIGURATION_FILE
-  with open(file_name, 'r') as f:
-    config = yaml.load(f)
-    if config is None:
-      raise ConfigError("There is no YAML configuration")
-    configuration.configure(config)
+  factory.configure_object(configuration, CONFIGURATION_FILE,
+                           DEFAULT_CONFIGURATION_FILE, file_name)
