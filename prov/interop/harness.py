@@ -33,9 +33,9 @@ import prov.interop.factory as factory
 class HarnessConfiguration(ConfigurableComponent):
   """Interoperability test harness configuration."""
 
-  TEST_CASES = "test_cases"
+  TEST_CASES = "test-cases"
   COMPARATORS = "comparators"
-  CLASS_NAME = "class_name"
+  CLASS = "class"
 
   def __init__(self):
     """Create harness configuration.
@@ -100,8 +100,8 @@ class HarnessConfiguration(ConfigurableComponent):
     for comparator_name in comparators:
       config = comparators[comparator_name]
       HarnessConfiguration.check_configuration(
-        config, [HarnessConfiguration.CLASS_NAME])
-      class_name = config[HarnessConfiguration.CLASS_NAME]
+        config, [HarnessConfiguration.CLASS])
+      class_name = config[HarnessConfiguration.CLASS]
       comparator = factory.get_instance(class_name)
       comparator.configure(config)
       self._comparators[comparator_name] = comparator
@@ -110,6 +110,7 @@ class HarnessConfiguration(ConfigurableComponent):
 
   def configure(self, config):
     """Configure harness configuration.
+    
     Invokes super-class ``configure``.
 
     :param config: Configuration
@@ -128,20 +129,41 @@ class HarnessConfiguration(ConfigurableComponent):
     self._test_cases = config[HarnessConfiguration.TEST_CASES]
     self.register_comparators(config[HarnessConfiguration.COMPARATORS])
 
-harness_configuration = None
+CONFIGURATION_FILE = "PROV_HARNESS_CONFIGURATION_FILE"
+
+DEFAULT_CONFIGURATION_FILE="harness-configuration.yaml"
+
+configuration = None
 
 def configure_harness_from_file(file_name = None):
-  ## throws IO or OSError if file problem
-  ## what if YAML problem
-  ## ConfigError
-  if harness_configuration is None:
-    harness_configuration = HarnessConfiguration()
-    if (file_name is None):
-      # TODO get from environment
-      pass
-    with open(file_name, 'r') as f:
-      config = yaml.load(f)
-      print("----Configuration----")
-      print(data)
-      print(data.keys())
-      harness_configuration.configure(config)
+  """Set up harness configuration.
+  Creates HarnessConfiguration and assigns to module variable ``configuration``.
+  The name of a YAML configuration file, with configuration required
+  by HarnessConfiguration can be provided.
+  If a file name not provided then an environment variable,
+  ``PROV_HARNESS_CONFIGURATION_FILE`` is checked to see if it holds a
+  file name. If not then the file name is assumed to be
+  ``harness-configuration.yaml``.
+  The file is loaded and the contents passed to ``HarnessConfiguration.configure``.
+  
+  :param file_name: Configuration file name (optional)
+  :type file_name: str or unicode
+  :raises ConfigError: if the configuration in the file does not
+  contain the configuration properties expected by
+  HarnessConfiguration, or is an invalid YAML file.
+  :raises IOError: if the file is not found.
+  """
+  global configuration
+  global CONFIGURATION_FILE
+  global DEFAULT_CONFIGURATION_FILE
+  configuration = HarnessConfiguration()
+  if (file_name is None):
+    try:
+      file_name = os.environ[CONFIGURATION_FILE]
+    except KeyError:
+      file_name = DEFAULT_CONFIGURATION_FILE
+  with open(file_name, 'r') as f:
+    config = yaml.load(f)
+    if config is None:
+      raise ConfigError("There is no YAML configuration")
+    configuration.configure(config)
