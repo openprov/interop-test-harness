@@ -31,8 +31,8 @@ from prov.interop.component import ConfigurableComponent
 class Converter(ConfigurableComponent):
   """Base class for converters."""
 
-  INPUT_FORMATS = "input_formats"
-  OUTPUT_FORMATS = "output_formats"
+  INPUT_FORMATS = "input-formats"
+  OUTPUT_FORMATS = "output-formats"
 
   def __init__(self):
     """Create converter.
@@ -66,9 +66,9 @@ class Converter(ConfigurableComponent):
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config does not contain ``input_formats``
-    (list of str or unicode) and ``output_formats`` (list of str or
-    unicode) or any format in ``input_formats`` or ``output_formats``
+    :raises ConfigError: if config does not contain ``input-formats``
+    (list of str or unicode) and ``output-formats`` (list of str or
+    unicode) or any format in ``input-formats`` or ``output-formats``
     is not a canonical format (see ``standards``)
     """
     super(Converter, self).configure(config)
