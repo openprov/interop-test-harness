@@ -136,7 +136,6 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     try:
       print(" ".join(command_line))
       return_code = subprocess.call(command_line)
-      print return_code
       if return_code == 0:
         return True
       elif return_code == 1:
