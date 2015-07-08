@@ -1,4 +1,4 @@
-"""Test classes for prov.interop.harness classes.
+"""Test classes for ``prov.interop.harness``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -24,6 +24,7 @@
 
 import unittest
 
+from prov.interop import harness
 from prov.interop import standards
 from prov.interop.component import CommandLineComponent
 from prov.interop.component import ConfigurableComponent
@@ -31,16 +32,16 @@ from prov.interop.component import ConfigError
 from prov.interop.converter import Converter
 from prov.interop.harness import HarnessConfiguration
 from prov.interop.provpy.comparator import ProvPyComparator
-import prov.interop.harness as harness
 
 def get_sample_configuration():
-  """Return sample HarnessConfiguration-compliant dict.
+  """Return sample 
+  :class:`~prov.interop.harness.HarnessConfiguration`-compliant dict.
 
   :returns: configuration
   :rtype: dict
   """
   config = {}
-  config[HarnessConfiguration.TEST_CASES] = "test-cases"
+  config[HarnessConfiguration.TEST_CASES] = "/home/user/test-cases"
   comparators = {}
   comparator = {}
   comparator[ProvPyComparator.EXECUTABLE] = "python"
@@ -61,6 +62,7 @@ def get_sample_configuration():
 class HarnessConfigurationTestCase(unittest.TestCase):
 
   def setUp(self):
+    super(HarnessConfigurationTestCase, self).setUp()
     self.harness = HarnessConfiguration()
     self.config = get_sample_configuration()
     
@@ -73,7 +75,8 @@ class HarnessConfigurationTestCase(unittest.TestCase):
   def test_configure(self):
     self.harness.configure(self.config)
     self.assertEqual(self.config, self.harness.configuration)
-    self.assertEqual("test-cases", self.harness.test_cases)
+    self.assertEqual(self.config[HarnessConfiguration.TEST_CASES],
+                     self.harness.test_cases)
     # Check comparators
     comparators = self.harness.comparators
     self.assertEqual(1, len(comparators))

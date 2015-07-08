@@ -1,4 +1,4 @@
-"""Test classes for prov.interop.converter classes.
+"""Test classes for ``prov.interop.converter``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -34,11 +34,13 @@ from prov.interop.converter import Converter
 class ConverterTestCase(unittest.TestCase):
 
   def setUp(self):
+    super(ConverterTestCase, self).setUp()
     self.converter = Converter()
     self.in_file = None
     self.out_file = None
 
   def tearDown(self):
+    super(ConverterTestCase, self).tearDown()
     for tmp in [self.in_file, self.out_file]:
       if tmp != None and os.path.isfile(tmp):
         os.remove(tmp)

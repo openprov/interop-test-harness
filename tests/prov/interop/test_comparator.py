@@ -1,4 +1,4 @@
-"""Test classes for prov.interop.comparator classes.
+"""Test classes for ``prov.interop.comparator``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -34,11 +34,13 @@ from prov.interop.comparator import ComparisonError
 class ComparatorTestCase(unittest.TestCase):
 
   def setUp(self):
+    super(ComparatorTestCase, self).setUp()
     self.comparator = Comparator()
     self.file1 = None
     self.file2 = None
 
   def tearDown(self):
+    super(ComparatorTestCase, self).tearDown()
     for tmp in [self.file1, self.file2]:
       if tmp != None and os.path.isfile(tmp):
         os.remove(tmp)

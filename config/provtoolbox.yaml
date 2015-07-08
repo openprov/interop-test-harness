@@ -5,6 +5,7 @@ ProvToolboxConverter:
   # If using source release...
   # executable: /home/user/ProvToolbox/toolbox/target/appassembler/bin/provconvert
   arguments: [-infile, INPUT, -outfile, OUTPUT]
+  # Formats must be in set [json, provn, provx, trig, ttl]
   input-formats: [provn, ttl, trig, provx, json]
   output-formats: [provn, ttl, trig, provx, json]
   skip-tests: [2, 5, 6]

@@ -25,21 +25,23 @@
 import os
 import yaml
 
+from prov.interop import factory
 from prov.interop.comparator import Comparator
 from prov.interop.component import ConfigError
 from prov.interop.component import ConfigurableComponent
-import prov.interop.factory as factory
 
 class HarnessConfiguration(ConfigurableComponent):
   """Interoperability test harness configuration."""
 
   TEST_CASES = "test-cases"
+  """string or unicode: configuration key for test cases directory"""
   COMPARATORS = "comparators"
+  """string or unicode: configuration key list of comparators"""
   CLASS = "class"
+  """string or unicode: configuration key for comparator class names"""
 
   def __init__(self):
     """Create harness configuration.
-    Invokes super-class ``__init__``.
     """
     super(HarnessConfiguration, self).__init__()
     self._configuration = {}
@@ -49,7 +51,7 @@ class HarnessConfiguration(ConfigurableComponent):
 
   @property
   def configuration(self):
-    """Gets raw configuration.
+    """Get raw configuration.
 
     :returns: configuration
     :rtype: dict
@@ -58,7 +60,7 @@ class HarnessConfiguration(ConfigurableComponent):
 
   @property
   def test_cases(self):
-    """Gets test_cases directory
+    """Get test cases directory
 
     :returns: directory name
     :rtype: list of str or unicode
@@ -67,33 +69,50 @@ class HarnessConfiguration(ConfigurableComponent):
 
   @property
   def comparators(self):
-    """Gets dictionary of comparators.
+    """Get dictionary of comparators.
 
     :returns: comparators
-    :rtype: dict from str or unicode to Comparator
+    :rtype: dict from str or unicode to instances of
+    :class:`~prov.interop.comparator.Comparator`
     """
     return self._comparators
 
   @property
   def format_comparators(self):
-    """Gets dictionary of comparators keyed by formats (see
-    ``standards``).
+    """Gets dictionary of comparators keyed by formats.
+    Formats are as defined in ``prov.interop.standards``.
 
     :returns: comparators
-    :rtype: dict from str or unicode to Comparator
+    :rtype: dict from str or unicode to instances of 
+      :class:`~prov.interop.comparator.Comparator`
     """
     return self._format_comparators
 
   def register_comparators(self, comparators):
-    """Populate dictionary mapping comparator names to
-    instances of Comparator sub-classes.
+    """Populate dictionaries mapping both comparator names and formats 
+    to instances of :class:`~prov.interop.comparator.Comparator`.
+
+    ``comparators`` must be a dictionary with entries of form::
+
+        Comparator nick-name
+          class: ... class name...
+          ...class-specific configuration...
+
+    For example::
+
+        ProvPyComparator: 
+          class: prov.interop.provpy.comparator.ProvPyComparator
+          executable: python
+          arguments: [/home/user/prov/scripts/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
+          formats: [provx, json]
 
     :param comparators: Mapping of comparator names to 
-    comparator-specific configuration.
-    :type config: dict mapping str or unicode to dict
-    :raises ConfigError: if there is a problem creating a
-    Comparator (e.g. missing configuration), or there are no
-    comparators
+    class names and comparator-specific configuration
+    :type config: dict
+    :raises ConfigError: if ``comparators`` is empty,
+    comparator-specific configuration is missing ``class``, or there
+    is a problem loading, creating or configuring an instance of a 
+    sub-class of :class:`~prov.interop.comparator.Comparator`.
     """
     if len(comparators) == 0:
       raise ConfigError("There must be at least one comparator defined")
@@ -109,22 +128,41 @@ class HarnessConfiguration(ConfigurableComponent):
         self._format_comparators[format] = comparator
 
   def configure(self, config):
-    """Configure harness configuration.
-    
-    Invokes super-class ``configure``.
+    """Configure harness.
+    ``config`` is expected to hold configuration of form::
+
+        test-cases: ...test cases directory...
+        comparators:
+          Comparator nick-name
+            class: ... class name...
+            ...class-specific configuration...
+        ...other configuration...
+
+    Other configuration is saved but not processed by this class.
+
+    For example::
+
+        test-cases: /home/user/interop/test-cases
+        comparators:
+          ProvPyComparator: 
+            class: prov.interop.provpy.comparator.ProvPyComparator
+            executable: python
+            arguments: [/home/user/prov/scripts/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
+            formats: [provx, json]
+        ProvPy: /home/user/interop/config/provpy.yaml
+        ProvToolbox: /home/user/interop/config/provtoolbox.yaml
+        ProvTranslator: /home/user/interop/config/provtranslator.yaml
+        ProvStore: /home/user/interop/config/provstore.yaml
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config does not contain ``test_cases``
-    (str or unicode) and ``comparators`` (dict mapping str or unicode
-    to Comparator configurations with additional ``class_name``
-    key), or if there is a problem creating a Comparator.
+    :raises ConfigError: if ``config`` does not hold the above
+    entries, or problems arise invoking :func:`configure`
     """
     super(HarnessConfiguration, self).configure(config)
     HarnessConfiguration.check_configuration(
       config,
-      [HarnessConfiguration.TEST_CASES,
-       HarnessConfiguration.COMPARATORS])
+      [HarnessConfiguration.TEST_CASES, HarnessConfiguration.COMPARATORS])
     self._configuration = config
     self._test_cases = config[HarnessConfiguration.TEST_CASES]
     self.register_comparators(config[HarnessConfiguration.COMPARATORS])

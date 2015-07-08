@@ -1,4 +1,4 @@
-"""Test classes for prov.interop.factory.
+"""Test classes for ``prov.interop.factory``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -42,7 +42,8 @@ class Counter:
     """Increment counter."""
     self._counter += 1
 
-  def get_counter(self):
+  @property
+  def counter(self):
     """Gets counter value.
 
     :returns: counter value
@@ -68,7 +69,7 @@ class FactoryTestCase(unittest.TestCase):
   def test_get_class(self):
     my_module = self.__module__
     clazz = factory.get_class(str(self.__module__) + ".Counter")
-    self.assertEquals(Counter, clazz, msg="Expected Counter class")
+    self.assertEquals(Counter, clazz)
 
   def test_get_class_no_prefix(self):
     with self.assertRaises(ValueError):
@@ -85,10 +86,10 @@ class FactoryTestCase(unittest.TestCase):
   def test_get_instance(self):
     my_module = self.__module__
     obj = factory.get_instance(str(self.__module__) + ".Counter")
-    self.assertIsInstance(obj, Counter, msg="Expected Counter object")
+    self.assertIsInstance(obj, Counter)
     obj.increment()
     obj.increment()
-    self.assertEquals(2, obj.get_counter(), msg="Expected Counter object to have value 2")
+    self.assertEquals(2, obj.counter)
 
   def test_get_instance_no_prefix(self):
     with self.assertRaises(ValueError):

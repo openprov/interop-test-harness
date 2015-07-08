@@ -1,4 +1,4 @@
-"""Test classes for prov.interop.component classes.
+"""Test classes for ``prov.interop.component``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -36,20 +36,21 @@ import prov.interop.component as component
 
 class ConfigurableComponentTestCase(unittest.TestCase):
 
+  def setUp(self):
+    super(ConfigurableComponentTestCase, self).setUp()
+    self.component = ConfigurableComponent()
+
   def test_configure_empty(self):
-    comp = ConfigurableComponent()
-    comp.configure({})
+    self.component.configure({})
     self.assertTrue(True)
 
   def test_configure_non_empty(self):
-    comp = ConfigurableComponent()
-    comp.configure({"a":"b", "c":"d", "e":["f", "g", 123]})
+    self.component.configure({"a":"b", "c":"d", "e":["f", "g", 123]})
     self.assertTrue(True)
 
   def test_configure_non_dict_error(self):
-    comp = ConfigurableComponent()
     with self.assertRaises(ConfigError):
-      comp.configure(123)
+      self.component.configure(123)
 
   def test_check_configuration(self):
     ConfigurableComponent.check_configuration(
@@ -64,60 +65,60 @@ class ConfigurableComponentTestCase(unittest.TestCase):
 
 class CommandLineComponentTestCase(unittest.TestCase):
 
+  def setUp(self):
+    super(CommandLineComponentTestCase, self).setUp()
+    self.command_line = CommandLineComponent()
+
   def test_init(self):
-    command_line = CommandLineComponent()
-    self.assertEquals("", command_line.executable)
-    self.assertEquals([], command_line.arguments)
+    self.assertEquals("", self.command_line.executable)
+    self.assertEquals([], self.command_line.arguments)
 
   def test_configure(self):
-    command_line = CommandLineComponent()
-    command_line.configure(
+    self.command_line.configure(
       {CommandLineComponent.EXECUTABLE: "b", 
        CommandLineComponent.ARGUMENTS: ["c", 1]})
-    self.assertEquals("b", command_line.executable)
-    self.assertEquals(["c", 1], command_line.arguments)
+    self.assertEquals("b", self.command_line.executable)
+    self.assertEquals(["c", 1], self.command_line.arguments)
 
   def test_configure_non_dict_error(self):
-    command_line = CommandLineComponent()
     with self.assertRaises(ConfigError):
-      command_line.configure(123)
+      self.command_line.configure(123)
 
   def test_configure_no_executable(self):
-    command_line = CommandLineComponent()
     with self.assertRaises(ConfigError):
-      command_line.configure({CommandLineComponent.ARGUMENTS: ["c", 1]})
+      self.command_line.configure({CommandLineComponent.ARGUMENTS: ["c", 1]})
 
   def test_configure_no_arguments(self):
-    command_line = CommandLineComponent()
     with self.assertRaises(ConfigError):
-      command_line.configure({CommandLineComponent.EXECUTABLE: "b"})
+      self.command_line.configure({CommandLineComponent.EXECUTABLE: "b"})
 
 
 class RestComponentTestCase(unittest.TestCase):
 
+  def setUp(self):
+    super(RestComponentTestCase, self).setUp()
+    self.rest = RestComponent()
+
   def test_init(self):
-    rest = RestComponent()
-    self.assertEquals("", rest.url)
+    self.assertEquals("", self.rest.url)
 
   def test_configure(self):
-    rest = RestComponent()
-    rest.configure({RestComponent.URL: "a"})
-    self.assertEquals("a", rest.url)
+    self.rest.configure({RestComponent.URL: "a"})
+    self.assertEquals("a", self.rest.url)
 
   def test_configure_non_dict_error(self):
-    rest = RestComponent()
     with self.assertRaises(ConfigError):
-      rest.configure(123)
+      self.rest.configure(123)
 
   def test_configure_no_url(self):
-    rest = RestComponent()
     with self.assertRaises(ConfigError):
-      rest.configure({})
+      self.rest.configure({})
 
 
 class LoadConfigurationTestCase(unittest.TestCase):
 
   def setUp(self):
+    super(LoadConfigurationTestCase, self).setUp()
     self.config={"counter": 12345}
     (_, self.yaml) = tempfile.mkstemp(suffix=".yaml")
     with open(self.yaml, 'w') as yaml_file:
@@ -126,9 +127,10 @@ class LoadConfigurationTestCase(unittest.TestCase):
     self.default_file = os.path.join(os.getcwd(), "test_component.yaml")
 
   def tearDown(self):
+    super(LoadConfigurationTestCase, self).tearDown()
     if self.yaml != None and os.path.isfile(self.yaml):
       os.remove(self.yaml)
-
+      
   def test_load_configuration_from_file(self):
     config = component.load_configuration(self.env_var,
                                           self.default_file,

@@ -1,4 +1,4 @@
-"""Test classes for prov.interop.provpy.converter classes.
+"""Test classes for ``prov.interop.provpy.converter``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -35,6 +35,7 @@ from prov.interop.provpy.converter import ProvPyConverter
 class ProvPyConverterTestCase(unittest.TestCase):
 
   def setUp(self):
+    super(ProvPyConverterTestCase, self).setUp()
     self.provpy = ProvPyConverter()
     self.in_file = None
     self.out_file = None
@@ -53,6 +54,7 @@ class ProvPyConverterTestCase(unittest.TestCase):
       standards.PROVN, standards.PROVX, standards.JSON]
 
   def tearDown(self):
+    super(ProvPyConverterTestCase, self).tearDown()
     for tmp in [self.in_file, self.out_file]:
       if tmp != None and os.path.isfile(tmp):
         os.remove(tmp)

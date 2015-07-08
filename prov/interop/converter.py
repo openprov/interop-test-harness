@@ -32,11 +32,12 @@ class Converter(ConfigurableComponent):
   """Base class for converters."""
 
   INPUT_FORMATS = "input-formats"
+  """string or unicode: configuration key for converter's supported input formats"""
   OUTPUT_FORMATS = "output-formats"
+  """string or unicode: configuration key for converter's supported output formats"""
 
   def __init__(self):
     """Create converter.
-    Invokes super-class ``__init__``.
     """
     super(Converter, self).__init__()
     self._input_formats = []
@@ -44,7 +45,8 @@ class Converter(ConfigurableComponent):
 
   @property
   def input_formats(self):
-    """Gets list of canonical input formats supported by the converter.
+    """Gets list of input formats supported by the converter.
+   Formats are a subset of those in ``prov.interop.standards``.
 
     :returns: formats
     :rtype: list of str or unicode
@@ -54,6 +56,7 @@ class Converter(ConfigurableComponent):
   @property
   def output_formats(self):
     """Gets list of canonical ouput formats supported by the converter.
+   Formats are a subset of those in ``prov.interop.standards``.
 
     :returns: formats
     :rtype: list of str or unicode
@@ -62,14 +65,21 @@ class Converter(ConfigurableComponent):
 
   def configure(self, config):
     """Configure converter.
-    Invokes super-class ``configure``.
+    ``config`` is expected to hold configuration of form::
+
+        input-formats: [...list of formats...]
+        output-formats: [...list of formats...]
+
+    For example::
+
+        input-formats: [provn, provx, json]
+        output-formats: [provn, provx, json]
+
+    Formats must be as defined in ``prov.interop.standards``.
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config does not contain ``input-formats``
-    (list of str or unicode) and ``output-formats`` (list of str or
-    unicode) or any format in ``input-formats`` or ``output-formats``
-    is not a canonical format (see ``standards``)
+    :raises ConfigError: if ``config`` does not hold the above entries
     """
     super(Converter, self).configure(config)
     Converter.check_configuration(
@@ -83,17 +93,15 @@ class Converter(ConfigurableComponent):
     self._output_formats = config[Converter.OUTPUT_FORMATS]
 
   def convert(self, in_file, out_file):
-    """Invoke conversion of input file in a canonical format to output
-    file in a canonical format. 
-    Each file must have an extension matching one of the canonical
-    file formats.
-    Canonical formats are defined in ``standards``.
+    """Use converter to convert an input file into an output
+    file. Each file must have an extension matching one of those
+    in ``prov.interop.standards``.
 
     :param in_file: Input file name
     :type in_file: str or unicode
     :param out_file: Output file name
     :type out_file: str or unicode
-    :raises ConversionError: if either file does not exist
+    :raises ConversionError: if the input file is not found
     """
     if not os.path.isfile(in_file):
       raise ConversionError("Input file not found: " + in_file)

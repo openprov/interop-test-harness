@@ -37,25 +37,43 @@ class ProvPyComparator(Comparator, CommandLineComponent):
   """Manages invocation of ProvPy prov-compare script."""
 
   FORMAT1 = "FORMAT1"
+  """string or unicode: token for file1's format in command-line specification"""
   FORMAT2 = "FORMAT2"
+  """string or unicode: token for file2's format in command-line specification"""
   FILE1 = "FILE1"
+  """string or unicode: token for file1 in command-line specification"""
   FILE2 = "FILE2"
+  """string or unicode: token for file1 in command-line specification"""
   LOCAL_FORMATS = {standards.PROVX: "xml"}
+  """list of string or unicode: list of mapping from formats in
+  ``prov.interop.standards`` to formats understood by prov-compare
+` """
 
   def __init__(self):
     """Create comparator.
-    Invokes super-classes ``__init__``.
     """
     super(ProvPyComparator, self).__init__()
 
   def configure(self, config):
     """Configure comparator.
-    Invokes super-classes ``__configure__``.
+    ``config`` is expected to hold configuration of form::
+
+        executable: ...executable name...
+        arguments: [...list of arguments including tokens FORMAT1, FORMAT2, FILE1, FILE2...]
+        formats: [...list of formats...]
+
+    For example::
+
+        class: prov.interop.provpy.comparator.ProvPyComparator
+        executable: python
+        arguments: [/home/user/prov/scripts/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
+        formats: [provx, json]
+
+    Formats must be as defined in ``prov.interop.standards``.
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config ``arguments`` does not contain the
-    tokens ``FORMAT1``, ``FORMAT2``, ``FILE1``, ``FILE2``.
+    :raises ConfigError: if ``config`` does not hold the above entries
     """
     super(ProvPyComparator, self).configure(config)
     ProvPyComparator.check_configuration(
@@ -64,21 +82,26 @@ class ProvPyComparator(Comparator, CommandLineComponent):
        ProvPyComparator.FILE1, ProvPyComparator.FILE2])
 
   def compare(self, file1, file2):
-    """Invoke comparison of files in canonical formats.
-    Each file must have an extension matching one of the canonical
-    file formats.
-    Canonical formats are defined in ``standards``.
+    """Use prov-compare to compare two files. Each file must have an
+    extension matching one of those in ``prov.interop.standards``.
+    ``executable`` and ``arguments`` in the configuration are used to
+    create a command to execute at the shell. ``FORMAT1``,
+    ``FORMAT2``, ``FILE1`` and ``FILE2`` tokens are populated using
+    ``file1``, ``file2`` values, with mappings to local formats
+    supported by prov-compare being done if needed.
 
     :param file1: File name
     :type file1: str or unicode
     :param file2: File name
     :type file2: str or unicode
-    :returns: True (success) if files are equivalent, else False (fail)
+    :returns: True (success) if files are equivalent, else False
+    (fail)
     :rtype: bool
     :raises ComparisonError: if either of the files are not found,
-    or the files or formats are invalid.
+    or the files or formats are invalid, or the return code is neither
+    0 nor 1
     :raises OSError: if there are problems invoking the comparator
-    e.g. the script is not found at the specified location.
+    e.g. the script is not found
     """
     super(ProvPyComparator, self).compare(file1, file2)
     format1 = os.path.splitext(file1)[1][1:]
@@ -86,7 +109,7 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     for format in [format1, format2]:
       if not format in self.formats:
         raise ComparisonError("Unsupported format: " + format)
-    # Map canonical formats to formats supported by prov-compare
+    # Map prov.interop.standards formats to formats supported by prov-compare
     local_file1 = file1
     local_format1 = format1
     if (format1 in ProvPyComparator.LOCAL_FORMATS):

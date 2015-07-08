@@ -1,4 +1,4 @@
-"""Test classes for prov.interop.provpy.comparator classes.
+"""Test classes for ``prov.interop.provpy.comparator``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -36,6 +36,7 @@ from prov.interop.provpy.comparator import ProvPyComparator
 class ProvPyComparatorTestCase(unittest.TestCase):
 
   def setUp(self):
+    super(ProvPyComparatorTestCase, self).setUp()
     self.provpy = ProvPyComparator()
     self.file1 = None
     self.file2 = None
@@ -52,6 +53,7 @@ class ProvPyComparatorTestCase(unittest.TestCase):
       standards.PROVX, standards.JSON]
 
   def tearDown(self):
+    super(ProvPyComparatorTestCase, self).tearDown()
     for tmp in [self.file1, self.file2]:
       if tmp != None and os.path.isfile(tmp):
         os.remove(tmp)

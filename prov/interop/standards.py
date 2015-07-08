@@ -23,9 +23,15 @@
 # SOFTWARE.  
 
 PROVN = "provn"
+"""str or unicode: PROV-N name/file extension"""
 TTL = "ttl"
+"""str or unicode: PROV-O (Turtle) name/file extension"""
 TRIG = "trig"
+"""str or unicode: PROV-O (TriG) name/file extension"""
 PROVX = "provx"
+"""str or unicode: PROV-X name/file extension"""
 JSON = "json"
+"""str or unicode: PROV-JSON name/file extension"""
 
-FORMATS = [PROVN, TTL, TRIG, PROVX, JSON]
+FORMATS = set([PROVN, TTL, TRIG, PROVX, JSON])
+"""set of str or unicode: list of PROV name/file extensions"""

@@ -1,4 +1,4 @@
-"""Test classes for prov.interop.provtoolbox.converter classes.
+"""Test classes for ``prov.interop.provtoolbox.converter``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -35,6 +35,7 @@ from prov.interop.provtoolbox.converter import ProvToolboxConverter
 class ProvToolboxConverterTestCase(unittest.TestCase):
 
   def setUp(self):
+    super(ProvToolboxConverterTestCase, self).setUp()
     self.provtoolbox = ProvToolboxConverter()
     self.in_file = None
     self.out_file = None
@@ -45,11 +46,13 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
             inspect.currentframe()))), "provconvert-dummy.py")
     self.config[ProvToolboxConverter.ARGUMENTS] = [
       script,
-      "-infile", ProvToolboxConverter.INPUT, "-outfile", ProvToolboxConverter.OUTPUT]
+      "-infile", ProvToolboxConverter.INPUT, 
+      "-outfile", ProvToolboxConverter.OUTPUT]
     self.config[ProvToolboxConverter.INPUT_FORMATS] = standards.FORMATS
     self.config[ProvToolboxConverter.OUTPUT_FORMATS] = standards.FORMATS
 
   def tearDown(self):
+    super(ProvToolboxConverterTestCase, self).tearDown()
     for tmp in [self.in_file, self.out_file]:
       if tmp != None and os.path.isfile(tmp):
         os.remove(tmp)

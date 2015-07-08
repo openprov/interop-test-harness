@@ -34,22 +34,38 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
   """Manages invocation of ProvToolbox provconvert script."""
 
   INPUT = "INPUT"
+  """string or unicode: token for input file in command-line specification"""
   OUTPUT = "OUTPUT"
+  """string or unicode: token for output file in command-line specification"""
 
   def __init__(self):
     """Create converter.
-    Invokes super-classes ``__init__``.
     """
     super(ProvToolboxConverter, self).__init__()
 
   def configure(self, config):
     """Configure converter.
-    Invokes super-classes ``__configure__``.
+    ``config`` is expected to hold configuration of form::
+
+        executable: ...executable name...
+        arguments: [...list of arguments including tokens INPUT, OUTPUT...]
+        input-formats: [...list of formats...]
+        output-formats: [...list of formats...]
+
+    For example::
+
+        executable: /home/user/ProvToolbox/bin/provconvert
+        arguments: [-infile, INPUT, -outfile, OUTPUT]
+        input-formats: [provn, ttl, trig, provx, json]
+        output-formats: [provn, ttl, trig, provx, json]
+
+    Input and output formats must be as defined in
+    ``prov.interop.standards``.
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config ``arguments`` does not contain the
-    tokens ``INPUT``, ``OUTPUT``
+    :raises ConfigError: if ``config`` does not hold the above
+    entries
     """
     super(ProvToolboxConverter, self).configure(config)
     ProvToolboxConverter.check_configuration(
@@ -57,11 +73,14 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
       [ProvToolboxConverter.INPUT, ProvToolboxConverter.OUTPUT])
 
   def convert(self, in_file, out_file):
-    """Invoke conversion of input file in a canonical format to output
-    file in a canonical format. 
-    Each file must have an extension matching one of the canonical
-    file formats.
-    Canonical formats are defined in ``standards``.
+    """Use provconvert to convert an input file into an output
+    file. Each file must have an extension matching one of those
+    in ``prov.interop.standards``.
+    ``executable`` and ``arguments`` in the configuration are used to
+    create a command to execute at the shell. `
+    ``INPUT`` and ``OUTPUT`` tokens are populated using
+    ``in_file``, ``out_file`` values, with mappings to local formats
+    supported by provcconvert being done if needed.
 
     :param in_file: Input file name
     :type in_file: str or unicode
@@ -69,9 +88,9 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
     :type out_file: str or unicode
     :raises ConversionError: if the input file is not found, the
     return code is non-zero, the return code is zero but the output
-    file is not found, the input or output formats are invalid.
+    file is not found, the input or output formats are invalid
     :raises OSError: if there are problems invoking the converter
-    e.g. the script is not found at the specified location.
+    e.g. the script is not found
     """
     super(ProvToolboxConverter, self).convert(in_file, out_file)
     # Replace tokens in arguments

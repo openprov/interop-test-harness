@@ -32,10 +32,10 @@ class Comparator(ConfigurableComponent):
   """Base class for comparators."""
 
   FORMATS = "formats"
+  """string or unicode: configuration key for comparator's supported formats"""
 
   def __init__(self):
     """Create comparator.
-    Invokes super-class ``__init__``.
     """
     super(Comparator, self).__init__()
     self._formats = []
@@ -43,6 +43,7 @@ class Comparator(ConfigurableComponent):
   @property
   def formats(self):
     """Gets list of canonical formats supported by the comparator.
+   Formats are a subset of those in ``prov.interop.standards``.
 
     :returns: formats
     :rtype: list of str or unicode
@@ -51,13 +52,19 @@ class Comparator(ConfigurableComponent):
 
   def configure(self, config):
     """Configure comparator.
-    Invokes super-class ``configure``.
+    ``config`` is expected to hold configuration of form::
+
+        formats: [...list of formats...]
+
+    For example::
+
+        formats: [provx, json]
+
+    Formats must be as defined in ``prov.interop.standards``.
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config does not contain ``formats`` (list
-    of str or unicode) or any format in ``formats`` is not a canonical
-    format (see ``standards``)
+    :raises ConfigError: if ``config`` does not hold the above entries
     """
     super(Comparator, self).configure(config)
     Comparator.check_configuration(config, [Comparator.FORMATS])
@@ -68,18 +75,17 @@ class Comparator(ConfigurableComponent):
     self._formats = config[Comparator.FORMATS]
 
   def compare(self, file1, file2):
-    """Invoke comparison of files in canonical formats.
-    Each file must have an extension matching one of the canonical
-    file formats.
-    Canonical formats are defined in ``standards``.
+    """Use comparator to compare two files. Each file must have an
+    extension matching one of those in ``prov.interop.standards``.
 
     :param file1: File name
     :type file1: str or unicode
     :param file2: File name
     :type file2: str or unicode
-    :returns: True (success) if files are equivalent, else False (fail)
+    :returns: True (success) if files are equivalent, else False 
+    (fail)
     :rtype: bool
-    :raises ComparisonError: if either file does not exist
+    :raises ComparisonError: if either of the files are not found
     """
     for afile in [file1, file2]:
       if not os.path.isfile(afile):

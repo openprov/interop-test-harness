@@ -5,6 +5,7 @@ comparators:
     class: prov.interop.provpy.comparator.ProvPyComparator
     executable: python
     arguments: [/home/user/prov/scripts/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
+    # Formats must be in set [json, provn, provx, trig, ttl]
     formats: [provx, json]
 ProvPy: /home/user/interop/config/provpy.yaml
 ProvToolbox: /home/user/interop/config/provtoolbox.yaml

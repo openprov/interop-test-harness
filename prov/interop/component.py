@@ -44,29 +44,50 @@ class ConfigurableComponent(object):
       raise ConfigError("config must be a dictionary")
 
   @staticmethod
-  def check_configuration(config, values):
-    """Check configuration contains values.
+  def check_configuration(config, keys):
+    """Check configuration contains keys.
 
     :param config: Configuration
     :type config: dict or list
-    :param values: Values to check for
-    :type values: list of str or unicode
-    :raises ConfigError: if config does not contain any of the values
+    :param keys: Keys to check for
+    :type keys: list of str or unicode
+    :raises ConfigError: if config does not contain one of the keys
     """
-    for value in values:
-      if not value in config:
-        raise ConfigError("Missing " + value)
+    for key in keys:
+      if not key in config:
+        raise ConfigError("Missing " + key)
+
+
+class ConfigError(Exception):
+  """Configuration error."""
+
+  def __init__(self, value):
+    """Create configuration error.
+
+    :param value: Value holding information about error
+    :type value: str or unicode or list of str or unicode
+    """
+    self._value = value
+
+  def __str__(self):
+    """Get error as formatted string.
+
+    :returns: formatted string
+    :rtype: str or unicode
+    """
+    return repr(self._value)
 
 
 class CommandLineComponent(ConfigurableComponent):
   """Base class for configurable command-line components."""
 
   EXECUTABLE = "executable"
+  """string or unicode: configuration key for component's executable"""
   ARGUMENTS = "arguments"
+  """string or unicode: configuration key for component's arguments"""
 
   def __init__(self):
     """Create component.
-    Invokes super-class ``__init__``.
     """
     super(CommandLineComponent, self).__init__()
     self._executable = ""
@@ -92,13 +113,20 @@ class CommandLineComponent(ConfigurableComponent):
 
   def configure(self, config):
     """Configure component.
-    Invokes super-class ``configure``.
+    ``config`` is expected to hold configuration of form::
+
+        executable: ...executable name...
+        arguments: [...list of arguments ...]
+
+    For example::
+
+        executable: python
+        arguments: [/home/user/prov/scripts/prov-convert, -f, FORMAT, INPUT, OUT
+PUT]
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config does not contain ``executable``
-    (str or unicode) and ``arguments`` (list of str or unicode or int
-    or float) 
+    :raises ConfigError: if ``config`` does not hold the above entries
     """
     super(CommandLineComponent, self).configure(config)
     CommandLineComponent.check_configuration(
@@ -112,10 +140,10 @@ class RestComponent(ConfigurableComponent):
   """Base class for configurable REST-ful components."""
 
   URL = "url"
+  """string or unicode: configuration key for REST endpoint URL"""
 
   def __init__(self):
     """Create component.
-    Invokes super-class ``__init__``.
     """
     super(RestComponent, self).__init__()
     self._url = ""
@@ -131,46 +159,33 @@ class RestComponent(ConfigurableComponent):
 
   def configure(self, config):
     """Configure component.
-    Invokes super-class ``configure``.
+    ``config`` is expected to hold configuration of form::
+
+        url: ...REST endpoint URL...
+
+    For example::
+
+        url: https://provenance.ecs.soton.ac.uk/validator/provapi/documents/
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config does not contain ``url`` (str or 
-    unicode)
+    :raises ConfigError: if ``config`` does not hold the above entries
     """
     super(RestComponent, self).configure(config)
     RestComponent.check_configuration(config, [RestComponent.URL])
     self._url = config[RestComponent.URL]
 
 
-class ConfigError(Exception):
-  """Configuration error."""
-
-  def __init__(self, value):
-    """Create configuration error.
-
-    :param value: Value holding information about error
-    :type value: str or unicode or list of str or unicode
-    """
-    self._value = value
-
-  def __str__(self):
-    """Get error as formatted string.
-
-    :returns: formatted string
-    :rtype: str or unicode
-    """
-    return repr(self._value)
-
-
 def load_configuration(env_var, default_file_name, file_name = None):
   """Load configuration from a YAML file.
-  The name of a YAML configuration file, with configuration required by the
-  given object can be provided.
-  If a file name not provided then an environment variable, is 
-  checked to see if it holds a file name. If not then the file name is 
-  assumed to be the default.
+  - If ``file_name`` is provided then the contents of the file are
+  loaded and returned.
+  - Else, if an environment variable with name ``env_var`` is defined,
+  then the contents of the file named in that variable are loaded.
+  - Else, the contents of the default file, ``default_file_name``, 
+  are loaded.
   
+  :param env_var: Environment variable with configuration file name
   :type env_var: str or unicode
   :param default_file_name: Default configuration file name
   :type file_name: str or unicode

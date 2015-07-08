@@ -37,37 +37,59 @@ class ProvPyConverter(Converter, CommandLineComponent):
   """Manages invocation of ProvPy prov-convert script."""
 
   FORMAT = "FORMAT"
+  """string or unicode: token for output format in command-line specification"""
   INPUT = "INPUT"
+  """string or unicode: token for input file in command-line specification"""
   OUTPUT = "OUTPUT"
+  """string or unicode: token for output file in command-line specification"""
   LOCAL_FORMATS = {standards.PROVX: "xml"}
+  """list of string or unicode: list of mapping from formats in
+  ``prov.interop.standards`` to formats understood by prov-convert
+` """
 
   def __init__(self):
     """Create converter.
-    Invokes super-classes ``__init__``.
     """
     super(ProvPyConverter, self).__init__()
 
   def configure(self, config):
-    """Configure converter.
-    Invokes super-classes ``__configure__``.
+   """Configure converter.
+    ``config`` is expected to hold configuration of form::
+
+        executable: ...executable name...
+        arguments: [...list of arguments including tokens INPUT, OUTPUT...]
+        input-formats: [...list of formats...]
+        output-formats: [...list of formats...]
+
+    For example::
+
+        executable: python
+        arguments: [/home/user/prov/scripts/prov-convert, -f, FORMAT, INPUT, OUTPUT]
+        input-formats: [provn, provx, json]
+        output-formats: [provn, provx, json]
+
+    Input and output formats must be as defined in
+    ``prov.interop.standards``.
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if config ``arguments`` does not contain the
-    tokens ``FORMAT``, ``INPUT``, ``OUTPUT``
+    :raises ConfigError: if ``config`` does not hold the above entries
     """
-    super(ProvPyConverter, self).configure(config)
-    ProvPyConverter.check_configuration(
-      self._arguments,
-      [ProvPyConverter.FORMAT, ProvPyConverter.INPUT,
-       ProvPyConverter.OUTPUT])
+   super(ProvPyConverter, self).configure(config)
+   ProvPyConverter.check_configuration(
+     self._arguments,
+     [ProvPyConverter.FORMAT, ProvPyConverter.INPUT,
+      ProvPyConverter.OUTPUT])
 
   def convert(self, in_file, out_file):
-    """Invoke conversion of input file in a canonical format to output
-    file in a canonical format. 
-    Each file must have an extension matching one of the canonical
-    file formats.
-    Canonical formats are defined in ``standards``.
+    """Use prov-convert to convert an input file into an output
+    file. Each file must have an extension matching one of those
+    in ``prov.interop.standards``.
+    ``executable`` and ``arguments`` in the configuration are used to
+    create a command to execute at the shell. ``FORMAT``,
+    ``INPUT`` and ``OUTPUT`` tokens are populated using
+    ``in_file``, ``out_file`` values, with mappings to local formats
+    supported by prov-cconvert being done if needed.
 
     :param in_file: Input file name
     :type in_file: str or unicode
@@ -75,9 +97,9 @@ class ProvPyConverter(Converter, CommandLineComponent):
     :type out_file: str or unicode
     :raises ConversionError: if the input file is not found, the
     return code is non-zero, the return code is zero but the output
-    file is not found, the input format is invalid.
+    file is not found, or the input format is invalid
     :raises OSError: if there are problems invoking the converter
-    e.g. the script is not found at the specified location.
+    e.g. the script is not found
     """
     super(ProvPyConverter, self).convert(in_file, out_file)
     in_format = os.path.splitext(in_file)[1][1:]
@@ -86,7 +108,7 @@ class ProvPyConverter(Converter, CommandLineComponent):
       raise ConversionError("Unsupported input format: " + in_format)
     if not out_format in self.output_formats:
       raise ConversionError("Unsupported input format: " + out_format)
-    # Map canonical formats to formats supported by prov-convert
+    # Map prov.interop.standards formats to formats supported by prov-convert
     local_in_file = in_file
     local_in_format = in_format
     if (in_format in ProvPyConverter.LOCAL_FORMATS):
@@ -115,8 +137,8 @@ class ProvPyConverter(Converter, CommandLineComponent):
       if not os.path.isfile(local_out_file):
         raise ConversionError("Output file not found: " + local_out_file)
       # If using local file extensions, rename output file to have 
-      # canonical extension
-      if (out_format == standards.PROVX):
+      # prov.interop.standards extension
+      if (out_format != local_out_format):
         shutil.move(local_out_file, out_file)
     finally:
       if (local_in_file != in_file) and os.path.isfile(local_in_file):
