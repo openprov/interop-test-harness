@@ -1,4 +1,4 @@
-"""Interoperability test harness configuration.
+"""Interoperability test harness resources.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -30,8 +30,8 @@ from prov.interop.comparator import Comparator
 from prov.interop.component import ConfigError
 from prov.interop.component import ConfigurableComponent
 
-class HarnessConfiguration(ConfigurableComponent):
-  """Interoperability test harness configuration."""
+class HarnessResources(ConfigurableComponent):
+  """Interoperability test harness resources."""
 
   TEST_CASES = "test-cases"
   """string or unicode: configuration key for test cases directory"""
@@ -41,9 +41,9 @@ class HarnessConfiguration(ConfigurableComponent):
   """string or unicode: configuration key for comparator class names"""
 
   def __init__(self):
-    """Create harness configuration.
+    """Create harness resources.
     """
-    super(HarnessConfiguration, self).__init__()
+    super(HarnessResources, self).__init__()
     self._test_cases = ""
     self._comparators = {}
     self._format_comparators = {}
@@ -108,9 +108,9 @@ class HarnessConfiguration(ConfigurableComponent):
       raise ConfigError("There must be at least one comparator defined")
     for comparator_name in comparators:
       config = comparators[comparator_name]
-      HarnessConfiguration.check_configuration(
-        config, [HarnessConfiguration.CLASS])
-      class_name = config[HarnessConfiguration.CLASS]
+      HarnessResources.check_configuration(
+        config, [HarnessResources.CLASS])
+      class_name = config[HarnessResources.CLASS]
       comparator = factory.get_instance(class_name)
       comparator.configure(config)
       self._comparators[comparator_name] = comparator
@@ -149,9 +149,9 @@ class HarnessConfiguration(ConfigurableComponent):
     :raises ConfigError: if ``config`` does not hold the above
     entries, or problems arise invoking :func:`configure`
     """
-    super(HarnessConfiguration, self).configure(config)
-    HarnessConfiguration.check_configuration(
+    super(HarnessResources, self).configure(config)
+    HarnessResources.check_configuration(
       config,
-      [HarnessConfiguration.TEST_CASES, HarnessConfiguration.COMPARATORS])
-    self._test_cases = config[HarnessConfiguration.TEST_CASES]
-    self.register_comparators(config[HarnessConfiguration.COMPARATORS])
+      [HarnessResources.TEST_CASES, HarnessResources.COMPARATORS])
+    self._test_cases = config[HarnessResources.TEST_CASES]
+    self.register_comparators(config[HarnessResources.COMPARATORS])
