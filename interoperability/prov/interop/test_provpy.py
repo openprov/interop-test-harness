@@ -64,6 +64,20 @@ class InteroperabilityTestCase(unittest.TestCase):
     test_case_provx = os.path.join(test_case, "testcase1.provx")
     self.assertTrue(comparator.compare(test_case_provx, "outyyy.provx"))
 
+  def run_interoperability(self, specification, comparators):
+    pass
+#    specification is a converter specification.
+#    comparators is a dictionary of Comparators indexed by format.
+#    Use specification to create and configure the Converter.
+#    FOR EACH test_case NOT IN skip-tests:
+#      Enumerate set of (ext_in, ext_out) pairs based on test_case formats.
+#      Enumerate set of (ext_in, ext_out) pairs based on converter input and output formats.
+#      FOR EACH (ext_in, ext_out) pair IN intersection of sets:
+#        convertor.convert(test_case.ext_in, ext_in, converted.ext_out, ext_out).
+#        Get comparator for ext_out from comparators
+#        comparator.compare(test_case.ext_out, ext_out, converted.ext_out, ext_out)
+#        Record comparator result.
+
 class ProvPyInteroperabilityTestCase(InteroperabilityTestCase):
 
   def setUp(self):
