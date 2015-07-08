@@ -31,7 +31,16 @@ class ConfigurableComponent(object):
   def __init__(self):
     """Create component.
     """
-    pass
+    self._config = {}
+
+  @property
+  def configuration(self):
+    """Get raw configuration.
+
+    :returns: configuration
+    :rtype: dict
+    """
+    return self._config
 
   def configure(self, config):
     """Configure component.
@@ -42,6 +51,7 @@ class ConfigurableComponent(object):
     """
     if not type(config) is dict:
       raise ConfigError("config must be a dictionary")
+    self._config = config
 
   @staticmethod
   def check_configuration(config, keys):

@@ -44,19 +44,9 @@ class HarnessConfiguration(ConfigurableComponent):
     """Create harness configuration.
     """
     super(HarnessConfiguration, self).__init__()
-    self._configuration = {}
     self._test_cases = ""
     self._comparators = {}
     self._format_comparators = {}
-
-  @property
-  def configuration(self):
-    """Get raw configuration.
-
-    :returns: configuration
-    :rtype: dict
-    """
-    return self._configuration
 
   @property
   def test_cases(self):
@@ -163,6 +153,5 @@ class HarnessConfiguration(ConfigurableComponent):
     HarnessConfiguration.check_configuration(
       config,
       [HarnessConfiguration.TEST_CASES, HarnessConfiguration.COMPARATORS])
-    self._configuration = config
     self._test_cases = config[HarnessConfiguration.TEST_CASES]
     self.register_comparators(config[HarnessConfiguration.COMPARATORS])

@@ -107,6 +107,12 @@ class HarnessConfigurationTestCase(unittest.TestCase):
     with self.assertRaises(ConfigError):
       self.harness.configure(self.config)
 
+  def test_configure_comparator_class_error(self):
+    self.config[HarnessConfiguration.COMPARATORS][
+      ProvPyComparator.__name__][HarnessConfiguration.CLASS] = "nosuchmodule.Comparator"
+    with self.assertRaises(ImportError):
+      self.harness.configure(self.config)
+
   def test_configure_comparator_config_error(self):
     del self.config[HarnessConfiguration.COMPARATORS][
       ProvPyComparator.__name__][ProvPyComparator.EXECUTABLE]
