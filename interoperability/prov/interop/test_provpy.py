@@ -28,6 +28,10 @@ import re
 import tempfile
 import unittest
 
+from nose_parameterized import parameterized
+from nose.tools import nottest
+from nose.tools import istest
+
 import prov.interop.standards
 import prov.interop.component as component
 import interoperability.prov.interop.harness as harness
@@ -35,15 +39,29 @@ import interoperability.prov.interop.harness as harness
 from prov.interop.provpy.converter import ProvPyConverter
 from prov.interop.harness import HarnessResources
 
-
 from prov.interop.provtoolbox.converter import ProvToolboxConverter
 
-class InteroperabilityTestCase(unittest.TestCase):
+def get_cases():
+  os.environ[harness.CONFIGURATION_FILE] = "localconfig/harness-configuration.yaml"
+  harness.initialise_harness_from_file()
+#  test_cases="/disk/ssi-dev0/home/mjj/provtoolsuite-testcases/"
+  test_cases = harness.harness_resources.configuration["test-cases"]
+  files = []
+  for f in os.listdir(test_cases):
+    file_name = os.path.join(test_cases, f)
+    if os.path.isdir(file_name) and f.startswith("test"):
+      files.append((f, file_name,))
+  print(files)
+  return files
+
+@nottest
+class InteroperabilityBase(unittest.TestCase):
 
   def setUp(self):
-    super(InteroperabilityTestCase, self).setUp()
+    super(InteroperabilityBase, self).setUp()
     os.environ[harness.CONFIGURATION_FILE] = "localconfig/harness-configuration.yaml"
     harness.initialise_harness_from_file()
+    self.converter = None
 
   def configure(self, obj, file_key, config_key, env_var, default_file_name):
     config_file = harness.harness_resources.configuration[file_key]
@@ -54,6 +72,19 @@ class InteroperabilityTestCase(unittest.TestCase):
       config_file)
     # TODO check and raise error if missing
     obj.configure(config[config_key])
+
+  @parameterized.expand(get_cases())
+  def test_case(self, test_case_name, dir_name):
+    print("Test case name: ", test_case_name)
+    print("Test case directory name: ", dir_name)
+    print("Test class name: ", self.__class__.__name__)
+    print("Converter name: ", self.converter)
+    self.assertEqual(test_case_name, test_case_name)
+    test_case_json = os.path.join(dir_name, test_case_name + ".json")
+    self.converter.convert(test_case_json, "outyyy.provx")
+    comparator = harness.harness_resources.format_comparators["provx"]
+    test_case_provx = os.path.join(dir_name, test_case_name + ".provx")
+    self.assertTrue(comparator.compare(test_case_provx, "outyyy.provx"))
 
   def run_case1(self, converter):
     test_cases = harness.harness_resources.configuration["test-cases"]
@@ -78,7 +109,8 @@ class InteroperabilityTestCase(unittest.TestCase):
 #        comparator.compare(test_case.ext_out, ext_out, converted.ext_out, ext_out)
 #        Record comparator result.
 
-class ProvPyInteroperabilityTestCase(InteroperabilityTestCase):
+@istest
+class ProvPyInteroperabilityTestCase(InteroperabilityBase):
 
   def setUp(self):
     # Initialize only once too!
@@ -90,21 +122,16 @@ class ProvPyInteroperabilityTestCase(InteroperabilityTestCase):
       "ProvPyConverter",
       "PROV_PROVPY_CONFIGURATION_FILE",
       "provpy-configuration.yaml")
+    self.converter = self.provpy
 
   def tearDown(self):
     super(ProvPyInteroperabilityTestCase, self).tearDown()
 
-  def test_case1(self):
-    super(ProvPyInteroperabilityTestCase, self).run_case1(self.provpy)
-#    test_cases = harness.harness_resources.configuration["test-cases"]
-#    test_case = os.path.join(test_cases, "testcase1")
-#    test_case_json = os.path.join(test_case, "testcase1.json")
-#    self.provpy.convert(test_case_json, "out.provx")
-#    comparator = harness.harness_resources.format_comparators["provx"]
-#    test_case_provx = os.path.join(test_case, "testcase1.provx")
-#    self.assertTrue(comparator.compare(test_case_provx, "out.provx"))
+#  def test_case1(self):
+#    super(ProvPyInteroperabilityTestCase, self).run_case1(self.provpy)
 
-class ProvToolboxInteroperabilityTestCase(InteroperabilityTestCase):
+@istest
+class ProvToolboxInteroperabilityTestCase(InteroperabilityBase):
 
   def setUp(self):
     super(ProvToolboxInteroperabilityTestCase, self).setUp()
@@ -115,16 +142,10 @@ class ProvToolboxInteroperabilityTestCase(InteroperabilityTestCase):
       "ProvToolboxConverter",
       "PROV_PROVTOOLBOX_CONFIGURATION_FILE",
       "provtoolbox-configuration.yaml")
+    self.converter = self.provtoolbox
 
   def tearDown(self):
     super(ProvToolboxInteroperabilityTestCase, self).tearDown()
 
-  def test_case1(self):
-    super(ProvToolboxInteroperabilityTestCase, self).run_case1(self.provtoolbox)
-#    test_cases = harness.harness_resources.configuration["test-cases"]
-#    test_case = os.path.join(test_cases, "testcase1")
-#    test_case_json = os.path.join(test_case, "testcase1.json")
-#    self.provtoolbox.convert(test_case_json, "outyyy.provx")
-#    comparator = harness.harness_resources.format_comparators["provx"]
-#    test_case_provx = os.path.join(test_case, "testcase1.provx")
-#    self.assertTrue(comparator.compare(test_case_provx, "outyyy.provx"))
+#  def test_case1(self):
+#    super(ProvToolboxInteroperabilityTestCase, self).run_case1(self.provtoolbox)
