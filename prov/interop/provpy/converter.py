@@ -108,6 +108,7 @@ class ProvPyConverter(Converter, CommandLineComponent):
     command_line.insert(0, self.executable)
     # Execute
     try:
+      print(" ".join(command_line))
       return_code = subprocess.call(command_line)
       if return_code != 0:
         raise ConversionError(self._executable + " returned " + str(return_code))
