@@ -7,6 +7,6 @@ comparators:
     arguments: [/home/user/prov/scripts/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
     formats: [provx, json]
 ProvPy: /home/user/interop/config/provpy.yaml
-ProvToolBox: /home/user/interop/config/provtoolbox.yaml
+ProvToolbox: /home/user/interop/config/provtoolbox.yaml
 ProvTranslator: /home/user/interop/config/provtranslator.yaml
 ProvStore: /home/user/interop/config/provstore.yaml
