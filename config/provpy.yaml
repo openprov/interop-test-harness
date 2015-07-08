@@ -2,7 +2,7 @@
 ProvPyConverter: 
   class: prov.interop.provpy.converter.ProvPyConverter
   executable: python
-  arguments: [/home/user/prov/scripts/prov-convert, -f, FORMAT, INPUT, OUTPUT]
+  arguments: [PROVPY_SCRIPTS_DIR/prov-convert, -f, FORMAT, INPUT, OUTPUT]
   # Formats must be in set [json, provn, provx, trig, ttl]
   input-formats: [provn, provx, json]
   output-formats: [provn, provx, json]
