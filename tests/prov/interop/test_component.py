@@ -22,12 +22,17 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+import os
+import shutil
+import tempfile
 import unittest
+import yaml
 
 from prov.interop.component import CommandLineComponent
 from prov.interop.component import ConfigurableComponent
 from prov.interop.component import ConfigError
 from prov.interop.component import RestComponent
+import prov.interop.component as component
 
 class ConfigurableComponentTestCase(unittest.TestCase):
 
@@ -108,3 +113,52 @@ class RestComponentTestCase(unittest.TestCase):
     rest = RestComponent()
     with self.assertRaises(ConfigError):
       rest.configure({})
+
+
+class LoadConfigurationTestCase(unittest.TestCase):
+
+  def setUp(self):
+    self.config={"counter": 12345}
+    (_, self.yaml) = tempfile.mkstemp(suffix=".yaml")
+    with open(self.yaml, 'w') as yaml_file:
+      yaml_file.write(yaml.dump(self.config, default_flow_style=False))
+    self.env_var = "PROV_LOAD_CONFIG"
+    self.default_file = os.path.join(os.getcwd(), "test_component.yaml")
+
+  def tearDown(self):
+    if self.yaml != None and os.path.isfile(self.yaml):
+      os.remove(self.yaml)
+
+  def test_load_configuration_from_file(self):
+    config = component.load_configuration(self.env_var,
+                                          self.default_file,
+                                          self.yaml)
+    self.assertEqual(12345, config["counter"])
+
+  def test_load_configuration_from_env(self):
+    os.environ[self.env_var] = self.yaml
+    config = component.load_configuration(self.env_var,
+                                          self.default_file,
+                                          self.yaml)
+    self.assertEqual(12345, config["counter"])
+
+  def test_load_configuration_from_default(self):
+    shutil.move(self.yaml, self.default_file)
+    self.yaml = self.default_file
+    config = component.load_configuration(self.env_var,
+                                          self.default_file)
+    self.assertEqual(12345, config["counter"])
+
+  def test_load_configuration_from_file_missing_file(self):
+    with self.assertRaises(IOError):
+      config = component.load_configuration(self.env_var,
+                                            self.default_file,
+                                            "nosuchfile.yaml")
+      
+  def test_load_configuration_from_file_non_yaml_file(self):
+    with open(self.yaml, 'w') as yaml_file:
+      yaml_file.write("This is an invalid YAML file")
+    with self.assertRaises(ConfigError):
+      config = component.load_configuration(self.env_var,
+                                            self.default_file,
+                                            self.yaml)

@@ -128,34 +128,3 @@ class HarnessConfiguration(ConfigurableComponent):
     self._configuration = config
     self._test_cases = config[HarnessConfiguration.TEST_CASES]
     self.register_comparators(config[HarnessConfiguration.COMPARATORS])
-
-CONFIGURATION_FILE = "PROV_HARNESS_CONFIGURATION_FILE"
-
-DEFAULT_CONFIGURATION_FILE="harness-configuration.yaml"
-
-configuration = None
-
-def configure_harness_from_file(file_name = None):
-  """Set up harness configuration.
-  Creates HarnessConfiguration and assigns to module variable ``configuration``.
-  The name of a YAML configuration file, with configuration required
-  by HarnessConfiguration can be provided.
-  If a file name not provided then an environment variable,
-  ``PROV_HARNESS_CONFIGURATION_FILE`` is checked to see if it holds a
-  file name. If not then the file name is assumed to be
-  ``harness-configuration.yaml``.
-  The file is loaded and the contents passed to ``HarnessConfiguration.configure``.
-  
-  :param file_name: Configuration file name (optional)
-  :type file_name: str or unicode
-  :raises ConfigError: if the configuration in the file does not
-  contain the configuration properties expected by
-  HarnessConfiguration, or is an invalid YAML file.
-  :raises IOError: if the file is not found.
-  """
-  global configuration
-  global CONFIGURATION_FILE
-  global DEFAULT_CONFIGURATION_FILE
-  configuration = HarnessConfiguration()
-  factory.configure_object(configuration, CONFIGURATION_FILE,
-                           DEFAULT_CONFIGURATION_FILE, file_name)

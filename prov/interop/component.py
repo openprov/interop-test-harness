@@ -1,4 +1,4 @@
-"""Base class, and related classes, for configurable components.
+"""Base class, related classes, and helpers for configurable components.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -21,6 +21,9 @@
 # ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
+
+import os
+import yaml
 
 class ConfigurableComponent(object):
   """Base class for configurable components."""
@@ -158,3 +161,33 @@ class ConfigError(Exception):
     :rtype: str or unicode
     """
     return repr(self._value)
+
+
+def load_configuration(env_var, default_file_name, file_name = None):
+  """Load configuration from a YAML file.
+  The name of a YAML configuration file, with configuration required by the
+  given object can be provided.
+  If a file name not provided then an environment variable, is 
+  checked to see if it holds a file name. If not then the file name is 
+  assumed to be the default.
+  
+  :type env_var: str or unicode
+  :param default_file_name: Default configuration file name
+  :type file_name: str or unicode
+  :param file_name: Configuration file name (optional)
+  :type file_name: str or unicode
+  :returns: configuration
+  :rtype: dict
+  :raises IOError: if the file is not found
+  :raises ConfigError: if the file does not parse into a dict
+  """
+  if (file_name is None):
+    try:
+      file_name = os.environ[env_var]
+    except KeyError:
+      file_name = default_file_name
+  with open(file_name, 'r') as f:
+    config = yaml.load(f)
+    if not type(config) is dict:
+      raise ConfigError(file_name + " does not contain a valid YAML document")
+    return config

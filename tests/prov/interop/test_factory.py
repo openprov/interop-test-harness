@@ -32,7 +32,7 @@ import yaml
 import prov.interop.factory as factory
 
 class Counter:
-  """Dummy class for testing FactoryUtilities."""
+  """Dummy class for testing factory functions."""
 
   def __init__(self):
     """Set counter to 0."""
@@ -50,19 +50,9 @@ class Counter:
     """
     return self._counter
 
-  def configure(self, config):
-    """Sets counter value.
-
-    :param config: dict with ``counter`` entry with new value for counter.
-    :type config: dict
-    :raises KeyError: if no ``counter`` entry in dict.
-    :raises TypeError: if ``config`` is not a dict
-    """
-    self._counter = int(config["counter"])
-
 
 class Value:
-  """Dummy class for testing FactoryUtilities."""
+  """Dummy class for testing factory functions."""
 
   def __init__(self, value):
     """Store value.
@@ -73,7 +63,7 @@ class Value:
     self._value = value
 
 
-class FactoryCreateTestCase(unittest.TestCase):
+class FactoryTestCase(unittest.TestCase):
 
   def test_get_class(self):
     my_module = self.__module__
@@ -115,58 +105,3 @@ class FactoryCreateTestCase(unittest.TestCase):
   def test_get_instance_non_zero_arity_constructor(self):
     with self.assertRaises(TypeError):
       factory.get_instance(str(self.__module__) + ".Value")
-
-
-class FactoryConfigureTestCase(unittest.TestCase):
-
-  def setUp(self):
-    self.counter = Counter()
-    self.config={"counter": 12345}
-    (_, self.yaml) = tempfile.mkstemp(suffix=".yaml")
-    with open(self.yaml, 'w') as yaml_file:
-      yaml_file.write(yaml.dump(self.config, default_flow_style=False))
-    self.env_var = "PROV_COUNTER"
-    self.default_file = os.path.join(os.getcwd(), "test_factory_default.yaml")
-
-  def tearDown(self):
-    if self.yaml != None and os.path.isfile(self.yaml):
-      os.remove(self.yaml)
-
-  def test_configure_object_from_file(self):
-    factory.configure_object(self.counter, 
-                             self.env_var,
-                             self.default_file,
-                             self.yaml)
-    self.assertEqual(12345, self.counter.get_counter())
-
-  def test_configure_object_from_env(self):
-    os.environ[self.env_var] = self.yaml
-    factory.configure_object(self.counter, 
-                             self.env_var,
-                             self.default_file,
-                             self.yaml)
-    self.assertEqual(12345, self.counter.get_counter())
-
-  def test_configure_object_from_default(self):
-    shutil.move(self.yaml, self.default_file)
-    self.yaml = self.default_file
-    factory.configure_object(self.counter, 
-                             self.env_var,
-                             self.default_file)
-    self.assertEqual(12345, self.counter.get_counter())
-
-  def test_configure_object_from_file_missing_file(self):
-    with self.assertRaises(IOError):
-      factory.configure_object(self.counter, 
-                               self.env_var,
-                               self.default_file,
-                               "nosuchfile.yaml")
-
-  def test_configure_object_from_file_non_yaml_file(self):
-    with open(self.yaml, 'w') as yaml_file:
-      yaml_file.write("This is an invalid YAML file")
-    with self.assertRaises(TypeError):
-      factory.configure_object(self.counter, 
-                               self.env_var,
-                               self.default_file,
-                               self.yaml)
