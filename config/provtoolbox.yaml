@@ -2,6 +2,8 @@
 ProvToolboxConverter: 
   class: prov.interop.provtoolbox.converter.ProvToolboxConverter
   executable: /home/user/ProvToolbox/bin/provconvert
+  # If using source release...
+  # executable: /home/user/ProvToolbox/toolbox/target/appassembler/bin/provconvert
   arguments: [-infile, INPUT, -outfile, OUTPUT]
   input-formats: [provn, ttl, trig, provx, json]
   output-formats: [provn, ttl, trig, provx, json]
