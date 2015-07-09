@@ -25,8 +25,8 @@
 import os
 import re
 
-from prov.interop.harness import HarnessResources
-from prov.interop import component
+from prov_interop.harness import HarnessResources
+from prov_interop import component
 
 CONFIGURATION_FILE = "PROV_HARNESS_CONFIGURATION_FILE"
 """str or unicode: environment variable holding interoperability test
@@ -39,13 +39,13 @@ file name
 """
 
 harness_resources = None
-""":class:`~prov.interop.harness.HarnessResources`:
+""":class:`~prov_interop.harness.HarnessResources`:
 interoperability test harness resources
 """
 
 def initialise_harness_from_file(file_name = None):
   """Initialise interoperability test harness.
-  Create :class:`~prov.interop.harness.HarnessResources` 
+  Create :class:`~prov_interop.harness.HarnessResources` 
   and assigns to module variable ``harness``. 
   - If ``file_name`` is provided then the contents of the file are
     loaded and used as configuration.
@@ -62,7 +62,7 @@ def initialise_harness_from_file(file_name = None):
   :raises IOError: if the file is not found.
   :raises ConfigError: if the configuration in the file does not
   contain the configuration properties expected by
-  :class:`~prov.interop.harness.HarnessResources`, or is an invalud
+  :class:`~prov_interop.harness.HarnessResources`, or is an invalud
   YAML file
   """
   global harness_resources

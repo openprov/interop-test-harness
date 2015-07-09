@@ -1,4 +1,4 @@
-"""Test classes for ``prov.interop.factory``.
+"""Test classes for ``prov_interop.factory``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -29,7 +29,7 @@ import tempfile
 import unittest
 import yaml
 
-import prov.interop.factory as factory
+import prov_interop.factory as factory
 
 class Counter:
   """Dummy class for testing factory functions."""

@@ -1,4 +1,4 @@
-"""Test classes for ``prov.interop.harness``.
+"""Test classes for ``prov_interop.harness``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -24,18 +24,18 @@
 
 import unittest
 
-from prov.interop import harness
-from prov.interop import standards
-from prov.interop.component import CommandLineComponent
-from prov.interop.component import ConfigurableComponent
-from prov.interop.component import ConfigError
-from prov.interop.converter import Converter
-from prov.interop.harness import HarnessResources
-from prov.interop.provpy.comparator import ProvPyComparator
+from prov_interop import harness
+from prov_interop import standards
+from prov_interop.component import CommandLineComponent
+from prov_interop.component import ConfigurableComponent
+from prov_interop.component import ConfigError
+from prov_interop.converter import Converter
+from prov_interop.harness import HarnessResources
+from prov_interop.provpy.comparator import ProvPyComparator
 
 def get_sample_configuration():
   """Return sample 
-  :class:`~prov.interop.harness.HarnessResources`-compliant dict.
+  :class:`~prov_interop.harness.HarnessResources`-compliant dict.
 
   :returns: configuration
   :rtype: dict

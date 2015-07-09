@@ -1,4 +1,4 @@
-"""Test classes for ``prov.interop.component``.
+"""Test classes for ``prov_interop.component``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -28,11 +28,11 @@ import tempfile
 import unittest
 import yaml
 
-from prov.interop.component import CommandLineComponent
-from prov.interop.component import ConfigurableComponent
-from prov.interop.component import ConfigError
-from prov.interop.component import RestComponent
-import prov.interop.component as component
+from prov_interop.component import CommandLineComponent
+from prov_interop.component import ConfigurableComponent
+from prov_interop.component import ConfigError
+from prov_interop.component import RestComponent
+import prov_interop.component as component
 
 class ConfigurableComponentTestCase(unittest.TestCase):
 

@@ -33,11 +33,11 @@ from nose.plugins.skip import Skip, SkipTest
 from nose.tools import nottest
 from nose.tools import istest
 
-from prov.interop import standards
-from prov.interop import component
-from prov.interop.provpy.converter import ProvPyConverter
-from prov.interop.provtoolbox.converter import ProvToolboxConverter
-from interoperability.prov.interop import harness
+from prov_interop import standards
+from prov_interop import component
+from prov_interop.provpy.converter import ProvPyConverter
+from prov_interop.provtoolbox.converter import ProvToolboxConverter
+from interoperability.prov_interop import harness
 
 @nottest
 class InteroperabilityTestBase(unittest.TestCase):

@@ -1,4 +1,4 @@
-"""Test classes for ``prov.interop.provpy.comparator``.
+"""Test classes for ``prov_interop.provpy.comparator``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -28,10 +28,10 @@ import re
 import tempfile
 import unittest
 
-from prov.interop import standards
-from prov.interop.comparator import ComparisonError
-from prov.interop.component import ConfigError
-from prov.interop.provpy.comparator import ProvPyComparator
+from prov_interop import standards
+from prov_interop.comparator import ComparisonError
+from prov_interop.component import ConfigError
+from prov_interop.provpy.comparator import ProvPyComparator
 
 class ProvPyComparatorTestCase(unittest.TestCase):
 

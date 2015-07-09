@@ -25,10 +25,10 @@
 import os.path
 import subprocess
 
-from prov.interop.component import CommandLineComponent
-from prov.interop.component import ConfigError
-from prov.interop.converter import ConversionError
-from prov.interop.converter import Converter
+from prov_interop.component import CommandLineComponent
+from prov_interop.component import ConfigError
+from prov_interop.converter import ConversionError
+from prov_interop.converter import Converter
 
 class ProvToolboxConverter(Converter, CommandLineComponent):
   """Manages invocation of ProvToolbox provconvert script."""
@@ -60,7 +60,7 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
         output-formats: [provn, ttl, trig, provx, json]
 
     Input and output formats must be as defined in
-    ``prov.interop.standards``.
+    ``prov_interop.standards``.
 
     :param config: Configuration
     :type config: dict
@@ -75,7 +75,7 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
   def convert(self, in_file, out_file):
     """Use provconvert to convert an input file into an output
     file. Each file must have an extension matching one of those
-    in ``prov.interop.standards``.
+    in ``prov_interop.standards``.
     ``executable`` and ``arguments`` in the configuration are used to
     create a command to execute at the shell. `
     ``INPUT`` and ``OUTPUT`` tokens are populated using

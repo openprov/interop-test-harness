@@ -29,7 +29,7 @@ import yaml
 def get_class(name):
   """Load class given a module-prefixed class name.
   A valid module-prefixed class name is, for example,
-  ``prov.interop.component.Component``. An invalid class name is
+  ``prov_interop.component.Component``. An invalid class name is
   ``Component``.
    
   :param name: Module-prefixed class name
@@ -51,7 +51,7 @@ def get_class(name):
 def get_instance(name):
   """Return instance of class given a module-prefixed class name.
   A valid module-prefixed class name is, for example,
-  ``prov.interop.component.Component``. An invalid class name is
+  ``prov_interop.component.Component``. An invalid class name is
   ``Component``. The class must have a 0-arity constructor.
 
   :param name: Module-prefixed class name

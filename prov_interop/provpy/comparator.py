@@ -27,11 +27,11 @@ import re
 import shutil
 import subprocess
 
-from prov.interop import standards
-from prov.interop.component import CommandLineComponent
-from prov.interop.component import ConfigError
-from prov.interop.comparator import ComparisonError
-from prov.interop.comparator import Comparator
+from prov_interop import standards
+from prov_interop.component import CommandLineComponent
+from prov_interop.component import ConfigError
+from prov_interop.comparator import ComparisonError
+from prov_interop.comparator import Comparator
 
 class ProvPyComparator(Comparator, CommandLineComponent):
   """Manages invocation of ProvPy prov-compare script."""
@@ -46,7 +46,7 @@ class ProvPyComparator(Comparator, CommandLineComponent):
   """string or unicode: token for file1 in command-line specification"""
   LOCAL_FORMATS = {standards.PROVX: "xml"}
   """list of string or unicode: list of mapping from formats in
-  ``prov.interop.standards`` to formats understood by prov-compare
+  ``prov_interop.standards`` to formats understood by prov-compare
 ` """
 
   def __init__(self):
@@ -64,12 +64,12 @@ class ProvPyComparator(Comparator, CommandLineComponent):
 
     For example::
 
-        class: prov.interop.provpy.comparator.ProvPyComparator
+        class: prov_interop.provpy.comparator.ProvPyComparator
         executable: python
         arguments: [/home/user/prov/scripts/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
         formats: [provx, json]
 
-    Formats must be as defined in ``prov.interop.standards``.
+    Formats must be as defined in ``prov_interop.standards``.
 
     :param config: Configuration
     :type config: dict
@@ -83,7 +83,7 @@ class ProvPyComparator(Comparator, CommandLineComponent):
 
   def compare(self, file1, file2):
     """Use prov-compare to compare two files. Each file must have an
-    extension matching one of those in ``prov.interop.standards``.
+    extension matching one of those in ``prov_interop.standards``.
     ``executable`` and ``arguments`` in the configuration are used to
     create a command to execute at the shell. ``FORMAT1``,
     ``FORMAT2``, ``FILE1`` and ``FILE2`` tokens are populated using
@@ -109,7 +109,7 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     for format in [format1, format2]:
       if not format in self.formats:
         raise ComparisonError("Unsupported format: " + format)
-    # Map prov.interop.standards formats to formats supported by prov-compare
+    # Map prov_interop.standards formats to formats supported by prov-compare
     local_file1 = file1
     local_format1 = format1
     if (format1 in ProvPyComparator.LOCAL_FORMATS):

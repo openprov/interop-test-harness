@@ -24,9 +24,9 @@
 
 import os
 
-from prov.interop import standards
-from prov.interop.component import ConfigError
-from prov.interop.component import ConfigurableComponent
+from prov_interop import standards
+from prov_interop.component import ConfigError
+from prov_interop.component import ConfigurableComponent
 
 class Comparator(ConfigurableComponent):
   """Base class for comparators."""
@@ -43,7 +43,7 @@ class Comparator(ConfigurableComponent):
   @property
   def formats(self):
     """Gets list of canonical formats supported by the comparator.
-   Formats are a subset of those in ``prov.interop.standards``.
+   Formats are a subset of those in ``prov_interop.standards``.
 
     :returns: formats
     :rtype: list of str or unicode
@@ -60,7 +60,7 @@ class Comparator(ConfigurableComponent):
 
         formats: [provx, json]
 
-    Formats must be as defined in ``prov.interop.standards``.
+    Formats must be as defined in ``prov_interop.standards``.
 
     :param config: Configuration
     :type config: dict
@@ -76,7 +76,7 @@ class Comparator(ConfigurableComponent):
 
   def compare(self, file1, file2):
     """Use comparator to compare two files. Each file must have an
-    extension matching one of those in ``prov.interop.standards``.
+    extension matching one of those in ``prov_interop.standards``.
 
     :param file1: File name
     :type file1: str or unicode

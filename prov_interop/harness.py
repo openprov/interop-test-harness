@@ -25,10 +25,10 @@
 import os
 import yaml
 
-from prov.interop import factory
-from prov.interop.comparator import Comparator
-from prov.interop.component import ConfigError
-from prov.interop.component import ConfigurableComponent
+from prov_interop import factory
+from prov_interop.comparator import Comparator
+from prov_interop.component import ConfigError
+from prov_interop.component import ConfigurableComponent
 
 class HarnessResources(ConfigurableComponent):
   """Interoperability test harness resources."""
@@ -63,24 +63,24 @@ class HarnessResources(ConfigurableComponent):
 
     :returns: comparators
     :rtype: dict from str or unicode to instances of
-    :class:`~prov.interop.comparator.Comparator`
+    :class:`~prov_interop.comparator.Comparator`
     """
     return self._comparators
 
   @property
   def format_comparators(self):
     """Gets dictionary of comparators keyed by formats.
-    Formats are as defined in ``prov.interop.standards``.
+    Formats are as defined in ``prov_interop.standards``.
 
     :returns: comparators
     :rtype: dict from str or unicode to instances of 
-      :class:`~prov.interop.comparator.Comparator`
+      :class:`~prov_interop.comparator.Comparator`
     """
     return self._format_comparators
 
   def register_comparators(self, comparators):
     """Populate dictionaries mapping both comparator names and formats 
-    to instances of :class:`~prov.interop.comparator.Comparator`.
+    to instances of :class:`~prov_interop.comparator.Comparator`.
 
     ``comparators`` must be a dictionary with entries of form::
 
@@ -91,7 +91,7 @@ class HarnessResources(ConfigurableComponent):
     For example::
 
         ProvPyComparator: 
-          class: prov.interop.provpy.comparator.ProvPyComparator
+          class: prov_interop.provpy.comparator.ProvPyComparator
           executable: python
           arguments: [/home/user/prov/scripts/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
           formats: [provx, json]
@@ -102,7 +102,7 @@ class HarnessResources(ConfigurableComponent):
     :raises ConfigError: if ``comparators`` is empty,
     comparator-specific configuration is missing ``class``, or there
     is a problem loading, creating or configuring an instance of a 
-    sub-class of :class:`~prov.interop.comparator.Comparator`.
+    sub-class of :class:`~prov_interop.comparator.Comparator`.
     """
     if len(comparators) == 0:
       raise ConfigError("There must be at least one comparator defined")
@@ -135,7 +135,7 @@ class HarnessResources(ConfigurableComponent):
         test-cases: /home/user/interop/test-cases
         comparators:
           ProvPyComparator: 
-            class: prov.interop.provpy.comparator.ProvPyComparator
+            class: prov_interop.provpy.comparator.ProvPyComparator
             executable: python
             arguments: [/home/user/prov/scripts/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
             formats: [provx, json]

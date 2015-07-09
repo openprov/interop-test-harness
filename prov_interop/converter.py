@@ -24,9 +24,9 @@
 
 import os
 
-from prov.interop import standards
-from prov.interop.component import ConfigError
-from prov.interop.component import ConfigurableComponent
+from prov_interop import standards
+from prov_interop.component import ConfigError
+from prov_interop.component import ConfigurableComponent
 
 class Converter(ConfigurableComponent):
   """Base class for converters."""
@@ -46,7 +46,7 @@ class Converter(ConfigurableComponent):
   @property
   def input_formats(self):
     """Gets list of input formats supported by the converter.
-   Formats are a subset of those in ``prov.interop.standards``.
+   Formats are a subset of those in ``prov_interop.standards``.
 
     :returns: formats
     :rtype: list of str or unicode
@@ -56,7 +56,7 @@ class Converter(ConfigurableComponent):
   @property
   def output_formats(self):
     """Gets list of canonical ouput formats supported by the converter.
-   Formats are a subset of those in ``prov.interop.standards``.
+   Formats are a subset of those in ``prov_interop.standards``.
 
     :returns: formats
     :rtype: list of str or unicode
@@ -75,7 +75,7 @@ class Converter(ConfigurableComponent):
         input-formats: [provn, provx, json]
         output-formats: [provn, provx, json]
 
-    Formats must be as defined in ``prov.interop.standards``.
+    Formats must be as defined in ``prov_interop.standards``.
 
     :param config: Configuration
     :type config: dict
@@ -95,7 +95,7 @@ class Converter(ConfigurableComponent):
   def convert(self, in_file, out_file):
     """Use converter to convert an input file into an output
     file. Each file must have an extension matching one of those
-    in ``prov.interop.standards``.
+    in ``prov_interop.standards``.
 
     :param in_file: Input file name
     :type in_file: str or unicode

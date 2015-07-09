@@ -1,4 +1,4 @@
-"""Test classes for ``prov.interop.converter``.
+"""Test classes for ``prov_interop.converter``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -26,10 +26,10 @@ import os
 import tempfile
 import unittest
 
-from prov.interop import standards
-from prov.interop.component import ConfigError
-from prov.interop.converter import ConversionError
-from prov.interop.converter import Converter
+from prov_interop import standards
+from prov_interop.component import ConfigError
+from prov_interop.converter import ConversionError
+from prov_interop.converter import Converter
 
 class ConverterTestCase(unittest.TestCase):
 

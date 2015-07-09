@@ -1,6 +1,6 @@
 ---
 ProvStoreConverter:
-  class: prov.interop.provstore.converter.ProvTranslatorConverter
+  class: prov_interop.provstore.converter.ProvTranslatorConverter
   url: https://provenance.ecs.soton.ac.uk/store/api/v0/documents/
   api-key: mikej888:XXXXXXXX
   # Formats must be in set [json, provn, provx, trig, ttl]
