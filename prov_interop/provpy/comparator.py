@@ -109,41 +109,30 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     for format in [format1, format2]:
       if not format in self.formats:
         raise ComparisonError("Unsupported format: " + format)
-    # Map prov_interop.standards formats to formats supported by prov-compare
-    local_file1 = file1
+    # Map prov_interop.standards formats to formats supported by 
+    # prov-compare
     local_format1 = format1
     if (format1 in ProvPyComparator.LOCAL_FORMATS):
       local_format1 = ProvPyComparator.LOCAL_FORMATS[format1]
-      local_file1 = re.sub(format1 + "$", local_format1, file1)
-      shutil.copy(file1, local_file1)
-    local_file2 = file2
     local_format2 = format2
     if (format2 in ProvPyComparator.LOCAL_FORMATS):
       local_format2 = ProvPyComparator.LOCAL_FORMATS[format2]
-      local_file2 = re.sub(format2 + "$", local_format2, file2)
-      shutil.copy(file2, local_file2)
     # Replace tokens in arguments
     command_line = [local_format1 if x==ProvPyComparator.FORMAT1 else x 
                     for x in self._arguments]
     command_line = [local_format2 if x==ProvPyComparator.FORMAT2 else x 
                     for x in command_line]
-    command_line = [local_file1 if x==ProvPyComparator.FILE1 else x 
+    command_line = [file1 if x==ProvPyComparator.FILE1 else x 
                     for x in command_line]
-    command_line = [local_file2 if x==ProvPyComparator.FILE2 else x 
+    command_line = [file2 if x==ProvPyComparator.FILE2 else x 
                     for x in command_line]
     command_line.insert(0, self.executable)
     # Execute
-    try:
-      print(" ".join(command_line))
-      return_code = subprocess.call(command_line)
-      if return_code == 0:
-        return True
-      elif return_code == 1:
-        return False
-      else:
-        raise ComparisonError(self._executable + " returned " + str(return_code))
-    finally:
-      if (local_file1 != file1) and os.path.isfile(local_file1):
-        os.remove(local_file1)
-      if (local_file2 != file2) and os.path.isfile(local_file2):
-        os.remove(local_file2)
+    print(" ".join(command_line))
+    return_code = subprocess.call(command_line)
+    if return_code == 0:
+      return True
+    elif return_code == 1:
+      return False
+    else:
+      raise ComparisonError(self._executable + " returned " + str(return_code))
