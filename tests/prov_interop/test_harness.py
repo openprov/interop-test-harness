@@ -24,7 +24,6 @@
 
 import unittest
 
-from prov_interop import harness
 from prov_interop import standards
 from prov_interop.component import CommandLineComponent
 from prov_interop.component import ConfigurableComponent
