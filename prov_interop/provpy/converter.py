@@ -65,7 +65,7 @@ class ProvPyConverter(Converter, CommandLineComponent):
 
         executable: python
         arguments: [/home/user/prov/scripts/prov-convert, -f, FORMAT, INPUT, OUTPUT]
-        input-formats: [provn, provx, json]
+        input-formats: [json]
         output-formats: [provn, provx, json]
 
     Input and output formats must be as defined in

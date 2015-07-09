@@ -4,6 +4,6 @@ ProvPyConverter:
   executable: python
   arguments: [PROVPY_SCRIPTS_DIR/prov-convert, -f, FORMAT, INPUT, OUTPUT]
   # Formats must be in set [json, provn, provx, trig, ttl]
-  input-formats: [provn, provx, json]
+  input-formats: [json]
   output-formats: [provn, provx, json]
   skip-tests: [1, 4]

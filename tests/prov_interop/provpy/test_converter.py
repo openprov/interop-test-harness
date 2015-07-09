@@ -49,7 +49,7 @@ class ProvPyConverterTestCase(unittest.TestCase):
       "-f", ProvPyConverter.FORMAT, 
       ProvPyConverter.INPUT, ProvPyConverter.OUTPUT]
     self.config[ProvPyConverter.INPUT_FORMATS] = [
-      standards.PROVN, standards.PROVX, standards.JSON]
+      standards.JSON]
     self.config[ProvPyConverter.OUTPUT_FORMATS] = [
       standards.PROVN, standards.PROVX, standards.JSON]
 
@@ -97,12 +97,6 @@ class ProvPyConverterTestCase(unittest.TestCase):
     self.out_file = "convert." + standards.PROVN
     self.provpy.convert(self.in_file, self.out_file)
 
-  def test_convert_non_canonical_input(self):
-    self.provpy.configure(self.config)
-    (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.PROVX)
-    self.out_file = "convert." + standards.JSON
-    self.provpy.convert(self.in_file, self.out_file)
-
   def test_convert_non_canonical_output(self):
     self.provpy.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
@@ -120,7 +114,7 @@ class ProvPyConverterTestCase(unittest.TestCase):
   def test_convert_missing_input_file(self):
     self.provpy.configure(self.config)
     self.in_file = "nosuchfile.json"
-    self.out_file = "convert_missing_input_file." + standards.PROVN
+    self.out_file = "convert_missing_input_file." + standards.JSON
     with self.assertRaises(ConversionError):
       self.provpy.convert(self.in_file, self.out_file)
 

@@ -72,7 +72,7 @@ class Converter(ConfigurableComponent):
 
     For example::
 
-        input-formats: [provn, provx, json]
+        input-formats: [json]
         output-formats: [provn, provx, json]
 
     Formats must be as defined in ``prov_interop.standards``.
