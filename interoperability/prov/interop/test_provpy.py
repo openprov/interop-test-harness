@@ -28,10 +28,8 @@ import re
 import tempfile
 import unittest
 
-from nose.plugins.errorclass import ErrorClass, ErrorClassPlugin
-
-
 from nose_parameterized import parameterized
+from nose.plugins.skip import Skip, SkipTest
 from nose.tools import nottest
 from nose.tools import istest
 
@@ -46,6 +44,7 @@ class InteroperabilityTestBase(unittest.TestCase):
 
   def setUp(self):
     super(InteroperabilityTestBase, self).setUp()
+    print(self.__class__.__name__)
     self.converter = None
 
   def configure(self, converter, config_file_key, converter_key, 
@@ -60,14 +59,16 @@ class InteroperabilityTestBase(unittest.TestCase):
     converter.configure(config[converter_key])
 
   @parameterized.expand(harness.get_test_cases())
-  def test_case(self, test_case_name, dir_name):
-    print("Test case name: ", test_case_name)
-    # if test_case_name digit in converter.configuration["skip_tests"]:
-    #   pass # But don't want test even to run
-    # FOR EACH test_case NOT IN skip-tests:
-    #   Enumerate set of (ext_in, ext_out) pairs based on test_case formats.
-    #   Enumerate set of (ext_in, ext_out) pairs based on converter input and output formats.
-    #   FOR EACH (ext_in, ext_out) pair IN intersection of sets:
+  def test_case(self, test_case_index, test_case_name, dir_name):
+    print("Test case name: " + test_case_name)
+    if test_case_index in self.converter.configuration["skip-tests"]:
+      print("Skipping")
+      raise SkipTest("Test case " + str(test_case_index) +
+                     " in " + self.converter.__class__.__name__ + 
+                     " skip-tests")
+    # Enumerate set of (ext_in, ext_out) pairs based on test_case formats.
+    # Enumerate set of (ext_in, ext_out) pairs based on converter input and output formats.
+    # FOR EACH (ext_in, ext_out) pair IN intersection of sets:
     ext_in = standards.JSON
     ext_out = standards.PROVX
     test_case_ext_in = os.path.join(dir_name, test_case_name + "." + ext_in)

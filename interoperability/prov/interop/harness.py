@@ -23,6 +23,7 @@
 # SOFTWARE.  
 
 import os
+import re
 
 from prov.interop.harness import HarnessResources
 from prov.interop import component
@@ -84,7 +85,8 @@ def add_test_cases():
   for f in os.listdir(test_cases):
     file_name = os.path.join(test_cases, f)
     if os.path.isdir(file_name) and f.startswith("test"):
-      files.append((f, file_name,))
+      index = int(re.findall(r'\d+$', f)[0])
+      files.append((index, f, file_name,))
   print(files)
   harness_resources.configuration["test-case-files"] = files
   return files
