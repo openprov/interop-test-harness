@@ -90,7 +90,8 @@ class InteroperabilityTestBase(unittest.TestCase):
     converter_ext_out = "out." + ext_out
     self.converter.convert(file_ext_in, converter_ext_out)
     comparator = harness.harness_resources.format_comparators[ext_out]
-    self.assertTrue(comparator.compare(file_ext_out, converter_ext_out), msg="Did not match")
+    self.assertTrue(comparator.compare(file_ext_out, converter_ext_out), 
+                    msg=ext_out + " file produced by converter did not match canonical " + file_ext_out)
 
 @istest
 class ProvPyInteroperabilityTestCase(InteroperabilityTestBase):
