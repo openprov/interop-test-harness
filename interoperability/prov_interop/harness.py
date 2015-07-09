@@ -35,7 +35,7 @@ CONFIGURATION_FILE = "PROV_HARNESS_CONFIGURATION_FILE"
 harness configuration file name
 """
 
-DEFAULT_CONFIGURATION_FILE="harness-configuration.yaml"
+DEFAULT_CONFIGURATION_FILE="localconfig/harness-configuration.yaml"
 """str or unicode: default interoperability test harness configuration
 file name
 """
@@ -126,6 +126,5 @@ def initialise_test_cases():
       test_cases.extend(test_case_tests)
   print(str(len(test_cases)) + " test cases registered")
 
-os.environ[CONFIGURATION_FILE] = "localconfig/harness-configuration.yaml"
 initialise_harness_from_file()
 initialise_test_cases()
