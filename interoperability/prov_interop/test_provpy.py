@@ -40,6 +40,12 @@ from prov_interop.provpy.converter import ProvPyConverter
 from prov_interop.provtoolbox.converter import ProvToolboxConverter
 from interoperability.prov_interop import harness
 
+def test_case_name_func(testcase_func, param_num, param):
+  (index, ext_in, _, ext_out, _) =  param.args
+  return "%s_%s" %(
+    testcase_func.__name__,
+    parameterized.to_safe_name(str(index) + "_" + ext_in + "_" + ext_out))
+
 @nottest
 class InteroperabilityTestBase(unittest.TestCase):
 
@@ -71,9 +77,9 @@ class InteroperabilityTestBase(unittest.TestCase):
                      " not in " + self.converter.__class__.__name__ + 
                      " " + format_type)
 
-  @parameterized.expand(harness.test_cases)
+  @parameterized.expand(harness.test_cases, testcase_func_name=test_case_name_func)
   def test_case(self, index, ext_in, file_ext_in, ext_out, file_ext_out):
-    print("Test case: " + str(index))
+    print("Test case: " + str(index) + " from " + ext_in + " to " + ext_out)
     if index in self.converter.configuration["skip-tests"]:
       self.skip_member_of_skip_set(index)
     if (not ext_in in self.converter.input_formats):
