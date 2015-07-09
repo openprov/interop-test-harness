@@ -28,6 +28,9 @@ import re
 import tempfile
 import unittest
 
+from nose.plugins.errorclass import ErrorClass, ErrorClassPlugin
+
+
 from nose_parameterized import parameterized
 from nose.tools import nottest
 from nose.tools import istest
