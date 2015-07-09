@@ -22,6 +22,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+import os
+
 from prov.interop.harness import HarnessResources
 from prov.interop import component
 
@@ -74,3 +76,23 @@ def initialise_harness_from_file(file_name = None):
     harness_resources.configure(config)
   else:
     print("HarnessResources already initialised")
+
+def add_test_cases():
+  global harness_resources
+  test_cases = harness_resources.configuration["test-cases"]
+  files = []
+  for f in os.listdir(test_cases):
+    file_name = os.path.join(test_cases, f)
+    if os.path.isdir(file_name) and f.startswith("test"):
+      files.append((f, file_name,))
+  print(files)
+  harness_resources.configuration["test-case-files"] = files
+  return files
+
+def get_test_cases():
+  global harness_resources
+  return harness_resources.configuration["test-case-files"]
+
+os.environ[CONFIGURATION_FILE] = "localconfig/harness-configuration.yaml"
+initialise_harness_from_file()
+add_test_cases()
