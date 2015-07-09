@@ -30,12 +30,12 @@ from prov_interop import component
 from prov_interop import standards
 from prov_interop.component import ConfigError
 
-CONFIGURATION_FILE = "PROV_HARNESS_CONFIGURATION_FILE"
+CONFIGURATION_FILE_ENV = "PROV_HARNESS_CONFIGURATION"
 """str or unicode: environment variable holding interoperability test
 harness configuration file name
 """
 
-DEFAULT_CONFIGURATION_FILE="localconfig/harness-configuration.yaml"
+DEFAULT_CONFIGURATION_FILE="localconfig/harness.yaml"
 """str or unicode: default interoperability test harness configuration
 file name
 """
@@ -66,10 +66,10 @@ def initialise_harness_from_file(file_name = None):
   - If ``file_name`` is provided then the contents of the file are
     loaded and used as configuration.
   - Else, if an environment variable with name
-    ``PROV_HARNESS_CONFIGURATION_FILE`` is defined, then the contents
+    ``PROV_HARNESS_CONFIGURATION`` is defined, then the contents
     of the file named in that variable are loaded and used.
-  - Else, the contents of the default file,
-    ``harness-configuration.yaml``,  are loaded and used.
+  - Else, the contents of the default file, ``harness.yaml``, 
+    are loaded and used.
   If ``harness`` has already been created and initialised, this
   function does nothing.
 
@@ -82,11 +82,11 @@ def initialise_harness_from_file(file_name = None):
   YAML file
   """
   global harness_resources
-  global CONFIGURATION_FILE
+  global CONFIGURATION_FILE_ENV
   global DEFAULT_CONFIGURATION_FILE
   if harness_resources is None:
     harness_resources = HarnessResources()
-    config = component.load_configuration(CONFIGURATION_FILE,
+    config = component.load_configuration(CONFIGURATION_FILE_ENV,
                                           DEFAULT_CONFIGURATION_FILE, 
                                           file_name)
     harness_resources.configure(config)

@@ -22,109 +22,31 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE. 
 
-import inspect
-import os
-import re
-import tempfile
-import unittest
-
-from nose_parameterized import parameterized
-from nose.plugins.skip import Skip, SkipTest
-from nose.tools import nottest
 from nose.tools import istest
 
-from prov_interop import standards
-from prov_interop import component
-from prov_interop.converter import Converter
 from prov_interop.provpy.converter import ProvPyConverter
-from prov_interop.provtoolbox.converter import ProvToolboxConverter
-from interoperability.prov_interop import harness
-
-@nottest
-def test_case_name(testcase_func, param_num, param):
-  (index, ext_in, _, ext_out, _) =  param.args
-  return "%s_%s" %(
-    testcase_func.__name__,
-    parameterized.to_safe_name(str(index) + "_" + ext_in + "_" + ext_out))
-
-@nottest
-class InteroperabilityTestBase(unittest.TestCase):
-
-  def setUp(self):
-    super(InteroperabilityTestBase, self).setUp()
-    print(self.__class__.__name__)
-    self.converter = None
-
-  def configure(self, converter, config_file_key, converter_key, 
-                env_var, default_file_name):
-    config_file_name = harness.harness_resources.configuration[config_file_key]
-    # TODO check and raise error if missing
-    config = component.load_configuration( 
-      env_var,
-      default_file_name,
-      config_file_name)
-    # TODO check and raise error if missing
-    converter.configure(config[converter_key])
-
-  def skip_member_of_skip_set(self, index):
-    print("Skipping as " + str(index) + " in skip-tests")
-    raise SkipTest("Test case " + str(index) +
-                   " in " + self.converter.__class__.__name__ + 
-                   " skip-tests")
-
-  def skip_unsupported_format(self, index, format, format_type):
-      print("Skipping as " + format + " not in converter's " + format_type)
-      raise SkipTest("Format " + format +
-                     " not in " + self.converter.__class__.__name__ + 
-                     " " + format_type)
-
-  @parameterized.expand(harness.test_cases, testcase_func_name=test_case_name)
-  def test_case(self, index, ext_in, file_ext_in, ext_out, file_ext_out):
-    print("Test case: " + str(index) + " from " + ext_in + " to " + ext_out)
-    if index in self.converter.configuration["skip-tests"]:
-      self.skip_member_of_skip_set(index)
-    if (not ext_in in self.converter.input_formats):
-      self.skip_unsupported_format(index, ext_in, Converter.INPUT_FORMATS)
-    if (not ext_out in self.converter.output_formats):
-      self.skip_unsupported_format(index, ext_out, Converter.OUTPUT_FORMATS)
-    converter_ext_out = "out." + ext_out
-    self.converter.convert(file_ext_in, converter_ext_out)
-    comparator = harness.harness_resources.format_comparators[ext_out]
-    self.assertTrue(comparator.compare(file_ext_out, converter_ext_out), 
-                    msg=ext_out + " file produced by converter did not match canonical " + file_ext_out)
+from interoperability.prov_interop.converter import ConverterTestCase
 
 @istest
-class ProvPyInteroperabilityTestCase(InteroperabilityTestBase):
+class ProvPyTestCase(ConverterTestCase):
+
+  CONFIGURATION_FILE_ENV = "PROVPY_TEST_CONFIGURATION"
+  """str or unicode: environment variable holding ProvPy
+  interoperability test harness configuration file name  
+  """
+
+  DEFAULT_CONFIGURATION_FILE="localconfig/provpy.yaml"
+  """str or unicode: default interoperability test harness configuration
+  file name
+  """
 
   def setUp(self):
     # TODO initialise converter only once?
-    super(ProvPyInteroperabilityTestCase, self).setUp()
-    self.provpy = ProvPyConverter()
-    super(ProvPyInteroperabilityTestCase, self).configure(
-      self.provpy, 
-      "ProvPy",
-      "ProvPyConverter",
-      "PROV_PROVPY_CONFIGURATION_FILE",
-      "provpy-configuration.yaml")
-    self.converter = self.provpy
+    super(ProvPyTestCase, self).setUp()
+    self.converter = ProvPyConverter()
+    super(ProvPyTestCase, self).configure(
+      ProvPyTestCase.CONFIGURATION_FILE_ENV,
+      ProvPyTestCase.DEFAULT_CONFIGURATION_FILE)
 
   def tearDown(self):
-    super(ProvPyInteroperabilityTestCase, self).tearDown()
-
-@istest
-class ProvToolboxInteroperabilityTestCase(InteroperabilityTestBase):
-
-  def setUp(self):
-    # TODO initialise converter only once?
-    super(ProvToolboxInteroperabilityTestCase, self).setUp()
-    self.provtoolbox = ProvToolboxConverter()
-    super(ProvToolboxInteroperabilityTestCase, self).configure(
-      self.provtoolbox, 
-      "ProvToolbox",
-      "ProvToolboxConverter",
-      "PROV_PROVTOOLBOX_CONFIGURATION_FILE",
-      "provtoolbox-configuration.yaml")
-    self.converter = self.provtoolbox
-
-  def tearDown(self):
-    super(ProvToolboxInteroperabilityTestCase, self).tearDown()
+    super(ProvPyTestCase, self).tearDown()
