@@ -101,27 +101,28 @@ def initialise_test_cases():
   global test_cases
   pattern = re.compile("^" + TEST_CASE_PREFIX + "\d+$")
   index_pattern = re.compile("\d+$")
-  test_cases_dir = harness_resources.configuration["test-cases"]
+  test_cases_dir = harness_resources.configuration[HarnessResources.TEST_CASES]
   print("Registering test cases in " + test_cases_dir)
   test_cases = []
   for test_case in sorted(os.listdir(test_cases_dir)):
     test_case_dir = os.path.join(test_cases_dir, test_case)
-    # Only consider directories of form testcaseNNNN
+    # Only consider directories of form testcaseNNNN.
     if not pattern.match(test_case) is None and os.path.isdir(test_case_dir):
       index = int(index_pattern.search(test_case).group(0))
       files = []
       for test_file in sorted(os.listdir(test_case_dir)):
         format = os.path.splitext(test_file)[1][1:]
         # Only consider files with the supported extensions and for
-        # which a comparator exists
+        # which a comparator exists.
         if format in standards.FORMATS and \
               format in harness_resources.format_comparators:
           files.append((format, os.path.join(test_case_dir, test_file)))
-      # Create all-pairs combination of the files
+      # Create all-pairs combination of the files,
       test_case_tests = [(index, format1, file1, format2, file2) \
           for (format1, file1) in files for (format2, file2) in files]
       for (_, format1, _, format2, _) in test_case_tests:
         print(test_case + ":" + format1 + "->" + format2)
+      # Add to current list of all test cases
       test_cases.extend(test_case_tests)
   print(str(len(test_cases)) + " test cases registered")
 
