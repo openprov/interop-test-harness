@@ -35,6 +35,7 @@ from nose.tools import istest
 
 from prov_interop import standards
 from prov_interop import component
+from prov_interop.converter import Converter
 from prov_interop.provpy.converter import ProvPyConverter
 from prov_interop.provtoolbox.converter import ProvToolboxConverter
 from interoperability.prov_interop import harness
@@ -58,26 +59,31 @@ class InteroperabilityTestBase(unittest.TestCase):
     # TODO check and raise error if missing
     converter.configure(config[converter_key])
 
-  @parameterized.expand(harness.get_test_cases())
-  def test_case(self, test_case_index, test_case_name, dir_name):
-    print("Test case name: " + test_case_name)
-    if test_case_index in self.converter.configuration["skip-tests"]:
-      print("Skipping")
-      raise SkipTest("Test case " + str(test_case_index) +
-                     " in " + self.converter.__class__.__name__ + 
-                     " skip-tests")
-    # Enumerate set of (ext_in, ext_out) pairs based on test_case formats.
-    # Enumerate set of (ext_in, ext_out) pairs based on converter input and output formats.
-    # FOR EACH (ext_in, ext_out) pair IN intersection of sets:
-    ext_in = standards.JSON
-    ext_out = standards.PROVX
-    test_case_ext_in = os.path.join(dir_name, test_case_name + "." + ext_in)
-    converters_ext_out = "out." + ext_out
-    self.converter.convert(test_case_ext_in, converters_ext_out)
+  def skip_member_of_skip_set(self, index):
+    print("Skipping as " + str(index) + " in skip-tests")
+    raise SkipTest("Test case " + str(index) +
+                   " in " + self.converter.__class__.__name__ + 
+                   " skip-tests")
+
+  def skip_unsupported_format(self, index, format, format_type):
+      print("Skipping as " + format + " not in converter's " + format_type)
+      raise SkipTest("Format " + format +
+                     " not in " + self.converter.__class__.__name__ + 
+                     " " + format_type)
+
+  @parameterized.expand(harness.test_cases)
+  def test_case(self, index, ext_in, file_ext_in, ext_out, file_ext_out):
+    print("Test case: " + str(index))
+    if index in self.converter.configuration["skip-tests"]:
+      self.skip_member_of_skip_set(index)
+    if (not ext_in in self.converter.input_formats):
+      self.skip_unsupported_format(index, ext_in, Converter.INPUT_FORMATS)
+    if (not ext_out in self.converter.output_formats):
+      self.skip_unsupported_format(index, ext_out, Converter.OUTPUT_FORMATS)
+    converter_ext_out = "out." + ext_out
+    self.converter.convert(file_ext_in, converter_ext_out)
     comparator = harness.harness_resources.format_comparators[ext_out]
-    test_case_ext_out = os.path.join(dir_name, test_case_name + "." + ext_out)
-    # Record comparator result.
-    self.assertTrue(comparator.compare(test_case_ext_out, converters_ext_out))
+    self.assertTrue(comparator.compare(file_ext_out, converter_ext_out), msg="Did not match")
 
 @istest
 class ProvPyInteroperabilityTestCase(InteroperabilityTestBase):
