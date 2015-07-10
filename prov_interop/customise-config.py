@@ -70,6 +70,8 @@ with open(args.replacements) as f:
 if os.path.isfile(original):
   customise_file(original, copy, replacements)
 else:
+  if not os.path.isdir(copy):
+    os.mkdir(copy)
   for f in os.listdir(original):
     file_name = os.path.join(original, f)
     if os.path.isfile(file_name):
