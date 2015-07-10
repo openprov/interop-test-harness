@@ -63,9 +63,10 @@ copy = args.copy
 replacements = {}
 with open(args.replacements) as f:
   for line in f:
-    line = line.rstrip()
-    [old, new] = line.split("=")
-    replacements[old] = new
+    if not line.startswith("#"):
+      line = line.rstrip()
+      [old, new] = line.split("=")
+      replacements[old] = new
 
 if os.path.isfile(original):
   customise_file(original, copy, replacements)
