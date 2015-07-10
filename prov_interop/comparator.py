@@ -69,7 +69,7 @@ class Comparator(ConfigurableComponent):
     super(Comparator, self).configure(config)
     Comparator.check_configuration(config, [Comparator.FORMATS])
     for format in config[Comparator.FORMATS]:
-      if not format in standards.FORMATS:
+      if format not in standards.FORMATS:
         raise ConfigError("Unrecognised format in " + Comparator.FORMATS +
                           ":" + format)
     self._formats = config[Comparator.FORMATS]

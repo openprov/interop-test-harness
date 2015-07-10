@@ -107,7 +107,7 @@ def initialise_test_cases():
   for test_case in sorted(os.listdir(test_cases_dir)):
     test_case_dir = os.path.join(test_cases_dir, test_case)
     # Only consider directories of form testcaseNNNN.
-    if not pattern.match(test_case) is None and os.path.isdir(test_case_dir):
+    if pattern.match(test_case) is not None and os.path.isdir(test_case_dir):
       index = int(index_pattern.search(test_case).group(0))
       files = []
       for test_file in sorted(os.listdir(test_case_dir)):

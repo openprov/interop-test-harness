@@ -49,7 +49,7 @@ class ConfigurableComponent(object):
     :type config: dict
     :raises ConfigError: if config is not a dict
     """
-    if not type(config) is dict:
+    if type(config) is not dict:
       raise ConfigError("config must be a dictionary")
     self._config = config
 
@@ -64,7 +64,7 @@ class ConfigurableComponent(object):
     :raises ConfigError: if config does not contain one of the keys
     """
     for key in keys:
-      if not key in config:
+      if key not in config:
         raise ConfigError("Missing " + key)
 
 
@@ -213,6 +213,6 @@ def load_configuration(env_var, default_file_name, file_name = None):
       file_name = default_file_name
   with open(file_name, 'r') as f:
     config = yaml.load(f)
-    if not type(config) is dict:
+    if type(config) is not dict:
       raise ConfigError(file_name + " does not contain a valid YAML document")
     return config

@@ -104,9 +104,9 @@ class ProvPyConverter(Converter, CommandLineComponent):
     super(ProvPyConverter, self).convert(in_file, out_file)
     in_format = os.path.splitext(in_file)[1][1:]
     out_format = os.path.splitext(out_file)[1][1:]
-    if not in_format in self.input_formats:
+    if in_format not in self.input_formats:
       raise ConversionError("Unsupported input format: " + in_format)
-    if not out_format in self.output_formats:
+    if out_format not in self.output_formats:
       raise ConversionError("Unsupported input format: " + out_format)
     # Map prov_interop.standards output format to format supported 
     # by prov-convert

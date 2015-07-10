@@ -86,7 +86,7 @@ class Converter(ConfigurableComponent):
       config, [Converter.INPUT_FORMATS, Converter.OUTPUT_FORMATS])
     for key in [Converter.INPUT_FORMATS, Converter.OUTPUT_FORMATS]:
       for format in config[key]:
-        if not format in standards.FORMATS:
+        if format not in standards.FORMATS:
           raise ConfigError("Unrecognised format in " + key +
                             ":" + format)
     self._input_formats = config[Converter.INPUT_FORMATS]
