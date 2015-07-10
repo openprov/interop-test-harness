@@ -1,4 +1,4 @@
-"""Interoperability tests for ProvToolbox provconvert.
+"""Interoperability tests for ProvPy prov-convert.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -24,29 +24,29 @@
 
 from nose.tools import istest
 
-from prov_interop.provtoolbox.converter import ProvToolboxConverter
-from interoperability.prov_interop.converter import ConverterTestCase
+from prov_interop.provpy.converter import ProvPyConverter
+from prov_interop.interop_tests.converter import ConverterTestCase
 
 @istest
-class ProvToolboxTestCase(ConverterTestCase):
+class ProvPyTestCase(ConverterTestCase):
 
-  CONFIGURATION_FILE_ENV = "PROVTOOLBOX_TEST_CONFIGURATION"
-  """str or unicode: environment variable holding ProvToolbox
-  interoperability test harness configuration file name
+  CONFIGURATION_FILE_ENV = "PROVPY_TEST_CONFIGURATION"
+  """str or unicode: environment variable holding ProvPy
+  interoperability test harness configuration file name  
   """
 
-  DEFAULT_CONFIGURATION_FILE="localconfig/provtoolbox.yaml"
+  DEFAULT_CONFIGURATION_FILE="localconfig/provpy.yaml"
   """str or unicode: default interoperability test harness configuration
   file name
   """
 
   def setUp(self):
     # TODO initialise converter only once?
-    super(ProvToolboxTestCase, self).setUp()
-    self.converter = ProvToolboxConverter()
-    super(ProvToolboxTestCase, self).configure(
-      ProvToolboxTestCase.CONFIGURATION_FILE_ENV,
-      ProvToolboxTestCase.DEFAULT_CONFIGURATION_FILE)
+    super(ProvPyTestCase, self).setUp()
+    self.converter = ProvPyConverter()
+    super(ProvPyTestCase, self).configure(
+      ProvPyTestCase.CONFIGURATION_FILE_ENV,
+      ProvPyTestCase.DEFAULT_CONFIGURATION_FILE)
 
   def tearDown(self):
-    super(ProvToolboxTestCase, self).tearDown()
+    super(ProvPyTestCase, self).tearDown()

@@ -36,7 +36,7 @@ from nose.tools import istest
 from prov_interop import standards
 from prov_interop.component import load_configuration
 from prov_interop.converter import Converter
-from interoperability.prov_interop import harness
+from prov_interop.interop_tests import harness
 
 @nottest
 def test_case_name(testcase_func, param_num, param):
