@@ -78,7 +78,7 @@ def initialise_harness_from_file(file_name = None):
   :raises IOError: if the file is not found.
   :raises ConfigError: if the configuration in the file does not
   contain the configuration properties expected by
-  :class:`~prov_interop.harness.HarnessResources`, or is an invalud
+  :class:`~prov_interop.harness.HarnessResources`, or is an invalid
   YAML file
   """
   global harness_resources
