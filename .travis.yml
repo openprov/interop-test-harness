@@ -8,4 +8,4 @@ install:
   - pip install -r requirements.txt
 
 script: 
- - nosetests --nocapture tests
+ - nosetests --nocapture prov_interop.tests
