@@ -3,7 +3,7 @@ test-cases: PROV_TEST_CASES_DIR
 comparators:
   ProvPyComparator: 
     class: prov_interop.provpy.comparator.ProvPyComparator
-    executable: python
+    executable: PROVPY_COMPARE_EXE
     arguments: [PROVPY_SCRIPTS_DIR/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
     # Formats must be in set [json, provn, provx, trig, ttl]
     formats: [provx, json]
