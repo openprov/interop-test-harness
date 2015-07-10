@@ -35,6 +35,7 @@ from nose.tools import istest
 
 from prov_interop import standards
 from prov_interop.component import load_configuration
+from prov_interop.component import ConfigError
 from prov_interop.converter import Converter
 from prov_interop.interop_tests import harness
 
@@ -48,22 +49,29 @@ def test_case_name(testcase_func, param_num, param):
 @nottest
 class ConverterTestCase(unittest.TestCase):
 
+  SKIP_TESTS = "skip-tests"
+  """string or unicode: configuration key for tests to skip"""
+
   def setUp(self):
     super(ConverterTestCase, self).setUp()
-    print(self.__class__.__name__)
     self.converter = None
+    self.skip_tests = []
 
   def configure(self, env_var, default_file_name):
     config_key = self.converter.__class__.__name__
-    config_file_name = harness.harness_resources.configuration[config_key]
-    # TODO check and raise error if missing
+    config_file_name = None
+    if config_key in harness.harness_resources.configuration:
+      config_file_name = harness.harness_resources.configuration[config_key]
     config = load_configuration( 
       env_var,
       default_file_name,
       config_file_name)
-    # TODO check and raise error if missing
-    print(config)
+    if config_key not in config:
+      raise ConfigError("Missing configuration for " + config_key)
     self.converter.configure(config[config_key])
+    if ConverterTestCase.SKIP_TESTS in self.converter.configuration:
+      self.skip_tests = self.converter.configuration[
+        ConverterTestCase.SKIP_TESTS]
 
   def skip_member_of_skip_set(self, index):
     print("Skipping as " + str(index) + " in skip-tests")
@@ -80,7 +88,7 @@ class ConverterTestCase(unittest.TestCase):
   @parameterized.expand(harness.test_cases, testcase_func_name=test_case_name)
   def test_case(self, index, ext_in, file_ext_in, ext_out, file_ext_out):
     print("Test case: " + str(index) + " from " + ext_in + " to " + ext_out)
-    if index in self.converter.configuration["skip-tests"]:
+    if index in self.skip_tests:
       self.skip_member_of_skip_set(index)
     if (not ext_in in self.converter.input_formats):
       self.skip_unsupported_format(index, ext_in, Converter.INPUT_FORMATS)
