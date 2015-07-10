@@ -30,8 +30,8 @@ import unittest
 
 from nose_parameterized import parameterized
 from nose.plugins.skip import Skip, SkipTest
-from nose.tools import nottest
 from nose.tools import istest
+from nose.tools import nottest
 
 from prov_interop import standards
 from prov_interop.component import load_configuration
@@ -41,10 +41,26 @@ from prov_interop.interop_tests import harness
 
 @nottest
 def test_case_name(testcase_func, param_num, param):
+  """
+  ``nose_parameterized`` callback function to create custom
+  test function names.
+
+  :param testcase__func: test function
+  :type testcase__func: function
+  :param param_num: number of parameters in ``param``
+  :type param_num: int
+  :param param: tuple of arguments to test function
+  :type param: tuple, assumed to be of form (int, str or unicode, _,
+  str or unicode, )
+  :returns: test functionname of form N_EXTIN_EXTOUT (e.g. 
+  ``test_case_1_provx_json``)
+  :rtype: str or unicode
+  """
   (index, ext_in, _, ext_out, _) =  param.args
   return "%s_%s" %(
     testcase_func.__name__,
     parameterized.to_safe_name(str(index) + "_" + ext_in + "_" + ext_out))
+
 
 @nottest
 class ConverterTestCase(unittest.TestCase):
@@ -56,8 +72,43 @@ class ConverterTestCase(unittest.TestCase):
     super(ConverterTestCase, self).setUp()
     self.converter = None
     self.skip_tests = []
+    self.converter_ext_out = None
+
+  def tearDown(self):
+    super(ConverterTestCase, self).tearDown()
+    if self.converter_ext_out != None and \
+          os.path.isfile(self.converter_ext_out):
+      os.remove(self.converter_ext_out)
 
   def configure(self, env_var, default_file_name):
+    """Configure converter to be tested. 
+    - This assumes :class:`~prov_interop.harness.HarnessResources` has
+      been initialised by ``prov_interop.interop_tests.harness``.
+    - This assumes ``self.converter`` has been assigned to a sub-class
+      of ``:class:`~prov_interop.converter.Converter`.
+      - If harness configuration has key matching the converter's
+      class name, then its value is assumed to be a configuration
+      file for the converter.
+    - Else, if an environment variable with the name in
+      ``env_var`` is defined, then this environment variable is assumed
+       to hold a configuration file for the converter.
+    - Else ``default_file_name`` is used as a configuration file.
+    - The configuration file is assumed to be a YAML file, with 
+      an entry keyed using the class name of the converter
+      (e.g. ProvPyConverter) 
+    - The configuration file is loaded and the values under the
+      converter's key used to configure the converter.
+
+    :param env_var: Environment variable with configuration file name
+    :type env_var: str or unicode
+    :param default_file_name: Default configuration file name
+    :type file_name: str or unicode
+    :raises IOError: if the file is not found
+    :raises ConfigError: if the configuration file does not parse
+    into a dict, if there is no entry with the converter's class
+    name within the configuration, or if converter-specific
+    configuration information is missing.
+    """
     config_key = self.converter.__class__.__name__
     config_file_name = None
     if config_key in harness.harness_resources.configuration:
@@ -94,8 +145,10 @@ class ConverterTestCase(unittest.TestCase):
       self.skip_unsupported_format(index, ext_in, Converter.INPUT_FORMATS)
     if (not ext_out in self.converter.output_formats):
       self.skip_unsupported_format(index, ext_out, Converter.OUTPUT_FORMATS)
-    converter_ext_out = "out." + ext_out
-    self.converter.convert(file_ext_in, converter_ext_out)
+    self.converter_ext_out = "out." + ext_out
+    self.converter.convert(file_ext_in, self.converter_ext_out)
     comparator = harness.harness_resources.format_comparators[ext_out]
-    self.assertTrue(comparator.compare(file_ext_out, converter_ext_out), 
-                    msg=ext_out + " file produced by converter did not match canonical " + file_ext_out)
+    self.assertTrue(comparator.compare(file_ext_out, self.converter_ext_out), 
+                    msg=ext_out + 
+                    " file produced by converter did not match " + 
+                    file_ext_out)
