@@ -58,7 +58,7 @@ Jenkins uses a "workspace" directory to store any build artefacts. This plugin a
 
 ## Create job to run interoperability tests
 
-These steps create a Jenkins job to run the interoperability tests. If you do not want to execute these manually, there is one we have prepared earlier in `jenkins/config-interop.xml` - to use this see "Importing a Jenkins job" below.
+These steps create a Jenkins job to run the interoperability tests. If you do not want to execute these manually, there is one we have prepared earlier in `jenkins/PTS-Interop/config.xml` - to use this see "Importing a Jenkins job" below.
 
 Create a Python virtual environment for the job. Job-specific virtual environments are used since different jobs may want different versions of Python packages (e.g. ProvPy).
 
@@ -209,14 +209,23 @@ You can browse the nosetests test results. These are hierarchically organised by
 
 ## Importing a Jenkins job
 
-`jenkins/config-interop.xml` contains the Jenkins configuration file for the job written following the above instructions. Assuming you have already done:
+`jenkins/PTS-Interop/config.xml` contains the Jenkins configuration file for the job written following the above instructions. Assuming you have already done:
 
 * Install dependencies
 * Get ProvStore API key
 * Install Jenkins
 * Install workspace cleanup plugin
 
-Edit jenkins/config-interop.xml and in the line:
+Create a Python virtual environment for the job:
+
+```
+$ pyenv local 2.7.6
+$ pyenv virtualenv ProvInteropJob 
+```
+
+* If you want to run using Python 3.4.0 then change `2.7.6` to `3.4.0`
+
+Edit jenkins/PTS-Interop/config.xml and in the line:
 
 ```
 python prov_interop/set_yaml_value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization=&quot;ApiKey user:12345qwert&quot;
@@ -227,8 +236,7 @@ replace `user:12345qwert` with your ProvStore username and API key.
 Import configuration into Jenkins:
 
 ```
-$ mkdir $HOME/.jenkins/jobs/PTS-Interop/
-$ cp jenkins/config-interop.xml $HOME/.jenkins/jobs/PTS-Interop/config.xml
+$ cp -r jenkins/PTS-Interop/ $HOME/.jenkins/jobs/
 ```
 
 On the Jenkins dashboard:
@@ -243,11 +251,24 @@ On the Jenkins dashboard:
 `jenkins/` contains examples Jenkins configuration files for each component. You can import these using the same process as in "Importing a Jenkins job" above.
 
 * Replace PTS-Interop with a suitable job name e.g. PTS-ProvPy, PTS-ProvStore, PTS-ProvTranslator, PTS-ProvValidator
-* Only `jenkins/config-provstore.xml` requires you to insert your ProvStore username and API key.
+* Only `jenkins/PTS-ProvStore/config.xml` requires you to insert your ProvStore username and API key.
 
 ## Jenkins and interoperability test harness unit tests
 
-`jenkins/config-unit.xml` contains the Jenkins configuration file for a simpe job written to run only the interoperability test harness unit tests. You can import these using the same process as in "Importing a Jenkins job" above, using PTS-Unit as a job name.
+`jenkins/PTS-Unit/config.xml` contains the Jenkins configuration file for a simpe job written to run only the interoperability test harness unit tests. You can import this as follows:
+
+Import configuration into Jenkins:
+
+```
+$ cp -r jenkins/PTS-Unit/ $HOME/.jenkins/jobs/
+```
+
+On the Jenkins dashboard:
+
+* Click Manage Jenkins
+* Click Reload configuration from disk
+* You should see PTS-Unit
+* Click green "run" icon
 
 ## Jenkins directories
 
