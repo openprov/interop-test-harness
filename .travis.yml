@@ -8,18 +8,4 @@ install:
   - pip install -r requirements.txt
 
 script: 
- - pwd
- - ls
- - nosetests --version
- - nosetests --nocapture prov_interop.tests
  - nosetests --nocapture prov_interop/tests
- - ls -l prov_interop/tests
- - ls -l prov_interop/tests/provpy
- - ls -l prov_interop/tests/provtoolbox
- - chmod -x prov_interop/tests/provpy/prov-compare-dummy.py
- - chmod -x prov_interop/tests/provpy/prov-convert-dummy.py
- - chmod -x prov_interop/tests/provtoolbox/provconvert-dummy.py
- - nosetests -v --nocapture prov_interop.tests
- - nosetests -vv --nocapture prov_interop.tests
- - cp -r prov_interop/tests prov_interop/unit_tests
- - nosetests --nocapture prov_interop.unit_tests
