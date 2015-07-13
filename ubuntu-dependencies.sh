@@ -32,6 +32,11 @@ curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-
 echo "export PATH=\"\$HOME/.pyenv/bin:\$PATH\"" >> ~/.bash_profile
 echo "eval \"\$(pyenv init -)\"" >> ~/.bash_profile
 echo "eval \"\$(pyenv virtualenv-init -)\"" >> ~/.bash_profile
+
+echo "export PATH=\"\$HOME/.pyenv/bin:\$PATH\"" >> ~/.bashrc
+echo "eval \"\$(pyenv init -)\"" >> ~/.bashrc
+echo "eval \"\$(pyenv virtualenv-init -)\"" >> ~/.bashrc
+
 source ~/.bash_profile
 pyenv update
 pyenv install -l
