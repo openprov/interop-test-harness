@@ -60,6 +60,17 @@ Jenkins uses a "workspace" directory to store any build artefacts. This plugin a
 
 These steps create a Jenkins job to run the interoperability tests. If you do not want to execute these manually, there is one we have prepared earlier in `jenkins/config-interop.xml` - to use this see "Importing a Jenkins job" below.
 
+Create a Python virtual environment for the job. Job-specific virtual environments are used since different jobs may want different versions of Python packages (e.g. ProvPy).
+
+```
+$ pyenv local 2.7.6
+$ pyenv virtualenv ProvInteropJob 
+```
+
+* If you want to run using Python 3.4.0 then change `2.7.6` to `3.4.0`
+
+Create a job in Jenkins:
+
 * Click create new jobs
 * Item name: PTS-Interop
 * Select freestyle project
@@ -71,42 +82,38 @@ Set build configuration:
 * Build Triggers: leave unchecked (for now)
 * Check Build Environment Delete workspace before build starts
 
-Add step to set Python version:
+Add commands to set Python environment:
 
 * Select Add build step => Execute shell
 * Enter:
 
 ```
-pyenv local 2.7.6
+pyenv local ProvInteropJob
 ```
 
-* If you want to run using Python 3.4.0 then change `2.7.6` to `3.4.0`
-
-Add step to get test cases:
-
-* Select Add build step => Execute shell
-* Enter:
+Add command to get test cases:
 
 ```
 git clone https://github.com/prov-suite/testcases testcases
 ```
 
-Add step to get ProvToolbox:
-
-* Select Add build step => Execute shell
-* Enter:
+Add commands to install ProvToolbox:
 
 ```
 git clone https://github.com/lucmoreau/ProvToolbox.git ProvToolbox
 cd ProvToolbox
 mvn clean install
 ./toolbox/target/appassembler/bin/provconvert -version
+cd ..
 ```
 
-Add step to get ProvPy:
+Add command to uninstall ProvPy from the Python virtual environment. This allows the job to start with an up-to-date version each time.
 
-* Select Add build step => Execute shell
-* Enter:
+```
+pip uninstall --yes prov || true
+```
+
+Add commands to install ProvPy:
 
 ```
 git clone https://github.com/trungdong/prov ProvPy
@@ -114,12 +121,10 @@ cd ProvPy
 python setup.py install
 ./scripts/prov-convert --version
 ./scripts/prov-compare --version
+cd ..
 ```
 
-Add step to get interoperability test harness:
-
-* Select Add build step => Execute shell
-* Enter:
+Add commands to get interoperability test harness and install its dependencies:
 
 ```
 git clone https://github.com/prov-suite/interop-test-harness test-harness
@@ -127,13 +132,9 @@ cd test-harness
 pip install -r requirements.txt
 ```
 
-Ad step to configure test harness:
-
-* Select Add build step => Execute shell
-* Enter the following, replacing `user:12345qwert` with your ProvStore API key:
+Add commands to configure test harness, replacing `user:12345qwert` with your ProvStore API key:
 
 ```
-cd test-harness
 CONFIG_DIR=localconfig
 rm -rf $CONFIG_DIR
 cp -r config/ $CONFIG_DIR
@@ -145,12 +146,9 @@ cat localconfig/*
 python prov_interop/set_yaml_value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization="ApiKey user:12345qwert"
 ```
 
-Add step to run all interoperability tests:
-
-* Select Add build step => Execute shell
+Add command to run all interoperability tests:
 
 ```
-cd test-harness
 nosetests -v --with-xunit prov_interop.interop_tests
 ```
 
@@ -160,8 +158,6 @@ nosetests -v --with-xunit prov_interop.interop_tests
 * Click #NNNN build number
 * Build #NNNN page appears
 * Click Console Output
-
-The Execute shell steps can, alternatively, be done within a single Execute shell entry.
 
 If you are only interested in running interoperability tests for a specific omponent then use the relevant line from:
 

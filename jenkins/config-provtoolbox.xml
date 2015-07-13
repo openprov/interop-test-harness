@@ -13,42 +13,31 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>pyenv local 2.7.6</command>
-    </hudson.tasks.Shell>
-    <hudson.tasks.Shell>
-      <command>git clone https://github.com/prov-suite/testcases testcases
-</command>
-    </hudson.tasks.Shell>
-    <hudson.tasks.Shell>
-      <command>pip install prov
+      <command>pyenv local ProvToolboxJob
+
+git clone https://github.com/prov-suite/testcases testcases
+
+pip uninstall --yes prov || true
+pip install prov
 prov-compare --version
-</command>
-    </hudson.tasks.Shell>
-    <hudson.tasks.Shell>
-      <command>git clone https://github.com/lucmoreau/ProvToolbox.git ProvToolbox
+
+git clone https://github.com/lucmoreau/ProvToolbox.git ProvToolbox
 cd ProvToolbox
 mvn clean install
 ./toolbox/target/appassembler/bin/provconvert -version
-</command>
-    </hudson.tasks.Shell>
-    <hudson.tasks.Shell>
-      <command>git clone https://github.com/prov-suite/interop-test-harness test-harness
+cd ..
+
+git clone https://github.com/prov-suite/interop-test-harness test-harness
 cd test-harness
 pip install -r requirements.txt
-</command>
-    </hudson.tasks.Shell>
-    <hudson.tasks.Shell>
-      <command>cd test-harness
+
 CONFIG_DIR=localconfig
 rm -rf $CONFIG_DIR
 cp -r config/ $CONFIG_DIR
 python prov_interop/set_yaml_value.py $CONFIG_DIR/harness.yaml test-cases=&quot;$WORKSPACE/testcases&quot;
 python prov_interop/set_yaml_value.py $CONFIG_DIR/provtoolbox.yaml ProvToolbox.executable=&quot;$WORKSPACE/ProvToolbox/toolbox/target/appassembler/bin/provconvert&quot;
 cat localconfig/*
-</command>
-    </hudson.tasks.Shell>
-    <hudson.tasks.Shell>
-      <command>cd test-harness
+
 nosetests -v --with-xunit prov_interop.interop_tests.test_provtoolbox
 </command>
     </hudson.tasks.Shell>
