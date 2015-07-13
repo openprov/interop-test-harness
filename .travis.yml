@@ -14,3 +14,5 @@ script:
  - nosetests --nocapture prov_interop.tests
  - nosetests -v --nocapture prov_interop.tests
  - nosetests -vv --nocapture prov_interop.tests
+ - cp -r prov_interop.tests prov_inteop.unit_tests
+ - nosetests --nocapture prov_interop.unit_tests
