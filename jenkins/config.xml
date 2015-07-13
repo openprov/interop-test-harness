@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>git clone https://github.com/lucmoreau/ProvToolbox.git ProvToolbox
+cd ProvToolbox
+mvn clean install
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>git clone https://github.com/mikej888/provtoolsuite-testcases testcases
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>pyenv local 2.7.6
+git clone https://github.com/trungdong/prov ProvPy
+cd ProvPy
+git checkout 1.3.2
+python setup.py install
+./scripts/prov-convert --version
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>pyenv local 2.7.6
+git clone https://github.com/mikej888/provtoolsuite-interop-test-harness test-harness
+cd test-harness
+pip install -r requirements.txt
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>cd test-harness
+echo &quot;PROV_TEST_CASES_DIR=$WORKSPACE/testcases&quot; &gt; config.properties
+echo &quot;PROVPY_SCRIPTS_DIR=$WORKSPACE/ProvPy/scripts&quot; &gt;&gt; config.properties
+echo &quot;PROVPY_CONVERT_EXE=python&quot; &gt;&gt; config.properties
+echo &quot;PROVPY_COMPARE_EXE=python&quot; &gt;&gt; config.properties
+echo &quot;PROVTOOLBOX_SCRIPTS_DIR=$WORKSPACE/ProvToolbox/toolbox/target/appassembler/bin&quot; &gt;&gt; config.properties
+echo &quot;PROV_LOCAL_CONFIG_DIR=$WORKSPACE/test-harness/localconfig&quot; &gt;&gt; config.properties
+cat config.properties
+mkdir localconfig
+python prov_interop/customise-config.py config localconfig config.properties
+cat localconfig/*</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>cd test-harness
+nosetests -v --with-xunit prov_interop.interop_tests
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.junit.JUnitResultArchiver plugin="junit@1.2-beta-4">
+      <testResults>test-harness/nosetests.xml</testResults>
+      <keepLongStdio>false</keepLongStdio>
+      <testDataPublishers/>
+      <healthScaleFactor>1.0</healthScaleFactor>
+    </hudson.tasks.junit.JUnitResultArchiver>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.26">
+      <deleteDirs>false</deleteDirs>
+      <cleanupParameter></cleanupParameter>
+      <externalDelete></externalDelete>
+    </hudson.plugins.ws__cleanup.PreBuildCleanup>
+  </buildWrappers>
+</project>
