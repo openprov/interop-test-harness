@@ -99,7 +99,8 @@ Add step to get ProvToolbox:
 ```
 git clone https://github.com/lucmoreau/ProvToolbox.git ProvToolbox
 cd ProvToolbox
-mvn clean install
+mvn clean
+mvn -Dmaven.test.skip=true install
 ./toolbox/target/appassembler/bin/provconvert -version
 ```
 
