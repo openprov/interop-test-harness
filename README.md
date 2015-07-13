@@ -2,7 +2,7 @@
 
 Interoperability test harness for the [Southampton Provenance Suite](https://provenance.ecs.soton.ac.uk).
 
-[![Build Status](https://travis-ci.org/mikej888/provtoolsuite-interop-test-harness.svg)](https://travis-ci.org/mikej888/provtoolsuite-interop-test-harness)
+[![Build Status](https://travis-ci.org/prov-suite/interop-test-harness.svg)](https://travis-ci.org/prov-suite/interop-test-harness)
 
 The test harness includes support for:
 
@@ -12,8 +12,8 @@ The test harness includes support for:
 The test harness can be run under:
 
 * [Travis CI](https://travis-ci.org). See, for example:
-  - ProvPy prov-convert interoperability testing: [GitHub](https://github.com/mikej888/provtoolsuite-provpy-interop-job) and [TravisCI](https://travis-ci.org/mikej888/provtoolsuite-provpy-interop-job)
-  - ProvToolbox provconvert interoperability testing: [GitHub](https://github.com/mikej888/provtoolsuite-provtoolbox-interop-job) and [TravisCI](https://travis-ci.org/mikej888/provtoolsuite-provtoolbox-interop-job)
+  - ProvPy prov-convert interoperability testing: [GitHub](https://github.com/prov-suite/provpy-interop-job) and [TravisCI](https://travis-ci.org/prov-suite/provpy-interop-job)
+  - ProvToolbox provconvert interoperability testing: [GitHub](https://github.com/prov-suite/provtoolbox-interop-job) and [TravisCI](https://travis-ci.org/prov-suite/provtoolbox-interop-job)
 * [Jenkins](https://jenkins-ci.org). See:
   - [Running the interoperability test harness under Jenkins](./Jenkins.md)
 

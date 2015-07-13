@@ -19,7 +19,7 @@ mvn clean install
 </command>
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
-      <command>git clone https://github.com/mikej888/provtoolsuite-testcases testcases
+      <command>git clone https://github.com/prov-suite/testcases testcases
 </command>
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
@@ -33,7 +33,7 @@ python setup.py install
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
       <command>pyenv local 2.7.6
-git clone https://github.com/mikej888/provtoolsuite-interop-test-harness test-harness
+git clone https://github.com/prov-suite/interop-test-harness test-harness
 cd test-harness
 pip install -r requirements.txt
 </command>

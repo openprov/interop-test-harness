@@ -20,8 +20,8 @@ To run the script:
 
 ```
 sudo apt-get install -y git
-git clone https://mikej888@github.com/mikej888/provtoolsuite-interop-test-harness
-source provtoolsuite-interop-test-harness/jenkins/ubuntu-dependencies.sh 
+git clone https://github.com/prov-suite/interop-test-harness
+source interop-test-harness/jenkins/ubuntu-dependencies.sh 
 ```
 
 ## Install Jenkins
@@ -68,7 +68,7 @@ These steps create a Jenkins job to run the interoperability tests. If you do no
 * Enter:
 
 ```
-git clone https://github.com/mikej888/provtoolsuite-testcases testcases
+git clone https://github.com/prov-suite/testcases testcases
 ```
 
 * Select Add build step => Execute shell
@@ -98,7 +98,7 @@ python setup.py install
 
 ```
 pyenv local 2.7.6
-git clone https://github.com/mikej888/provtoolsuite-interop-test-harness test-harness
+git clone https://github.com/prov-suite/interop-test-harness test-harness
 cd test-harness
 pip install -r requirements.txt
 ```
