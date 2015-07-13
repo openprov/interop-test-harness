@@ -19,15 +19,10 @@ The test harness can be run under:
 
 ## Author
 
-Developed by [The Software Sustainability Institute](http://www.software.ac.uk>) and the [P
-rovenance Tool Suite](http://provenance.ecs.soton.ac.uk/) team at [Electronics and Computer
- Science](http://www.ecs.soton.ac.uk) at the [University of Southampton](http://www.soton.a
-c.uk).
+Developed by [The Software Sustainability Institute](http://www.software.ac.uk>) and the [Provenance Tool Suite](http://provenance.ecs.soton.ac.uk/) team at [Electronics and Computer Science](http://www.ecs.soton.ac.uk) at the [University of Southampton](http://www.soton.ac.uk).
 
-For more information, see our [document repository](https://github.com/prov-suite/ssi-consu
-ltancy/).
+For more information, see our [document repository](https://github.com/prov-suite/ssi-consultancy/).
 
 ## License
 
 The code is released under the MIT license.
-
