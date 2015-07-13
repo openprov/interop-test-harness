@@ -12,4 +12,5 @@ script:
  - ls
  - nosetests --version
  - nosetests --nocapture prov_interop.tests
- - nosetests --exe --nocapture prov_interop.tests
+ - nosetests -v --nocapture prov_interop.tests
+ - nosetests -vv --nocapture prov_interop.tests
