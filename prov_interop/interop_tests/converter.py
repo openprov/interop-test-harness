@@ -1,4 +1,4 @@
-"""Interoperability tests for ProvPy prov-convert.
+"""Base class for converter interoperability tests.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -41,8 +41,7 @@ from prov_interop.interop_tests import harness
 
 @nottest
 def test_case_name(testcase_func, param_num, param):
-  """
-  ``nose_parameterized`` callback function to create custom
+  """``nose_parameterized`` callback function to create custom
   test function names.
 
   :param testcase__func: test function
@@ -125,19 +124,75 @@ class ConverterTestCase(unittest.TestCase):
         ConverterTestCase.SKIP_TESTS]
 
   def skip_member_of_skip_set(self, index):
+    """Raise a SkipTest error if this test case is to be skipped 
+    for this converter.
+
+    :param index: Test case index
+    :type index: int
+    :raises SkipTest:
+    """
     print("Skipping as " + str(index) + " in skip-tests")
     raise SkipTest("Test case " + str(index) +
                    " in " + self.converter.__class__.__name__ + 
                    " skip-tests")
 
   def skip_unsupported_format(self, index, format, format_type):
-      print("Skipping as " + format + " not in converter's " + format_type)
-      raise SkipTest("Format " + format +
-                     " not in " + self.converter.__class__.__name__ + 
-                     " " + format_type)
+    """Raise a SkipTest error if a specific conversion is to be
+    skipped because the converter does not support one of the
+    formats. 
+
+    :param index: Test case index
+    :type index: int
+    :param format: one of the formats in ``prov_interop.standards``
+    :type format: str or unicode
+    :param format_type: Converter configuration key indicating 
+    which format is not supported (e.g. "input-format" or
+    "output-format"
+    :type format_type: str or unicode
+    :raises SkipTest:
+    """
+    print("Skipping as " + str(index) + " in skip-tests")
+    print("Skipping as " + format + " not in converter's " + format_type)
+    raise SkipTest("Format " + format +
+                   " not in " + self.converter.__class__.__name__ + 
+                   " " + format_type)
 
   @parameterized.expand(harness.test_cases, testcase_func_name=test_case_name)
   def test_case(self, index, ext_in, file_ext_in, ext_out, file_ext_out):
+    """Test converter's conversion of a file in one format to another
+    format. 
+
+    The comparator registered for the output format is used to
+    compare the file output by the converter to the given output file,
+    which is assumed to be semantically equivalent to the input
+    file. The test succeeds if the comparator deems the converter's
+    output file to be semantially equivalent to the given output file.
+    
+    If the test case index is recorded as one of those to be skipped
+    for the converter, or if the input or output formats are not
+    supported by the converter, then the test is skipped.
+
+    :param index: Test case index
+    :type index: int
+    :param ext_in: input format, one of the formats in
+    ``prov_interop.standards``
+    :type ext_in: str or unicode
+    :param file_ext_in: input file path, assumed to be of format
+    ``ext_in`` 
+    :type file_ext_in: str or unicode
+    :param ext_out: output format, one of the formats in
+    ``prov_interop.standards`` 
+    :type ext_out: str or unicode
+    :param file_ext_out: output file path, assumed to be of format
+    ``ext_out`` 
+    :type file_ext_out: str or unicode
+    :param format_type: Converter configuration key indicating 
+    which format is not supported (e.g. "input-format" or
+    "output-format"
+    :type format_type: str or unicode
+    :raises SkipTest: if the test case is to be skipped, or the input
+    format or output format are not supported by the converter.
+    """
     print("Test case: " + str(index) + " from " + ext_in + " to " + ext_out)
     if index in self.skip_tests:
       self.skip_member_of_skip_set(index)
