@@ -8,7 +8,6 @@ Some dependencies require you to have sudo access to install and configure softw
 
 This page assumes that [pyenv](https://github.com/yyuu/pyenv) is used to manage Python versions.
 
-
 ## Install dependencies
 
 The dependencies required by ProvPy and ProvToolbox must already be installed. Jenkins runs under the same version of Java as used for ProvToolbox.
@@ -88,9 +87,9 @@ mvn clean install
 pyenv local 2.7.6
 git clone https://github.com/trungdong/prov ProvPy
 cd ProvPy
-git checkout 1.3.2
 python setup.py install
 ./scripts/prov-convert --version
+./scripts/prov-compare --version
 ```
 
 * Select Add build step => Execute shell
