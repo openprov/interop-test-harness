@@ -41,7 +41,6 @@ class ProvToolboxTestCase(ConverterTestCase):
   """
 
   def setUp(self):
-    # TODO initialise converter only once?
     super(ProvToolboxTestCase, self).setUp()
     self.converter = ProvToolboxConverter()
     super(ProvToolboxTestCase, self).configure(
