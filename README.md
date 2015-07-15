@@ -86,6 +86,10 @@ nosetests -v prov_interop.interop_tests.test_provpy
 nosetests -v prov_interop.interop_tests.test_provtoolbox
 ```
 
+## Automatically rerunning interoperability tests in Travis CI
+
+[Travis Client and automatically rerunning interoperability tests](./travis/TravisClient.md) explains how to automatically trigger re-runs of interoperability tests without having to either submit a GitHub pull request on the repository holding the Travis CI configuration file, or going via Travis CI's web interface.
+
 ## Author
 
 Developed by [The Software Sustainability Institute](http://www.software.ac.uk>) and the [Provenance Tool Suite](http://provenance.ecs.soton.ac.uk/) team at [Electronics and Computer Science](http://www.ecs.soton.ac.uk) at the [University of Southampton](http://www.soton.ac.uk).
