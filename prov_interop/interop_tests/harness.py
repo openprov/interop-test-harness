@@ -96,6 +96,21 @@ def initialise_harness_from_file(file_name = None):
             harness_resources.format_comparators[format].__class__.__name__)
 
 def initialise_test_cases():
+  """Form list of test cases.
+
+  - This method assumes ``initialise_harness_from_file`` has already
+    been invoked, to initialise ``harness_resources``.
+  - Initialise an empty list of test cases, ``test_cases``.
+  - Get test cases directory from ``harness_resources``.
+  - For each child directory, whose name is prefixed by "testcase":
+    - Filter its files to get only those which have an extension
+      matching one of the formats in ``prov_interop.standards`` and
+      for which a comparator for this format is recorded in
+      ``harness_resources.format_comparators``.
+    - Calculate possible combinations of pairs of the filtered files
+      to get a set of (test-case-number, format1, file1, format2,
+      file2) tuples and add these to the ``test_cases``.
+  """
   global TEST_CASE_PREFIX
   global harness_resources
   global test_cases
