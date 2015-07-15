@@ -8,7 +8,6 @@ Some dependencies require you to have sudo access to install and configure softw
 
 This page assumes that [pyenv](https://github.com/yyuu/pyenv) is used to manage Python versions.
 
-
 ## Install dependencies
 
 The dependencies required by ProvPy and ProvToolbox must already be installed. Jenkins runs under the same version of Java as used for ProvToolbox.
@@ -68,6 +67,14 @@ These steps create a Jenkins job to run the interoperability tests. If you do no
 * Enter:
 
 ```
+pyenv local 2.7.6
+```
+
+* If you want to run using Python 3.4.0 then change `2.7.6` to `3.4.0`
+* Select Add build step => Execute shell
+* Enter:
+
+```
 git clone https://github.com/prov-suite/testcases testcases
 ```
 
@@ -85,19 +92,17 @@ mvn clean install
 * Enter:
 
 ```
-pyenv local 2.7.6
 git clone https://github.com/trungdong/prov ProvPy
 cd ProvPy
-git checkout 1.3.2
 python setup.py install
 ./scripts/prov-convert --version
+./scripts/prov-compare --version
 ```
 
 * Select Add build step => Execute shell
 * Enter:
 
 ```
-pyenv local 2.7.6
 git clone https://github.com/prov-suite/interop-test-harness test-harness
 cd test-harness
 pip install -r requirements.txt
@@ -126,6 +131,7 @@ cat localconfig/*
 
 ```
 cd test-harness
+nosetests prov_interop/tests
 nosetests -v --with-xunit prov_interop.interop_tests
 ```
 
@@ -144,7 +150,7 @@ nosetests, with the ``--with-xunit`` option set, outputs test results in xUnit-c
 * Click Configure
 * Scroll down to Post-build Action
 * Select Add post-build action => Publish JUnit test result report
-* Test report XMLs: test-harness/nosetests.xml.
+* Test report XMLs: test-harness/nosetests.xml
   - If you get a warning that nosetests.xml doesn't match anything you can ignore this as the file hasn't been created yet
 * Click Save
 * Click Build Now
