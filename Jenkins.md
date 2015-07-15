@@ -19,8 +19,8 @@ To run the script:
 
 ```
 sudo apt-get install -y git
-git clone https://mikej888@github.com/mikej888/provtoolsuite-interop-test-harness
-source provtoolsuite-interop-test-harness/jenkins/ubuntu-dependencies.sh 
+git clone https://github.com/prov-suite/interop-test-harness
+source interop-test-harness/jenkins/ubuntu-dependencies.sh 
 ```
 
 ## Install Jenkins
@@ -67,7 +67,15 @@ These steps create a Jenkins job to run the interoperability tests. If you do no
 * Enter:
 
 ```
-git clone https://github.com/mikej888/provtoolsuite-testcases testcases
+pyenv local 2.7.6
+```
+
+* If you want to run using Python 3.4.0 then change `2.7.6` to `3.4.0`
+* Select Add build step => Execute shell
+* Enter:
+
+```
+git clone https://github.com/prov-suite/testcases testcases
 ```
 
 * Select Add build step => Execute shell
@@ -84,7 +92,6 @@ mvn clean install
 * Enter:
 
 ```
-pyenv local 2.7.6
 git clone https://github.com/trungdong/prov ProvPy
 cd ProvPy
 python setup.py install
@@ -96,8 +103,7 @@ python setup.py install
 * Enter:
 
 ```
-pyenv local 2.7.6
-git clone https://github.com/mikej888/provtoolsuite-interop-test-harness test-harness
+git clone https://github.com/prov-suite/interop-test-harness test-harness
 cd test-harness
 pip install -r requirements.txt
 ```
@@ -125,6 +131,7 @@ cat localconfig/*
 
 ```
 cd test-harness
+nosetests prov_interop/tests
 nosetests -v --with-xunit prov_interop.interop_tests
 ```
 
@@ -143,7 +150,7 @@ nosetests, with the ``--with-xunit`` option set, outputs test results in xUnit-c
 * Click Configure
 * Scroll down to Post-build Action
 * Select Add post-build action => Publish JUnit test result report
-* Test report XMLs: test-harness/nosetests.xml.
+* Test report XMLs: test-harness/nosetests.xml
   - If you get a warning that nosetests.xml doesn't match anything you can ignore this as the file hasn't been created yet
 * Click Save
 * Click Build Now
