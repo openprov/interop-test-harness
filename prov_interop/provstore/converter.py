@@ -55,6 +55,15 @@ class ProvStoreConverter(Converter, RestComponent):
     super(ProvStoreConverter, self).__init__()
     self._api_key = ""
 
+  @property
+  def api_key(self):
+    """Get the API key.
+    
+    :returns: API key
+    :rtype: str or unicode
+    """
+    return self._api_key
+
   def configure(self, config):
    """Configure converter.
     ``config`` is expected to hold configuration of form::
