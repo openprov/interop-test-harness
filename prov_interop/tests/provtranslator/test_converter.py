@@ -24,7 +24,6 @@
 
 import inspect
 import os
-from requests.exceptions import ConnectionError
 import tempfile
 import unittest
 
