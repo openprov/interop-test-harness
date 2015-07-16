@@ -23,9 +23,7 @@
 # SOFTWARE.  
 
 import os.path
-import re
 import requests
-import shutil
 
 from prov_interop import standards
 from prov_interop.component import ConfigError
@@ -100,16 +98,17 @@ class ProvTranslatorConverter(Converter, RestComponent):
     if out_format not in self.output_formats:
       raise ConversionError("Unsupported input format: " + out_format)
     with open(in_file, 'r') as f:
-      document = f.read()
+      doc_str = f.read()
     # Map prov_interop.standards formats to Content-Type and Accept-Type
     # supported by ProvTranslator.
     content_type = ProvTranslatorConverter.CONTENT_TYPES[in_format]
     accept_type = ProvTranslatorConverter.CONTENT_TYPES[out_format]
     headers = {'Content-type': content_type, 'Accept': accept_type}
-    # Execute
-    r = requests.post(self._url, headers=headers, data=document)
-    if (r.status_code != requests.codes.ok):
-      # Not HTTP 200 OK
-      raise ConversionError(self._url + " returned " + str(r.status_code))
+    response = requests.post(self._url, 
+                             headers=headers, 
+                             data=doc_str)
+    if (response.status_code != requests.codes.ok): # 200 OK
+      raise ConversionError(self._url + " POST returned " + 
+                            str(response.status_code))
     with open(out_file, 'w') as f:
-      f.write(r.text)
+      f.write(response.text)
