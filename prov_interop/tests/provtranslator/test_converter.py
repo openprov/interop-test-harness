@@ -66,18 +66,17 @@ class ProvTranslatorConverterTestCase(unittest.TestCase):
     self.assertEquals(self.config[ProvTranslatorConverter.OUTPUT_FORMATS], 
                       self.provtranslator.output_formats)
 
-  def test_convert_bad_url(self):
-    self.config[ProvTranslatorConverter.URL] = "http://nosuchurl"
-    self.provtranslator.configure(self.config)
-    (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
-    self.out_file = "convert_bad_url." + standards.PROVN
-    with self.assertRaises(ConnectionError):
-      self.provtranslator.convert(self.in_file, self.out_file)
-
   def test_convert_missing_input_file(self):
     self.provtranslator.configure(self.config)
     self.in_file = "nosuchfile.json"
     self.out_file = "convert_missing_input_file." + standards.JSON
+    with self.assertRaises(ConversionError):
+      self.provtranslator.convert(self.in_file, self.out_file)
+
+  def test_convert_invalid_input_format(self):
+    self.provtranslator.configure(self.config)
+    (_, self.in_file) = tempfile.mkstemp(suffix=".nosuchformat")
+    self.out_file = "convert_invalid_input_format." + standards.PROVX
     with self.assertRaises(ConversionError):
       self.provtranslator.convert(self.in_file, self.out_file)
 
