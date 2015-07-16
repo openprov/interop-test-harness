@@ -118,6 +118,13 @@ class ProvPyConverterTestCase(unittest.TestCase):
     with self.assertRaises(ConversionError):
       self.provpy.convert(self.in_file, self.out_file)
 
+  def test_convert_invalid_input_format(self):
+    self.provpy.configure(self.config)
+    (_, self.in_file) = tempfile.mkstemp(suffix=".nosuchformat")
+    self.out_file = "convert_invalid_input_format." + standards.PROVX
+    with self.assertRaises(ConversionError):
+      self.provpy.convert(self.in_file, self.out_file)
+
   def test_convert_invalid_output_format(self):
     self.provpy.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
