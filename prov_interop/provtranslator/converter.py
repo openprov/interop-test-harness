@@ -45,7 +45,7 @@ class ProvTranslatorConverter(Converter, RestComponent):
   """list of string or unicode: list of mapping from formats in
   ``prov_interop.standards`` to content types understood by the
   service.
-` """
+  """
 
   def __init__(self):
     """Create converter.
@@ -75,23 +75,6 @@ class ProvTranslatorConverter(Converter, RestComponent):
     """
    super(ProvTranslatorConverter, self).configure(config)
 
-   def print_request(self, request):
-     print("---Request---")
-     print("{} {}".format(request.method, request.url))
-     print("Headers:")
-     print(request.headers.items())
-     print("Body:")
-     print(request.body)
-
-   def print_response(self, response):
-     print("---Response---")
-     print("Status: {}".format(response.status_code))
-     print("Headers:")
-     print(response.headers)
-     print("History: {}".format(response.history))
-     print("Text:")
-     print(response.text)
-
   def convert(self, in_file, out_file):
     """Use ProvTranslator to convert an input file into an output
     file. Each file must have an extension matching one of those
@@ -116,21 +99,17 @@ class ProvTranslatorConverter(Converter, RestComponent):
       raise ConversionError("Unsupported input format: " + in_format)
     if out_format not in self.output_formats:
       raise ConversionError("Unsupported input format: " + out_format)
-    # Map prov_interop.standards formats to content types supported by
-    # ProvTranslator. 
+    with open(in_file, 'r') as f:
+      document = f.read()
+    # Map prov_interop.standards formats to Content-Type and Accept-Type
+    # supported by ProvTranslator.
     content_type = ProvTranslatorConverter.CONTENT_TYPES[in_format]
     accept_type = ProvTranslatorConverter.CONTENT_TYPES[out_format]
-    # Set up REST request.
     headers = {'Content-type': content_type, 'Accept': accept_type}
-    print(headers)
-    with open(in_file, 'r') as f:
-      payload = f.read()
-    print(payload)
     # Execute
-    r = requests.post(self.url, headers=headers, data=payload)
-    self.print_request(r.request)
-    self.print_response(r)
+    r = requests.post(self._url, headers=headers, data=document)
     if (r.status_code != requests.codes.ok):
+      # Not HTTP 200 OK
       raise ConversionError(self._url + " returned " + str(r.status_code))
     with open(out_file, 'w') as f:
       f.write(r.text)
