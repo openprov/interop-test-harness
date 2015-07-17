@@ -93,10 +93,7 @@ class ProvTranslatorConverter(Converter, RestComponent):
     super(ProvTranslatorConverter, self).convert(in_file, out_file)
     in_format = os.path.splitext(in_file)[1][1:]
     out_format = os.path.splitext(out_file)[1][1:]
-    if in_format not in self.input_formats:
-      raise ConversionError("Unsupported input format: " + in_format)
-    if out_format not in self.output_formats:
-      raise ConversionError("Unsupported input format: " + out_format)
+    super(ProvTranslatorConverter, self).check_formats(in_format, out_format)
     with open(in_file, 'r') as f:
       doc_str = f.read()
     # Map prov_interop.standards formats to Content-Type and Accept-Type

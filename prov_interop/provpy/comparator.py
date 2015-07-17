@@ -107,8 +107,7 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     format1 = os.path.splitext(file1)[1][1:]
     format2 = os.path.splitext(file2)[1][1:]
     for format in [format1, format2]:
-      if format not in self.formats:
-        raise ComparisonError("Unsupported format: " + format)
+      super(ProvPyComparator, self).check_format(format)
     # Map prov_interop.standards formats to formats supported by 
     # prov-compare
     local_format1 = format1

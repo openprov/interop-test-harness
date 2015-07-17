@@ -111,19 +111,13 @@ class ProvStoreConverter(Converter, RestComponent):
     :type out_file: str or unicode
     :raises ConversionError: if the input file is not found, or the
     HTTP response is not 200
-
-TODO
-
     :raises requests.exceptions.ConnectionError: if there are problems
     executing any of the requests e.g. the URL cannot be found
     """
     super(ProvStoreConverter, self).convert(in_file, out_file)
     in_format = os.path.splitext(in_file)[1][1:]
     out_format = os.path.splitext(out_file)[1][1:]
-    if in_format not in self.input_formats:
-      raise ConversionError("Unsupported input format: " + in_format)
-    if out_format not in self.output_formats:
-      raise ConversionError("Unsupported input format: " + out_format)
+    super(ProvStoreConverter, self).check_formats(in_format, out_format)
     with open(in_file, 'r') as f:
       doc = f.read()
     # Prepare ProvStore request, including doc.

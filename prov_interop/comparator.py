@@ -74,6 +74,17 @@ class Comparator(ConfigurableComponent):
                           ":" + format)
     self._formats = config[Comparator.FORMATS]
 
+  def check_format(self, format):
+    """Check given format is in the formats supported by the comparator.
+
+    :param format: Format
+    :type iormat: str or unicode
+    :raises ComparisonError: if the formats is not in those supported
+    by the comparator.
+    """
+    if format not in self.formats:
+      raise ComparisonError("Unsupported format: " + format)
+
   def compare(self, file1, file2):
     """Use comparator to compare two files. Each file must have an
     extension matching one of those in ``prov_interop.standards``.

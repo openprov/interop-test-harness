@@ -93,6 +93,9 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
     e.g. the script is not found
     """
     super(ProvToolboxConverter, self).convert(in_file, out_file)
+    in_format = os.path.splitext(in_file)[1][1:]
+    out_format = os.path.splitext(out_file)[1][1:]
+    super(ProvToolboxConverter, self).check_formats(in_format, out_format)
     # Replace tokens in arguments
     command_line = [in_file if x==ProvToolboxConverter.INPUT else x 
                     for x in self._arguments]

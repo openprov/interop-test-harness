@@ -38,6 +38,8 @@ class ComparatorTestCase(unittest.TestCase):
     self.comparator = Comparator()
     self.file1 = None
     self.file2 = None
+    self.formats = [standards.PROVN, standards.JSON]
+    self.config = {Comparator.FORMATS: self.formats}
 
   def tearDown(self):
     super(ComparatorTestCase, self).tearDown()
@@ -49,9 +51,8 @@ class ComparatorTestCase(unittest.TestCase):
     self.assertEquals([], self.comparator.formats)
 
   def test_configure(self):
-    formats = [standards.PROVN, standards.JSON]
-    self.comparator.configure({Comparator.FORMATS: formats})
-    self.assertEquals(formats, self.comparator.formats)
+    self.comparator.configure(self.config)
+    self.assertEquals(self.formats, self.comparator.formats)
 
   def test_configure_non_dict_error(self):
     with self.assertRaises(ConfigError):
@@ -62,9 +63,9 @@ class ComparatorTestCase(unittest.TestCase):
       self.comparator.configure({})
 
   def test_configure_non_canonical_format(self):
-    formats = [standards.PROVN, standards.JSON, "invalidFormat"]
+    self.config[Comparator.FORMATS].append("invalidFormat")
     with self.assertRaises(ConfigError):
-      self.comparator.configure({Comparator.FORMATS: formats})
+      self.comparator.configure(self.config)
 
   def test_compare_missing_file1(self):
     self.file1 = "nosuchfile." + standards.JSON
@@ -77,3 +78,8 @@ class ComparatorTestCase(unittest.TestCase):
     self.file2 = "nosuchfile." + standards.JSON
     with self.assertRaises(ComparisonError):
       self.comparator.compare(self.file1, self.file2)
+
+  def test_check_format_invalid_format(self):
+    self.comparator.configure(self.config)
+    with self.assertRaises(ComparisonError):
+      self.comparator.check_format("nosuchformat")
