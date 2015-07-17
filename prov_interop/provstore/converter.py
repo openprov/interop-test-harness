@@ -125,8 +125,7 @@ TODO
     if out_format not in self.output_formats:
       raise ConversionError("Unsupported input format: " + out_format)
     with open(in_file, 'r') as f:
-      doc_str = f.read()
-    doc = json.loads(doc_str)
+      doc = f.read()
     # Prepare ProvStore request, including doc.
     store_request={"content": doc,
                    "public": True,
