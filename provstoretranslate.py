@@ -66,5 +66,4 @@ for c in converters:
             try:
                 converter.convert(in_file, out_file)
             except Exception as e:
-                print("Problem from " + in_file + " to " + out_file)
-                print(e)
+                print(c + " : " + in_file + " : " + out_file + " : " + str(e))
