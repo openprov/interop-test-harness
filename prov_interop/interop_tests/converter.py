@@ -157,6 +157,10 @@ class ConverterTestCase(unittest.TestCase):
                    " not in " + self.converter.__class__.__name__ + 
                    " " + format_type)
 
+  def xxx(self, file_name):
+    with open(file_name, 'r') as f:
+      return f.read()
+
   @parameterized.expand(harness.test_cases, testcase_func_name=test_case_name)
   def test_case(self, index, ext_in, file_ext_in, ext_out, file_ext_out):
     """Test converter's conversion of a file in one format to another
@@ -203,7 +207,14 @@ class ConverterTestCase(unittest.TestCase):
     self.converter_ext_out = "out." + ext_out
     self.converter.convert(file_ext_in, self.converter_ext_out)
     comparator = harness.harness_resources.format_comparators[ext_out]
-    self.assertTrue(comparator.compare(file_ext_out, self.converter_ext_out), 
-                    msg=ext_out + 
-                    " file produced by converter did not match " + 
-                    file_ext_out)
+    are_equivalent = comparator.compare(file_ext_out, self.converter_ext_out)
+    msg = ""
+    if not are_equivalent:
+      with open(self.converter_ext_out) as f: 
+        expected = f.read()
+      with open(file_ext_out) as f: 
+        actual = f.read()
+      msg = "Comparison failure for converted file " + ext_out + \
+          "\nCanonical file " + file_ext_out + ":\n" + expected + \
+          "\nConverted file:\n:" + actual
+    self.assertTrue(are_equivalent, msg=msg)
