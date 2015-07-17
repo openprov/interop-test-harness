@@ -28,11 +28,8 @@ import requests
 import requests_mock
 import tempfile
 import unittest
-
 from nose.tools import nottest
-
 from nose_parameterized import parameterized
-
 
 from prov_interop import standards
 from prov_interop.component import ConfigError
@@ -152,6 +149,7 @@ class ProvTranslatorConverterTestCase(unittest.TestCase):
     with requests_mock.Mocker(real_http=False) as mocker:
       mocker.register_uri("POST", 
                           self.config[ProvTranslatorConverter.URL],
+                          request_headers=headers,
                           text=doc)
       self.provtranslator.convert(self.in_file, self.out_file)
       with open(self.out_file, 'r') as f:
