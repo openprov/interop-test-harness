@@ -142,10 +142,9 @@ class ProvTranslatorConverterTestCase(unittest.TestCase):
     (_, self.in_file) = tempfile.mkstemp(suffix="." + format)
     (_, self.out_file) = tempfile.mkstemp(suffix="." + format)
     doc = "mockDocument"
-    # Set expected headers for given input and output formats.
+    # Set up mock service response.
     headers={"Content-Type": content_type,
              "Accept": content_type}
-    # Set up mock service response.
     with requests_mock.Mocker(real_http=False) as mocker:
       mocker.register_uri("POST", 
                           self.config[ProvTranslatorConverter.URL],

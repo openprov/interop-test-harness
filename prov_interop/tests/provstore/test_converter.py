@@ -24,13 +24,37 @@
 
 import inspect
 import os
+import requests
+import requests_mock
 import tempfile
 import unittest
+from nose.tools import nottest
+from nose_parameterized import parameterized
 
 from prov_interop import standards
 from prov_interop.component import ConfigError
 from prov_interop.converter import ConversionError
 from prov_interop.provstore.converter import ProvStoreConverter
+
+@nottest
+def test_case_name(testcase_func, param_num, param):
+  """``nose_parameterized`` callback function to create custom
+  test function names.
+
+  :param testcase__func: test function
+  :type testcase__func: function
+  :param param_num: number of parameters in ``param``
+  :type param_num: int
+  :param param: tuple of arguments to test function of form (FORMAT, _)
+  :type param: tuple, assumed to be of form (str or unicode, _)
+  :returns: test function name of form ``testcase_func_FORMAT``
+  :rtype: str or unicode
+  """
+  (format, _) = param.args
+  return "%s_%s" %(
+    testcase_func.__name__,
+    parameterized.to_safe_name(str(format)))
+
 
 class ProvStoreConverterTestCase(unittest.TestCase):
 
@@ -40,8 +64,9 @@ class ProvStoreConverterTestCase(unittest.TestCase):
     self.in_file = None
     self.out_file = None
     self.config = {}  
-    self.config[ProvStoreConverter.URL] = "http://myurl"
-    self.config[ProvStoreConverter.API_KEY] = "user 12345qwerty"
+    self.config[ProvStoreConverter.URL] = \
+        "https://" + self.__class__.__name__ + "/converter"
+    self.config[ProvStoreConverter.API_KEY] = "user:12345qwerty"
     self.config[ProvStoreConverter.INPUT_FORMATS] = list(
       standards.FORMATS)
     self.config[ProvStoreConverter.OUTPUT_FORMATS] = list(
@@ -95,3 +120,105 @@ class ProvStoreConverterTestCase(unittest.TestCase):
     self.out_file = "convert_invalid_output_format.nosuchformat"
     with self.assertRaises(ConversionError):
       self.provstore.convert(self.in_file, self.out_file)
+
+  def create_files(self, format):
+    (_, self.in_file) = tempfile.mkstemp(suffix="." + format)
+    (_, self.out_file) = tempfile.mkstemp(suffix="." + format)
+
+  def register_post(self, mocker, content_type, doc_id, 
+                    status_code = requests.codes.created):
+    headers={"Content-Type": content_type,
+             "Accept": ProvStoreConverter.CONTENT_TYPES[standards.JSON],
+             "Authorization": "ApiKey " + \
+               self.config[ProvStoreConverter.API_KEY]}
+    mocker.register_uri("POST", 
+                        self.config[ProvStoreConverter.URL],
+                        json={"id": doc_id},
+                        request_headers=headers,
+                        status_code=status_code)
+
+  def register_get(self, mocker, content_type, doc_id, doc, format,
+                   status_code = requests.codes.ok):
+    doc_url = self.config[ProvStoreConverter.URL] + str(doc_id)
+    headers={"Accept": content_type}
+    mocker.register_uri("GET", 
+                        doc_url + "." + format,
+                        request_headers=headers,
+                        text=doc,
+                        status_code=status_code)
+
+  def register_delete(self, mocker, doc_id, 
+                      status_code=requests.codes.no_content):
+    doc_url = self.config[ProvStoreConverter.URL] + str(doc_id)
+    headers={"Authorization": "ApiKey " + \
+               self.config[ProvStoreConverter.API_KEY]}
+    mocker.register_uri("DELETE", 
+                        doc_url,
+                        request_headers=headers,
+                        status_code=status_code)
+
+  @parameterized.expand([
+      (standards.PROVN, ProvStoreConverter.CONTENT_TYPES[standards.PROVN]),
+      (standards.TTL, ProvStoreConverter.CONTENT_TYPES[standards.TTL]),
+      (standards.TRIG, ProvStoreConverter.CONTENT_TYPES[standards.TRIG]),
+      (standards.PROVX, ProvStoreConverter.CONTENT_TYPES[standards.PROVX]),
+      (standards.JSON, ProvStoreConverter.CONTENT_TYPES[standards.JSON])
+      ], testcase_func_name=test_case_name)
+  def test_convert(self, format, content_type):
+    self.provstore.configure(self.config)
+    self.create_files(format)
+    doc = "mockDocument"
+    doc_id = 123
+    # Set up mock service response.
+    with requests_mock.Mocker(real_http=False) as mocker:
+      self.register_post(mocker, content_type, doc_id)
+      self.register_get(mocker, content_type, doc_id, doc, format)
+      self.register_delete(mocker, doc_id)
+      self.provstore.convert(self.in_file, self.out_file)
+      with open(self.out_file, 'r') as f:
+        self.assertEqual(doc, f.read(), "Unexpected output file content")
+
+  def test_convert_post_server_error(self):
+    self.provstore.configure(self.config)
+    format = standards.JSON
+    self.create_files(format)
+    content_type = ProvStoreConverter.CONTENT_TYPES[format]
+    # Set up mock service response with POST causing server error.
+    with requests_mock.Mocker(real_http=False) as mocker:
+      self.register_post(mocker, 
+                         content_type,
+                         123,
+                         status_code=requests.codes.internal_server_error)
+      with self.assertRaises(ConversionError):
+        self.provstore.convert(self.in_file, self.out_file)
+
+  def test_convert_get_server_error(self):
+    self.provstore.configure(self.config)
+    format = standards.JSON
+    self.create_files(format)
+    content_type = ProvStoreConverter.CONTENT_TYPES[format]
+    doc = "mockDocument"
+    doc_id = 123
+    # Set up mock service response with GET causing server error.
+    with requests_mock.Mocker(real_http=False) as mocker:
+      self.register_post(mocker, content_type, doc_id)
+      self.register_get(mocker, content_type, doc_id, doc, format,
+                        status_code=requests.codes.internal_server_error)
+      with self.assertRaises(ConversionError):
+        self.provstore.convert(self.in_file, self.out_file)
+
+  def test_convert_delete_server_error(self):
+    self.provstore.configure(self.config)
+    format = standards.JSON
+    self.create_files(format)
+    content_type = ProvStoreConverter.CONTENT_TYPES[format]
+    doc = "mockDocument"
+    doc_id = 123
+    # Set up mock service response with DELETE causing server error.
+    with requests_mock.Mocker(real_http=False) as mocker:
+      self.register_post(mocker, content_type, doc_id)
+      self.register_get(mocker, content_type, doc_id, doc, format)
+      self.register_delete(mocker, doc_id,
+                           status_code=requests.codes.internal_server_error)
+      with self.assertRaises(ConversionError):
+        self.provstore.convert(self.in_file, self.out_file)
