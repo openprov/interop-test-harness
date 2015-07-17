@@ -118,7 +118,7 @@ class ProvStoreConverter(Converter, RestComponent):
     in_format = os.path.splitext(in_file)[1][1:]
     out_format = os.path.splitext(out_file)[1][1:]
     super(ProvStoreConverter, self).check_formats(in_format, out_format)
-    with open(in_file, 'r') as f:
+    with open(in_file, "r") as f:
       doc = f.read()
     # Prepare ProvStore request, including doc.
     store_request={"content": doc,

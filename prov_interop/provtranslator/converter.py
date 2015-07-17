@@ -94,18 +94,18 @@ class ProvTranslatorConverter(Converter, RestComponent):
     in_format = os.path.splitext(in_file)[1][1:]
     out_format = os.path.splitext(out_file)[1][1:]
     super(ProvTranslatorConverter, self).check_formats(in_format, out_format)
-    with open(in_file, 'r') as f:
+    with open(in_file, "r") as f:
       doc_str = f.read()
     # Map prov_interop.standards formats to Content-Type and Accept-Type
     # supported by ProvTranslator.
     content_type = ProvTranslatorConverter.CONTENT_TYPES[in_format]
     accept_type = ProvTranslatorConverter.CONTENT_TYPES[out_format]
-    headers = {'Content-type': content_type, 'Accept': accept_type}
+    headers = {"Content-type": content_type, "Accept": accept_type}
     response = requests.post(self._url, 
                              headers=headers, 
                              data=doc_str)
     if (response.status_code != requests.codes.ok): # 200 OK
       raise ConversionError(self._url + " POST returned " + 
                             str(response.status_code))
-    with open(out_file, 'w') as f:
+    with open(out_file, "w") as f:
       f.write(response.text)
