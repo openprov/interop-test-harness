@@ -2,3 +2,4 @@ pyyaml
 requests[security]
 nose
 nose_parameterized
+requests-mock
