@@ -157,10 +157,6 @@ class ConverterTestCase(unittest.TestCase):
                    " not in " + self.converter.__class__.__name__ + 
                    " " + format_type)
 
-  def xxx(self, file_name):
-    with open(file_name, 'r') as f:
-      return f.read()
-
   @parameterized.expand(harness.test_cases, testcase_func_name=test_case_name)
   def test_case(self, index, ext_in, file_ext_in, ext_out, file_ext_out):
     """Test converter's conversion of a file in one format to another
