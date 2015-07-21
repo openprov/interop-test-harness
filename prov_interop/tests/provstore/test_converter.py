@@ -67,7 +67,7 @@ class ProvStoreConverterTestCase(unittest.TestCase):
     self.config = {}  
     self.config[ProvStoreConverter.URL] = \
         "https://" + self.__class__.__name__ + "/converter"
-    self.config[ProvStoreConverter.API_KEY] = "user:12345qwerty"
+    self.config[ProvStoreConverter.AUTHORIZATION] = "ApiKey user:12345qwerty"
     self.config[ProvStoreConverter.INPUT_FORMATS] = list(
       standards.FORMATS)
     self.config[ProvStoreConverter.OUTPUT_FORMATS] = list(
@@ -81,7 +81,7 @@ class ProvStoreConverterTestCase(unittest.TestCase):
 
   def test_init(self):
     self.assertEquals("", self.provstore.url)
-    self.assertEquals("", self.provstore.api_key)
+    self.assertEquals("", self.provstore.authorization)
     self.assertEquals([], self.provstore.input_formats)
     self.assertEquals([], self.provstore.output_formats)
 
@@ -89,15 +89,15 @@ class ProvStoreConverterTestCase(unittest.TestCase):
     self.provstore.configure(self.config)
     self.assertEquals(self.config[ProvStoreConverter.URL],
                       self.provstore.url)
-    self.assertEquals(self.config[ProvStoreConverter.API_KEY],
-                      self.provstore.api_key)
+    self.assertEquals(self.config[ProvStoreConverter.AUTHORIZATION],
+                      self.provstore.authorization)
     self.assertEquals(self.config[ProvStoreConverter.INPUT_FORMATS],
                       self.provstore.input_formats)
     self.assertEquals(self.config[ProvStoreConverter.OUTPUT_FORMATS],
                       self.provstore.output_formats)
 
-  def test_configure_no_api_key(self):
-    del(self.config[ProvStoreConverter.API_KEY])
+  def test_configure_no_authorization(self):
+    del(self.config[ProvStoreConverter.AUTHORIZATION])
     with self.assertRaises(ConfigError):
       self.provstore.configure(self.config)
 
@@ -130,8 +130,7 @@ class ProvStoreConverterTestCase(unittest.TestCase):
                     status_code = requests.codes.created):
     headers={http.CONTENT_TYPE: content_type,
              http.ACCEPT: ProvStoreConverter.CONTENT_TYPES[standards.JSON],
-             http.AUTHORIZATION: "ApiKey " + \
-               self.config[ProvStoreConverter.API_KEY]}
+             http.AUTHORIZATION: self.config[ProvStoreConverter.AUTHORIZATION]}
     mocker.register_uri("POST", 
                         self.config[ProvStoreConverter.URL],
                         json={"id": doc_id},
@@ -151,8 +150,7 @@ class ProvStoreConverterTestCase(unittest.TestCase):
   def register_delete(self, mocker, doc_id, 
                       status_code=requests.codes.no_content):
     doc_url = self.config[ProvStoreConverter.URL] + str(doc_id)
-    headers={http.AUTHORIZATION: "ApiKey " + \
-               self.config[ProvStoreConverter.API_KEY]}
+    headers={http.AUTHORIZATION: self.config[ProvStoreConverter.AUTHORIZATION]}
     mocker.register_uri("DELETE", 
                         doc_url,
                         request_headers=headers,

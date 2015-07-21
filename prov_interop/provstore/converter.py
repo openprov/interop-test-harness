@@ -47,37 +47,39 @@ class ProvStoreConverter(Converter, RestComponent):
   service.
   """
 
-  API_KEY = "api-key"
-  """string or unicode: configuration key for ProvStore API key"""
+  AUTHORIZATION = "authorization"
+  """string or unicode: configuration key for ProvStore Authorization 
+  HTTP header value
+  """
 
   def __init__(self):
     """Create converter.
     """
     super(ProvStoreConverter, self).__init__()
-    self._api_key = ""
+    self._authorization = ""
 
   @property
-  def api_key(self):
-    """Get the API key.
+  def authorization(self):
+    """Get authorization header value.
     
-    :returns: API key
+    :returns: authoriation header
     :rtype: str or unicode
     """
-    return self._api_key
+    return self._authorization
 
   def configure(self, config):
    """Configure converter.
     ``config`` is expected to hold configuration of form::
 
         url: ...endpoint URL...
-        api-key: ... ProvStore API key...
+        authorization: ... ProvStore authorixation header...
         input-formats: [...list of formats...]
         output-formats: [...list of formats...]
 
     For example::
 
         url: https://provenance.ecs.soton.ac.uk/validator/provapi/documents/
-        api-key: user:12345qwerty
+        authorization: ApiKey user:12345qwerty
         input-formats: [provn, ttl, trig, provx, json]
         output-formats: [provn, ttl, trig, provx, json]
 
@@ -90,8 +92,8 @@ class ProvStoreConverter(Converter, RestComponent):
     """
    super(ProvStoreConverter, self).configure(config)
    ProvStoreConverter.check_configuration(config,
-                                          [ProvStoreConverter.API_KEY])
-   self._api_key = config[ProvStoreConverter.API_KEY]
+                                          [ProvStoreConverter.AUTHORIZATION])
+   self._authorization = config[ProvStoreConverter.AUTHORIZATION]
 
   def convert(self, in_file, out_file):
     """Use ProvStore to convert an input file into an output
@@ -133,7 +135,7 @@ class ProvStoreConverter(Converter, RestComponent):
     accept_type = ProvStoreConverter.CONTENT_TYPES[standards.JSON]
     headers = {http.CONTENT_TYPE: content_type, 
                http.ACCEPT: accept_type,
-               http.AUTHORIZATION: "ApiKey " + self._api_key}
+               http.AUTHORIZATION: self._authorization}
     response = requests.post(self._url, 
                              headers=headers, 
                              data=json.dumps(store_request))
@@ -155,7 +157,7 @@ class ProvStoreConverter(Converter, RestComponent):
                             str(response.status_code))
     with open(out_file, "w") as f:
       f.write(response.text)
-    headers = {http.AUTHORIZATION: "ApiKey " + self._api_key}
+    headers = {http.AUTHORIZATION: self._authorization}
     response = requests.delete(doc_url, headers=headers)
     if (response.status_code != requests.codes.no_content): # 204 NO CONTENT
       raise ConversionError(doc_url + " DELETE returned " + 
