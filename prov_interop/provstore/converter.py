@@ -42,22 +42,22 @@ class ProvStoreConverter(Converter, RestComponent):
     standards.TRIG: "application/trig",
     standards.PROVX: "application/xml",
     standards.JSON: "application/json"}
-  """list of string or unicode: list of mapping from formats in
+  """list of str or unicode: list of mapping from formats in
   ``prov_interop.standards`` to content types understood by the
   service.
   """
 
   AUTHORIZATION = "authorization"
-  """string or unicode: configuration key for ProvStore Authorization 
+  """str or unicode: configuration key for ProvStore Authorization 
   HTTP header value
   """
 
   STORE_CONTENT = "content"
-  """string or unicode: key for ProvStore request document content"""
+  """str or unicode: key for ProvStore request document content"""
   STORE_PUBLIC = "public"
-  """string or unicode: key for ProvStore request public flag"""
+  """str or unicode: key for ProvStore request public flag"""
   STORE_REC_ID = "rec_id"
-  """string or unicode: key for ProvStore request document name"""
+  """str or unicode: key for ProvStore request document name"""
 
   def __init__(self):
     """Create converter.

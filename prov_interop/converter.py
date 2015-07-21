@@ -32,9 +32,9 @@ class Converter(ConfigurableComponent):
   """Base class for converters."""
 
   INPUT_FORMATS = "input-formats"
-  """string or unicode: configuration key for converter's supported input formats"""
+  """str or unicode: configuration key for converter's supported input formats"""
   OUTPUT_FORMATS = "output-formats"
-  """string or unicode: configuration key for converter's supported output formats"""
+  """str or unicode: configuration key for converter's supported output formats"""
 
   def __init__(self):
     """Create converter.

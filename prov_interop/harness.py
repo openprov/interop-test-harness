@@ -36,11 +36,11 @@ class HarnessResources(ConfigurableComponent):
   """Interoperability test harness resources."""
 
   TEST_CASES_DIR = "test-cases"
-  """string or unicode: configuration key for test cases directory"""
+  """str or unicode: configuration key for test cases directory"""
   COMPARATORS = "comparators"
-  """string or unicode: configuration key list of comparators"""
+  """str or unicode: configuration key list of comparators"""
   CLASS = "class"
-  """string or unicode: configuration key for comparator class names"""
+  """str or unicode: configuration key for comparator class names"""
   TEST_CASE_PREFIX="testcase"
   """
   str or unicode: assumed prefix for individual test case directories

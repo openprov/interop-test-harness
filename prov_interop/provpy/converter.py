@@ -37,13 +37,13 @@ class ProvPyConverter(Converter, CommandLineComponent):
   """Manages invocation of ProvPy prov-convert script."""
 
   FORMAT = "FORMAT"
-  """string or unicode: token for output format in command-line specification"""
+  """str or unicode: token for output format in command-line specification"""
   INPUT = "INPUT"
-  """string or unicode: token for input file in command-line specification"""
+  """str or unicode: token for input file in command-line specification"""
   OUTPUT = "OUTPUT"
-  """string or unicode: token for output file in command-line specification"""
+  """str or unicode: token for output file in command-line specification"""
   LOCAL_FORMATS = {standards.PROVX: "xml"}
-  """list of string or unicode: list of mapping from formats in
+  """list of str or unicode: list of mapping from formats in
   ``prov_interop.standards`` to formats understood by prov-convert
 ` """
 

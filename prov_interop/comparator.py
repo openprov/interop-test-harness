@@ -32,7 +32,7 @@ class Comparator(ConfigurableComponent):
   """Base class for comparators."""
 
   FORMATS = "formats"
-  """string or unicode: configuration key for comparator's supported formats"""
+  """str or unicode: configuration key for comparator's supported formats"""
 
   def __init__(self):
     """Create comparator.

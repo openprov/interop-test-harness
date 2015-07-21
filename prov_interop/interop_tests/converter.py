@@ -65,7 +65,7 @@ def test_case_name(testcase_func, param_num, param):
 class ConverterTestCase(unittest.TestCase):
 
   SKIP_TESTS = "skip-tests"
-  """string or unicode: configuration key for tests to skip"""
+  """str or unicode: configuration key for tests to skip"""
 
   def setUp(self):
     super(ConverterTestCase, self).setUp()

@@ -41,7 +41,7 @@ class ProvTranslatorConverter(Converter, RestComponent):
     standards.TRIG: "application/trig",
     standards.PROVX: "application/provenance+xml",
     standards.JSON: "application/json"}
-  """list of string or unicode: list of mapping from formats in
+  """list of str or unicode: list of mapping from formats in
   ``prov_interop.standards`` to content types understood by the
   service.
   """

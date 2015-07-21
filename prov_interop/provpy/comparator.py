@@ -37,15 +37,15 @@ class ProvPyComparator(Comparator, CommandLineComponent):
   """Manages invocation of ProvPy prov-compare script."""
 
   FORMAT1 = "FORMAT1"
-  """string or unicode: token for file1's format in command-line specification"""
+  """str or unicode: token for file1's format in command-line specification"""
   FORMAT2 = "FORMAT2"
-  """string or unicode: token for file2's format in command-line specification"""
+  """str or unicode: token for file2's format in command-line specification"""
   FILE1 = "FILE1"
-  """string or unicode: token for file1 in command-line specification"""
+  """str or unicode: token for file1 in command-line specification"""
   FILE2 = "FILE2"
-  """string or unicode: token for file1 in command-line specification"""
+  """str or unicode: token for file1 in command-line specification"""
   LOCAL_FORMATS = {standards.PROVX: "xml"}
-  """list of string or unicode: list of mapping from formats in
+  """list of str or unicode: list of mapping from formats in
   ``prov_interop.standards`` to formats understood by prov-compare
 ` """
 
