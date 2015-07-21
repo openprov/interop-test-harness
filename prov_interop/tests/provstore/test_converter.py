@@ -31,6 +31,7 @@ import unittest
 from nose.tools import nottest
 from nose_parameterized import parameterized
 
+from prov_interop import http
 from prov_interop import standards
 from prov_interop.component import ConfigError
 from prov_interop.converter import ConversionError
@@ -127,9 +128,9 @@ class ProvStoreConverterTestCase(unittest.TestCase):
 
   def register_post(self, mocker, content_type, doc_id, 
                     status_code = requests.codes.created):
-    headers={"Content-Type": content_type,
-             "Accept": ProvStoreConverter.CONTENT_TYPES[standards.JSON],
-             "Authorization": "ApiKey " + \
+    headers={http.CONTENT_TYPE: content_type,
+             http.ACCEPT: ProvStoreConverter.CONTENT_TYPES[standards.JSON],
+             http.AUTHORIZATION: "ApiKey " + \
                self.config[ProvStoreConverter.API_KEY]}
     mocker.register_uri("POST", 
                         self.config[ProvStoreConverter.URL],
@@ -140,7 +141,7 @@ class ProvStoreConverterTestCase(unittest.TestCase):
   def register_get(self, mocker, content_type, doc_id, doc, format,
                    status_code = requests.codes.ok):
     doc_url = self.config[ProvStoreConverter.URL] + str(doc_id)
-    headers={"Accept": content_type}
+    headers={http.ACCEPT: content_type}
     mocker.register_uri("GET", 
                         doc_url + "." + format,
                         request_headers=headers,
@@ -150,7 +151,7 @@ class ProvStoreConverterTestCase(unittest.TestCase):
   def register_delete(self, mocker, doc_id, 
                       status_code=requests.codes.no_content):
     doc_url = self.config[ProvStoreConverter.URL] + str(doc_id)
-    headers={"Authorization": "ApiKey " + \
+    headers={http.AUTHORIZATION: "ApiKey " + \
                self.config[ProvStoreConverter.API_KEY]}
     mocker.register_uri("DELETE", 
                         doc_url,

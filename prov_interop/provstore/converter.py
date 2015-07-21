@@ -26,6 +26,7 @@ import json
 import os.path
 import requests
 
+from prov_interop import http
 from prov_interop import standards
 from prov_interop.component import ConfigError
 from prov_interop.component import RestComponent
@@ -130,9 +131,9 @@ class ProvStoreConverter(Converter, RestComponent):
     # Request ProvStore response be JSON from which auto-generated
     # document identifier will be extracted
     accept_type = ProvStoreConverter.CONTENT_TYPES[standards.JSON]
-    headers = {"Content-type": content_type, 
-               "Accept": accept_type,
-               "Authorization": "ApiKey " + self._api_key}
+    headers = {http.CONTENT_TYPE: content_type, 
+               http.ACCEPT: accept_type,
+               http.AUTHORIZATION: "ApiKey " + self._api_key}
     response = requests.post(self._url, 
                              headers=headers, 
                              data=json.dumps(store_request))
@@ -145,7 +146,7 @@ class ProvStoreConverter(Converter, RestComponent):
     # Map prov_interop.standards formats to Accept-Type supported by 
     # ProvStore. 
     accept_type = ProvStoreConverter.CONTENT_TYPES[out_format]
-    headers = {"Accept": accept_type}
+    headers = {http.ACCEPT: accept_type}
     response = requests.get(doc_url + "." + out_format, 
                             headers=headers, 
                             allow_redirects=True)
@@ -154,7 +155,7 @@ class ProvStoreConverter(Converter, RestComponent):
                             str(response.status_code))
     with open(out_file, "w") as f:
       f.write(response.text)
-    headers = {"Authorization": "ApiKey " + self._api_key}
+    headers = {http.AUTHORIZATION: "ApiKey " + self._api_key}
     response = requests.delete(doc_url, headers=headers)
     if (response.status_code != requests.codes.no_content): # 204 NO CONTENT
       raise ConversionError(doc_url + " DELETE returned " + 

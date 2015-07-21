@@ -25,6 +25,7 @@
 import os.path
 import requests
 
+from prov_interop import http
 from prov_interop import standards
 from prov_interop.component import ConfigError
 from prov_interop.component import RestComponent
@@ -100,7 +101,8 @@ class ProvTranslatorConverter(Converter, RestComponent):
     # supported by ProvTranslator.
     content_type = ProvTranslatorConverter.CONTENT_TYPES[in_format]
     accept_type = ProvTranslatorConverter.CONTENT_TYPES[out_format]
-    headers = {"Content-type": content_type, "Accept": accept_type}
+    headers = {http.CONTENT_TYPE: content_type, 
+               http.ACCEPT: accept_type}
     response = requests.post(self._url, 
                              headers=headers, 
                              data=doc_str)

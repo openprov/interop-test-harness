@@ -31,6 +31,7 @@ import unittest
 from nose.tools import nottest
 from nose_parameterized import parameterized
 
+from prov_interop import http
 from prov_interop import standards
 from prov_interop.component import ConfigError
 from prov_interop.converter import ConversionError
@@ -118,9 +119,9 @@ class ProvTranslatorConverterTestCase(unittest.TestCase):
     (_, self.out_file) = tempfile.mkstemp(suffix="." + standards.JSON)
     doc = "mockDocument"
     # Set up mock service response.
-    headers={"Content-Type": 
+    headers={http.CONTENT_TYPE: 
              ProvTranslatorConverter.CONTENT_TYPES[standards.JSON],
-             "Accept": 
+             http.ACCEPT: 
              ProvTranslatorConverter.CONTENT_TYPES[standards.JSON]}
     with requests_mock.Mocker(real_http=False) as mocker:
       mocker.register_uri("POST", 
@@ -143,8 +144,8 @@ class ProvTranslatorConverterTestCase(unittest.TestCase):
     (_, self.out_file) = tempfile.mkstemp(suffix="." + format)
     doc = "mockDocument"
     # Set up mock service response.
-    headers={"Content-Type": content_type,
-             "Accept": content_type}
+    headers={http.CONTENT_TYPE: content_type,
+             http.ACCEPT: content_type}
     with requests_mock.Mocker(real_http=False) as mocker:
       mocker.register_uri("POST", 
                           self.config[ProvTranslatorConverter.URL],
