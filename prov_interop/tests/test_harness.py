@@ -131,7 +131,7 @@ class HarnessResourcesTestCase(unittest.TestCase):
       os.mkdir(os.path.join(self.test_cases_dir, name))
     # Add file names do match testcaseNNNN
     for name in ["testcase4", "testcase5"]:
-      open(name,'a').close()
+      open(os.path.join(self.test_cases_dir, name), "a").close()
     self.harness.register_test_cases(self.test_cases_dir, [standards.JSON])
     self.assertEqual([], self.harness.test_cases)
 
@@ -143,8 +143,8 @@ class HarnessResourcesTestCase(unittest.TestCase):
       os.mkdir(test_case_dir)
       for format in formats:
         # Create files both with canonical and non-canonical extensions.
-        open(os.path.join(test_case_dir, "file." + format), 'a').close()
-        open(os.path.join(test_case_dir, "file.xxx"), 'a').close()
+        open(os.path.join(test_case_dir, "file." + format), "a").close()
+        open(os.path.join(test_case_dir, "file.xxx"), "a").close()
     self.harness.register_test_cases(self.test_cases_dir, formats)
 
   def check_cases(self, count, formats):
