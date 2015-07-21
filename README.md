@@ -6,20 +6,32 @@ Interoperability test harness for the [Southampton Provenance Suite](https://pro
 
 The test harness includes support for:
 
-* [ProvPy](https://github.com/trungdong/prov)
-* [ProvToolbox](https://github.com/lucmoreau/ProvToolbox)
+* Software:
+  - [ProvPy](https://github.com/trungdong/prov)
+  - [ProvToolbox](https://github.com/lucmoreau/ProvToolbox)
+* Services:
+  - [ProvTranslator](https://provenance.ecs.soton.ac.uk/validator/view/translator.html)
+  - [ProvStore](https://provenance.ecs.soton.ac.uk/store/)
 
 The test harness can be run under:
 
 * [Travis CI](https://travis-ci.org). See, for example:
   - ProvPy prov-convert interoperability testing: [GitHub](https://github.com/mikej888/provtoolsuite-provpy-interop-job) and [TravisCI](https://travis-ci.org/mikej888/provtoolsuite-provpy-interop-job)
   - ProvToolbox provconvert interoperability testing: [GitHub](https://github.com/mikej888/provtoolsuite-provtoolbox-interop-job) and [TravisCI](https://travis-ci.org/mikej888/provtoolsuite-provtoolbox-interop-job)
+  - ProvTranslator interoperability testing: [GitHub](https://github.com/mikej888/provtoolsuite-provtranslator-interop-job) and [TravisCI](https://travis-ci.org/mikej888/provtoolsuite-provtranslator-interop-job)
 * [Jenkins](https://jenkins-ci.org). See:
   - [Running the interoperability test harness under Jenkins](./Jenkins.md)
 
 ## Standalone use
 
-The interoperability test harness runs under Python. You can use the test harness stand-alone. This requires you to have installed all the packages and dependencies required to run both ProvPy and ProvToolbox.
+The interoperability test harness runs under Python. You can use the test harness stand-alone. These instructions assume you have:
+
+* Installed ProvPy's dependencies.
+* Installed ProvToolbox's dependencies.
+* Created a ProvStore API Key:
+  - Log in to [ProvStore}(https://provenance.ecs.soton.ac.uk/store)
+  - Select Account => Developer Area
+  - You will see your API key
 
 Get and install the latest version of ProvPy:
 
@@ -42,7 +54,7 @@ mvn clean install
 cd ..
 ```
 
-Get the PROV test cases:
+Get the interoperability test cases:
 
 ```
 git clone https://github.com/prov-suite/testcases
@@ -62,28 +74,70 @@ Run the test harness unit tests:
 nosetests prov_interop/tests
 ```
 
-Create ``localconfig.properties``, replacing ``/home/user`` with the paths to where you cloned the repositories:
+Create ``localconfig.properties``:
+
+* In the following, replace ``/home/user`` with the paths to where you cloned the repositories.
+* Add location of test cases clone:
 
 ```
 PROV_TEST_CASES_DIR=/home/user/testcases
-PROVPY_CONVERT_EXE=python
-PROVPY_COMPARE_EXE=python
-PROVPY_SCRIPTS_DIR=/home/user/ProvPy/scripts
-PROVTOOLBOX_SCRIPTS_DIR=/home/user/toolbox/target/appassembler/bin
+```
+
+* Add location of a directory that will hold local configuration files e.g.
+
+```
 PROV_LOCAL_CONFIG_DIR=/home/user/interop-test-harness/localconfig
 ```
 
+* Add location of ProvPy scripts:
+
+```
+PROVPY_SCRIPTS_DIR=/home/user/ProvPy/scripts
+```
+
+* Add ProvPy prov-compare executable name:
+
+```
+PROVPY_COMPARE_EXE=python
+```
+
+* Add ProvPy prov-convert executable name:
+
+```
+PROVPY_CONVERT_EXE=python
+```
+
+* Add location of ProvToolbox provconvert script:
+
+```
+PROVTOOLBOX_SCRIPTS_DIR=/home/user/toolbox/target/appassembler/bin
+```
+
+* Add your ProvStore API key:
+
+```
+API_KEY=you:12345qwert
+```
+
 Create custom configuration files:
+
 ```
 mkdir localconfig
 python prov_interop/customise-config.py config localconfig config.properties
 ```
 
-Run interoperability tests for ProvPy and ProvToolbox:
+Run interoperability tests for ProvPy, ProvToolbox, ProvTranslator and ProvStore:
+
+```
+nosetests -v prov_interop.interop_tests
+
+To run tests for a specific component:
 
 ```
 nosetests -v prov_interop.interop_tests.test_provpy
 nosetests -v prov_interop.interop_tests.test_provtoolbox
+nosetests -v prov_interop.interop_tests.test_provtranslator
+nosetests -v prov_interop.interop_tests.test_provstore
 ```
 
 ## Automatically rerunning interoperability tests in Travis CI
