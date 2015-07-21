@@ -32,9 +32,9 @@ class Converter(ConfigurableComponent):
   """Base class for converters."""
 
   INPUT_FORMATS = "input-formats"
-  """string or unicode: configuration key for converter's supported input formats"""
+  """str or unicode: configuration key for converter's supported input formats"""
   OUTPUT_FORMATS = "output-formats"
-  """string or unicode: configuration key for converter's supported output formats"""
+  """str or unicode: configuration key for converter's supported output formats"""
 
   def __init__(self):
     """Create converter.
@@ -91,6 +91,22 @@ class Converter(ConfigurableComponent):
                             ":" + format)
     self._input_formats = config[Converter.INPUT_FORMATS]
     self._output_formats = config[Converter.OUTPUT_FORMATS]
+
+  def check_formats(self, in_format, out_format):
+    """Check given formats are in the input and output formats
+    supported by the converter.
+
+    :param in_format: Input format
+    :type in_format: str or unicode
+    :param out_format: Output format
+    :type out_format: str or unicode
+    :raises ConversionError: if the input or output formats are
+    not in those supported by the converter
+    """
+    if in_format not in self.input_formats:
+      raise ConversionError("Unsupported input format: " + in_format)
+    if out_format not in self.output_formats:
+      raise ConversionError("Unsupported input format: " + out_format)
 
   def convert(self, in_file, out_file):
     """Use converter to convert an input file into an output

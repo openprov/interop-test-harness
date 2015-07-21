@@ -37,13 +37,13 @@ class ProvPyConverter(Converter, CommandLineComponent):
   """Manages invocation of ProvPy prov-convert script."""
 
   FORMAT = "FORMAT"
-  """string or unicode: token for output format in command-line specification"""
+  """str or unicode: token for output format in command-line specification"""
   INPUT = "INPUT"
-  """string or unicode: token for input file in command-line specification"""
+  """str or unicode: token for input file in command-line specification"""
   OUTPUT = "OUTPUT"
-  """string or unicode: token for output file in command-line specification"""
+  """str or unicode: token for output file in command-line specification"""
   LOCAL_FORMATS = {standards.PROVX: "xml"}
-  """list of string or unicode: list of mapping from formats in
+  """list of str or unicode: list of mapping from formats in
   ``prov_interop.standards`` to formats understood by prov-convert
 ` """
 
@@ -104,10 +104,7 @@ class ProvPyConverter(Converter, CommandLineComponent):
     super(ProvPyConverter, self).convert(in_file, out_file)
     in_format = os.path.splitext(in_file)[1][1:]
     out_format = os.path.splitext(out_file)[1][1:]
-    if in_format not in self.input_formats:
-      raise ConversionError("Unsupported input format: " + in_format)
-    if out_format not in self.output_formats:
-      raise ConversionError("Unsupported input format: " + out_format)
+    super(ProvPyConverter, self).check_formats(in_format, out_format)
     # Map prov_interop.standards output format to format supported 
     # by prov-convert
     local_format = out_format

@@ -34,9 +34,9 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
   """Manages invocation of ProvToolbox provconvert script."""
 
   INPUT = "INPUT"
-  """string or unicode: token for input file in command-line specification"""
+  """str or unicode: token for input file in command-line specification"""
   OUTPUT = "OUTPUT"
-  """string or unicode: token for output file in command-line specification"""
+  """str or unicode: token for output file in command-line specification"""
 
   def __init__(self):
     """Create converter.
@@ -93,6 +93,9 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
     e.g. the script is not found
     """
     super(ProvToolboxConverter, self).convert(in_file, out_file)
+    in_format = os.path.splitext(in_file)[1][1:]
+    out_format = os.path.splitext(out_file)[1][1:]
+    super(ProvToolboxConverter, self).check_formats(in_format, out_format)
     # Replace tokens in arguments
     command_line = [in_file if x==ProvToolboxConverter.INPUT else x 
                     for x in self._arguments]

@@ -38,6 +38,10 @@ class ConverterTestCase(unittest.TestCase):
     self.converter = Converter()
     self.in_file = None
     self.out_file = None
+    self.input_formats = [standards.PROVN, standards.JSON]
+    self.output_formats = [standards.PROVX, standards.TTL]
+    self.config = {Converter.INPUT_FORMATS: self.input_formats, 
+                   Converter.OUTPUT_FORMATS: self.output_formats}
 
   def tearDown(self):
     super(ConverterTestCase, self).tearDown()
@@ -50,43 +54,46 @@ class ConverterTestCase(unittest.TestCase):
     self.assertEquals([], self.converter.output_formats)
 
   def test_configure(self):
-    input_formats = [standards.PROVN, standards.JSON]
-    output_formats = [standards.PROVX, standards.TTL]
-    self.converter.configure({Converter.INPUT_FORMATS: input_formats, 
-                         Converter.OUTPUT_FORMATS: output_formats})
-    self.assertEquals(input_formats, self.converter.input_formats)
-    self.assertEquals(output_formats, self.converter.output_formats)
+    self.converter.configure(self.config)
+    self.assertEquals(self.input_formats, self.converter.input_formats)
+    self.assertEquals(self.output_formats, self.converter.output_formats)
 
   def test_configure_non_dict_error(self):
     with self.assertRaises(ConfigError):
       self.converter.configure(123)
 
   def test_configure_no_input_formats(self):
-    output_formats = [standards.PROVX, standards.TTL]
+    del self.config[Converter.INPUT_FORMATS]
     with self.assertRaises(ConfigError):
-      self.converter.configure({Converter.OUTPUT_FORMATS: output_formats})
+      self.converter.configure(self.config)
 
   def test_configure_non_canonical_input_format(self):
-    input_formats = [standards.PROVN, standards.JSON, "invalidFormat"]
-    output_formats = [standards.PROVX, standards.TTL]
+    self.config[Converter.INPUT_FORMATS].append("invalidFormat")
     with self.assertRaises(ConfigError):
-      self.converter.configure({Converter.INPUT_FORMATS: input_formats, 
-                                Converter.OUTPUT_FORMATS: output_formats})
+      self.converter.configure(self.config)
     
   def test_configure_no_output_formats(self):
-    input_formats = [standards.PROVN, standards.JSON]
+    del self.config[Converter.OUTPUT_FORMATS]
     with self.assertRaises(ConfigError):
-      self.converter.configure({Converter.INPUT_FORMATS: input_formats})
+      self.converter.configure(self.config)
 
   def test_configure_non_canonical_output_format(self):
-    input_formats = [standards.PROVN, standards.JSON]
-    output_formats = [standards.PROVX, standards.TTL, "invalidFormat"]
+    self.config[Converter.OUTPUT_FORMATS].append("invalidFormat")
     with self.assertRaises(ConfigError):
-      self.converter.configure({Converter.INPUT_FORMATS: input_formats, 
-                                Converter.OUTPUT_FORMATS: output_formats})
+      self.converter.configure(self.config)
 
   def test_convert_missing_input_file(self):
     self.in_file = "nosuchfile.json"
     self.out_file = "convert_missing_input_file." + standards.PROVN
     with self.assertRaises(ConversionError):
       self.converter.convert(self.in_file, self.out_file)
+
+  def test_check_formats_invalid_input_format(self):
+    self.converter.configure(self.config)
+    with self.assertRaises(ConversionError):
+      self.converter.check_formats(standards.PROVX, "nosuchformat")
+
+  def test_check_formats_invalid_output_format(self):
+    self.converter.configure(self.config)
+    with self.assertRaises(ConversionError):
+      self.converter.check_formats("nosuchformat", standards.PROVX)

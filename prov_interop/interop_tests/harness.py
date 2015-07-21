@@ -1,4 +1,4 @@
-"""Interoperability test harness configuration.
+"""Interoperability test harness boot-strapping.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -23,7 +23,6 @@
 # SOFTWARE.  
 
 import os
-import re
 
 from prov_interop.harness import HarnessResources
 from prov_interop import component
@@ -40,23 +39,9 @@ DEFAULT_CONFIGURATION_FILE="localconfig/harness.yaml"
 file name
 """
 
-TEST_CASE_PREFIX="testcase"
-"""
-str or unicode: assumed prefix for individual test case directories
-and files
-"""
-
 harness_resources = None
 """:class:`~prov_interop.harness.HarnessResources`:
 interoperability test harness resources
-"""
-
-test_cases = None
-"""
-:list of tuple: zero or more test case tuples of form (int - test case
-index, str or unicode, document 1 format, full path to document 1,
-document 2 format, full path to document 2) where formats are assumed
-to be as in ``prov_interop.standards``
 """
 
 def initialise_harness_from_file(file_name = None):
@@ -94,52 +79,9 @@ def initialise_harness_from_file(file_name = None):
     for format in harness_resources.format_comparators:
       print(" " + format + ":" + 
             harness_resources.format_comparators[format].__class__.__name__)
-
-def initialise_test_cases():
-  """Form list of test cases.
-
-  - This method assumes ``initialise_harness_from_file`` has already
-    been invoked, to initialise ``harness_resources``.
-  - Initialise an empty list of test cases, ``test_cases``.
-  - Get test cases directory from ``harness_resources``.
-  - For each child directory, whose name is prefixed by "testcase":
-    - Filter its files to get only those which have an extension
-      matching one of the formats in ``prov_interop.standards`` and
-      for which a comparator for this format is recorded in
-      ``harness_resources.format_comparators``.
-    - Calculate possible combinations of pairs of the filtered files
-      to get a set of (test-case-number, format1, file1, format2,
-      file2) tuples and add these to the ``test_cases``.
-  """
-  global TEST_CASE_PREFIX
-  global harness_resources
-  global test_cases
-  pattern = re.compile("^" + TEST_CASE_PREFIX + "\d+$")
-  index_pattern = re.compile("\d+$")
-  test_cases_dir = harness_resources.configuration[HarnessResources.TEST_CASES]
-  print("Registering test cases in " + test_cases_dir)
-  test_cases = []
-  for test_case in sorted(os.listdir(test_cases_dir)):
-    test_case_dir = os.path.join(test_cases_dir, test_case)
-    # Only consider directories of form testcaseNNNN.
-    if pattern.match(test_case) is not None and os.path.isdir(test_case_dir):
-      index = int(index_pattern.search(test_case).group(0))
-      files = []
-      for test_file in sorted(os.listdir(test_case_dir)):
-        format = os.path.splitext(test_file)[1][1:]
-        # Only consider files with the supported extensions and for
-        # which a comparator exists.
-        if format in standards.FORMATS and \
-              format in harness_resources.format_comparators:
-          files.append((format, os.path.join(test_case_dir, test_file)))
-      # Create all-pairs combination of the files,
-      test_case_tests = [(index, format1, file1, format2, file2) \
-          for (format1, file1) in files for (format2, file2) in files]
-      for (_, format1, _, format2, _) in test_case_tests:
-        print(test_case + ":" + format1 + "->" + format2)
-      # Add to current list of all test cases
-      test_cases.extend(test_case_tests)
-  print(str(len(test_cases)) + " test cases registered")
+    print(harness_resources.test_cases_dir)
+    print(str(len(harness_resources.test_cases)) + " test cases registered:")
+    for (index, format1, _, format2, _) in harness_resources.test_cases:
+      print(str(index) + ":" + format1 + "->" + format2)
 
 initialise_harness_from_file()
-initialise_test_cases()

@@ -32,7 +32,7 @@ class Comparator(ConfigurableComponent):
   """Base class for comparators."""
 
   FORMATS = "formats"
-  """string or unicode: configuration key for comparator's supported formats"""
+  """str or unicode: configuration key for comparator's supported formats"""
 
   def __init__(self):
     """Create comparator.
@@ -73,6 +73,17 @@ class Comparator(ConfigurableComponent):
         raise ConfigError("Unrecognised format in " + Comparator.FORMATS +
                           ":" + format)
     self._formats = config[Comparator.FORMATS]
+
+  def check_format(self, format):
+    """Check given format is in the formats supported by the comparator.
+
+    :param format: Format
+    :type iormat: str or unicode
+    :raises ComparisonError: if the formats is not in those supported
+    by the comparator.
+    """
+    if format not in self.formats:
+      raise ComparisonError("Unsupported format: " + format)
 
   def compare(self, file1, file2):
     """Use comparator to compare two files. Each file must have an

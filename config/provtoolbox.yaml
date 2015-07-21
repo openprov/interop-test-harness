@@ -5,4 +5,4 @@ ProvToolboxConverter:
   # Formats must be in set [json, provn, provx, trig, ttl]
   input-formats: [provn, ttl, trig, provx, json]
   output-formats: [provn, ttl, trig, provx, json]
-  skip-tests: [2, 5, 6]
+  skip-tests: [3]

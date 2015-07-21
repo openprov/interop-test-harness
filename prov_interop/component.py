@@ -92,9 +92,9 @@ class CommandLineComponent(ConfigurableComponent):
   """Base class for configurable command-line components."""
 
   EXECUTABLE = "executable"
-  """string or unicode: configuration key for component's executable"""
+  """str or unicode: configuration key for component's executable"""
   ARGUMENTS = "arguments"
-  """string or unicode: configuration key for component's arguments"""
+  """str or unicode: configuration key for component's arguments"""
 
   def __init__(self):
     """Create component.
@@ -150,7 +150,7 @@ class RestComponent(ConfigurableComponent):
   """Base class for configurable REST-ful components."""
 
   URL = "url"
-  """string or unicode: configuration key for REST endpoint URL"""
+  """str or unicode: configuration key for REST endpoint URL"""
 
   def __init__(self):
     """Create component.

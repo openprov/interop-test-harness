@@ -48,6 +48,7 @@ echo &quot;PROVPY_CONVERT_EXE=python&quot; &gt;&gt; config.properties
 echo &quot;PROVPY_COMPARE_EXE=python&quot; &gt;&gt; config.properties
 echo &quot;PROVTOOLBOX_SCRIPTS_DIR=$WORKSPACE/ProvToolbox/toolbox/target/appassembler/bin&quot; &gt;&gt; config.properties
 echo &quot;PROV_LOCAL_CONFIG_DIR=$WORKSPACE/test-harness/localconfig&quot; &gt;&gt; config.properties
+echo &quot;API_KEY=you:12345qwert&quot; &gt;&gt; config.properties
 cat config.properties
 mkdir localconfig
 python prov_interop/customise-config.py config localconfig config.properties
