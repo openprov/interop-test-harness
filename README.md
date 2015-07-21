@@ -130,6 +130,7 @@ Run interoperability tests for ProvPy, ProvToolbox, ProvTranslator and ProvStore
 
 ```
 nosetests -v prov_interop.interop_tests
+```
 
 To run tests for a specific component:
 
