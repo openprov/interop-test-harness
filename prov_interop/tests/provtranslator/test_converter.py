@@ -79,18 +79,18 @@ class ProvTranslatorConverterTestCase(unittest.TestCase):
         os.remove(tmp)
 
   def test_init(self):
-    self.assertEquals("", self.provtranslator.url)
-    self.assertEquals([], self.provtranslator.input_formats)
-    self.assertEquals([], self.provtranslator.output_formats)
+    self.assertEqual("", self.provtranslator.url)
+    self.assertEqual([], self.provtranslator.input_formats)
+    self.assertEqual([], self.provtranslator.output_formats)
 
   def test_configure(self):
     self.provtranslator.configure(self.config)
-    self.assertEquals(self.config[ProvTranslatorConverter.URL], 
-                      self.provtranslator.url)
-    self.assertEquals(self.config[ProvTranslatorConverter.INPUT_FORMATS], 
-                      self.provtranslator.input_formats)
-    self.assertEquals(self.config[ProvTranslatorConverter.OUTPUT_FORMATS], 
-                      self.provtranslator.output_formats)
+    self.assertEqual(self.config[ProvTranslatorConverter.URL], 
+                     self.provtranslator.url)
+    self.assertEqual(self.config[ProvTranslatorConverter.INPUT_FORMATS], 
+                     self.provtranslator.input_formats)
+    self.assertEqual(self.config[ProvTranslatorConverter.OUTPUT_FORMATS], 
+                     self.provtranslator.output_formats)
 
   def test_convert_missing_input_file(self):
     self.provtranslator.configure(self.config)

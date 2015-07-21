@@ -69,7 +69,7 @@ class FactoryTestCase(unittest.TestCase):
   def test_get_class(self):
     my_module = self.__module__
     clazz = factory.get_class(str(self.__module__) + ".Counter")
-    self.assertEquals(Counter, clazz)
+    self.assertEqual(Counter, clazz)
 
   def test_get_class_no_prefix(self):
     with self.assertRaises(ValueError):
@@ -89,7 +89,7 @@ class FactoryTestCase(unittest.TestCase):
     self.assertIsInstance(obj, Counter)
     obj.increment()
     obj.increment()
-    self.assertEquals(2, obj.counter)
+    self.assertEqual(2, obj.counter)
 
   def test_get_instance_no_prefix(self):
     with self.assertRaises(ValueError):

@@ -71,11 +71,11 @@ parser.add_argument("outfile", help="Output file")
 args = parser.parse_args()
 print("Running dummy ProvPy prov-convert...")
 if not os.path.isfile(args.infile):
-  print("No such file " + args.infile)
+  print(("No such file " + args.infile))
   sys.exit(2)
 formats = ["provn", "xml", "json"]
 if args.f not in formats:
-  print("Unsupported format " + args.f)
+  print(("Unsupported format " + args.f))
   with open(args.outfile, "w+"):
     pass
   sys.exit(2)

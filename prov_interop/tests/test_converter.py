@@ -50,13 +50,13 @@ class ConverterTestCase(unittest.TestCase):
         os.remove(tmp)
 
   def test_init(self):
-    self.assertEquals([], self.converter.input_formats)
-    self.assertEquals([], self.converter.output_formats)
+    self.assertEqual([], self.converter.input_formats)
+    self.assertEqual([], self.converter.output_formats)
 
   def test_configure(self):
     self.converter.configure(self.config)
-    self.assertEquals(self.input_formats, self.converter.input_formats)
-    self.assertEquals(self.output_formats, self.converter.output_formats)
+    self.assertEqual(self.input_formats, self.converter.input_formats)
+    self.assertEqual(self.output_formats, self.converter.output_formats)
 
   def test_configure_non_dict_error(self):
     with self.assertRaises(ConfigError):

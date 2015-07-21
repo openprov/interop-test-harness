@@ -75,16 +75,16 @@ parser.add_argument('-outfile', metavar="file",
 args = parser.parse_args()
 print("Running dummy ProvToolbox provconvert...")
 if not os.path.isfile(args.infile):
-  print("No such file " + args.infile)
+  print(("No such file " + args.infile))
   sys.exit(1)
 formats = ["provn", "ttl", "rdf", "trig", "provx", "xml", "json"]
 in_format = os.path.splitext(args.infile)[1][1:]
 if in_format not in formats:
-  print("Unsupported input file format " + in_format)
+  print(("Unsupported input file format " + in_format))
   sys.exit(1)
 out_format = os.path.splitext(args.outfile)[1][1:]
 if out_format not in formats:
-  print("Unsupported output file format " + out_format)
+  print(("Unsupported output file format " + out_format))
   sys.exit(0)
 shutil.copyfile(args.infile, args.outfile)
 sys.exit(0)

@@ -59,18 +59,18 @@ class ProvPyComparatorTestCase(unittest.TestCase):
         os.remove(tmp)
 
   def test_init(self):
-    self.assertEquals("", self.provpy.executable)
-    self.assertEquals([], self.provpy.arguments)
-    self.assertEquals([], self.provpy.formats)
+    self.assertEqual("", self.provpy.executable)
+    self.assertEqual([], self.provpy.arguments)
+    self.assertEqual([], self.provpy.formats)
 
   def test_configure(self):
     self.provpy.configure(self.config)
-    self.assertEquals(self.config[ProvPyComparator.EXECUTABLE],
-                      self.provpy.executable) 
-    self.assertEquals(self.config[ProvPyComparator.ARGUMENTS],
-                      self.provpy.arguments) 
-    self.assertEquals(self.config[ProvPyComparator.FORMATS],
-                      self.provpy.formats) 
+    self.assertEqual(self.config[ProvPyComparator.EXECUTABLE],
+                     self.provpy.executable) 
+    self.assertEqual(self.config[ProvPyComparator.ARGUMENTS],
+                     self.provpy.arguments) 
+    self.assertEqual(self.config[ProvPyComparator.FORMATS],
+                     self.provpy.formats) 
 
   def test_configure_no_format1(self):
     self.config[ProvPyComparator.ARGUMENTS].remove(ProvPyComparator.FORMAT1)

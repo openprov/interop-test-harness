@@ -80,21 +80,21 @@ class ProvStoreConverterTestCase(unittest.TestCase):
         os.remove(tmp)
 
   def test_init(self):
-    self.assertEquals("", self.provstore.url)
-    self.assertEquals("", self.provstore.authorization)
-    self.assertEquals([], self.provstore.input_formats)
-    self.assertEquals([], self.provstore.output_formats)
+    self.assertEqual("", self.provstore.url)
+    self.assertEqual("", self.provstore.authorization)
+    self.assertEqual([], self.provstore.input_formats)
+    self.assertEqual([], self.provstore.output_formats)
 
   def test_configure(self):
     self.provstore.configure(self.config)
-    self.assertEquals(self.config[ProvStoreConverter.URL],
-                      self.provstore.url)
-    self.assertEquals(self.config[ProvStoreConverter.AUTHORIZATION],
-                      self.provstore.authorization)
-    self.assertEquals(self.config[ProvStoreConverter.INPUT_FORMATS],
-                      self.provstore.input_formats)
-    self.assertEquals(self.config[ProvStoreConverter.OUTPUT_FORMATS],
-                      self.provstore.output_formats)
+    self.assertEqual(self.config[ProvStoreConverter.URL],
+                     self.provstore.url)
+    self.assertEqual(self.config[ProvStoreConverter.AUTHORIZATION],
+                     self.provstore.authorization)
+    self.assertEqual(self.config[ProvStoreConverter.INPUT_FORMATS],
+                     self.provstore.input_formats)
+    self.assertEqual(self.config[ProvStoreConverter.OUTPUT_FORMATS],
+                     self.provstore.output_formats)
 
   def test_configure_no_authorization(self):
     del(self.config[ProvStoreConverter.AUTHORIZATION])

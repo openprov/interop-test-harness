@@ -131,10 +131,10 @@ class ConverterTestCase(unittest.TestCase):
     :type index: int
     :raises SkipTest:
     """
-    print("Skipping as " + str(index) + " in skip-tests")
-    raise SkipTest("Test case " + str(index) +
-                   " in " + self.converter.__class__.__name__ + 
-                   " skip-tests")
+    print(("Skipping as " + str(index) + " in skip-tests"))
+    raise SkipTest(("Test case " + str(index) +
+                    " in " + self.converter.__class__.__name__ + 
+                    " skip-tests"))
 
   def skip_unsupported_format(self, index, format, format_type):
     """Raise a SkipTest error if a specific conversion is to be
@@ -151,11 +151,11 @@ class ConverterTestCase(unittest.TestCase):
     :type format_type: str or unicode
     :raises SkipTest:
     """
-    print("Skipping as " + str(index) + " in skip-tests")
-    print("Skipping as " + format + " not in converter's " + format_type)
-    raise SkipTest("Format " + format +
-                   " not in " + self.converter.__class__.__name__ + 
-                   " " + format_type)
+    print(("Skipping as " + str(index) + " in skip-tests"))
+    print(("Skipping as " + format + " not in converter's " + format_type))
+    raise SkipTest(("Format " + format +
+                    " not in " + self.converter.__class__.__name__ + 
+                    " " + format_type))
 
   @parameterized.expand(harness.harness_resources.test_cases, 
                         testcase_func_name=test_case_name)
@@ -194,7 +194,7 @@ class ConverterTestCase(unittest.TestCase):
     :raises SkipTest: if the test case is to be skipped, or the input
     format or output format are not supported by the converter.
     """
-    print("Test case: " + str(index) + " from " + ext_in + " to " + ext_out)
+    print(("Test case: " + str(index) + " from " + ext_in + " to " + ext_out))
     if index in self.skip_tests:
       self.skip_member_of_skip_set(index)
     if (not ext_in in self.converter.input_formats):

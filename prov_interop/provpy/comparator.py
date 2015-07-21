@@ -127,7 +127,7 @@ class ProvPyComparator(Comparator, CommandLineComponent):
                     for x in command_line]
     command_line.insert(0, self.executable)
     # Execute
-    print(" ".join(command_line))
+    print((" ".join(command_line)))
     return_code = subprocess.call(command_line)
     if return_code == 0:
       return True

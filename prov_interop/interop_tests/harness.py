@@ -77,11 +77,11 @@ def initialise_harness_from_file(file_name = None):
     harness_resources.configure(config)
     print("Comparators available:")
     for format in harness_resources.format_comparators:
-      print(" " + format + ":" + 
-            harness_resources.format_comparators[format].__class__.__name__)
-    print(harness_resources.test_cases_dir)
-    print(str(len(harness_resources.test_cases)) + " test cases registered:")
+      print((" " + format + ":" + 
+            harness_resources.format_comparators[format].__class__.__name__))
+    print((harness_resources.test_cases_dir))
+    print((str(len(harness_resources.test_cases)) + " test cases registered:"))
     for (index, format1, _, format2, _) in harness_resources.test_cases:
-      print(str(index) + ":" + format1 + "->" + format2)
+      print((str(index) + ":" + format1 + "->" + format2))
 
 initialise_harness_from_file()
