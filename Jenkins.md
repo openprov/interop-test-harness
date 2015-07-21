@@ -23,6 +23,12 @@ git clone https://github.com/prov-suite/interop-test-harness
 source interop-test-harness/jenkins/ubuntu-dependencies.sh 
 ```
 
+## Get ProvStore API key
+
+* Log in to [ProvStore](https://provenance.ecs.soton.ac.uk/store)
+* Select Account => Developer Area
+* You will see your API key
+
 ## Install Jenkins
 
 [Jenkins](https://jenkins-ci.org/) is available as an executable Java archive. If you ran the script above then you will already have ``jenkins.war``, otherwise, run:
@@ -60,9 +66,14 @@ These steps create a Jenkins job to run the interoperability tests. If you do no
 * Select freestyle project
 * Click OK
 
+Set build configuration:
+
 * Source Code Management: None (for now)
 * Build Triggers: leave unchecked (for now)
 * Check Build Environment Delete workspace before build starts
+
+Add step to set Python version:
+
 * Select Add build step => Execute shell
 * Enter:
 
@@ -71,12 +82,17 @@ pyenv local 2.7.6
 ```
 
 * If you want to run using Python 3.4.0 then change `2.7.6` to `3.4.0`
+
+Add step to get test cases:
+
 * Select Add build step => Execute shell
 * Enter:
 
 ```
 git clone https://github.com/prov-suite/testcases testcases
 ```
+
+Add step to get ProvToolbox:
 
 * Select Add build step => Execute shell
 * Enter:
@@ -87,6 +103,8 @@ cd ProvToolbox
 mvn clean install
 ./toolbox/target/appassembler/bin/provconvert -version
 ```
+
+Add step to get ProvPy:
 
 * Select Add build step => Execute shell
 * Enter:
@@ -99,6 +117,8 @@ python setup.py install
 ./scripts/prov-compare --version
 ```
 
+Add step to get interoperability test harness:
+
 * Select Add build step => Execute shell
 * Enter:
 
@@ -108,8 +128,10 @@ cd test-harness
 pip install -r requirements.txt
 ```
 
+Ad step to configure test harness:
+
 * Select Add build step => Execute shell
-* Enter:
+* Enter the following, replacing `you:12345qwert` with your ProvStore API key:
 
 ```
 cd test-harness
@@ -119,14 +141,15 @@ echo "PROVPY_CONVERT_EXE=python" >> config.properties
 echo "PROVPY_COMPARE_EXE=python" >> config.properties
 echo "PROVTOOLBOX_SCRIPTS_DIR=$WORKSPACE/ProvToolbox/toolbox/target/appassembler/bin" >> config.properties
 echo "PROV_LOCAL_CONFIG_DIR=$WORKSPACE/test-harness/localconfig" >> config.properties
+echo "API_KEY=you:12345qwert" >> config.properties
 cat config.properties
 mkdir localconfig
 python prov_interop/customise-config.py config localconfig config.properties
 cat localconfig/*
 ```
 
-* Enter:
-* The above Execute shell steps can, alternatively, be done within a single Execute shell entry
+Add step to run all interoperability tests:
+
 * Select Add build step => Execute shell
 
 ```
@@ -141,6 +164,17 @@ nosetests -v --with-xunit prov_interop.interop_tests
 * Click #NNNN build number
 * Build #NNNN page appears
 * Click Console Output
+
+The Execute shell steps can, alternatively, be done within a single Execute shell entry.
+
+If you are only interested in running interoperability tests for a specific omponent then use the relevant line from:
+
+```
+nosetests -v prov_interop.interop_tests.test_provpy
+nosetests -v prov_interop.interop_tests.test_provtoolbox
+nosetests -v prov_interop.interop_tests.test_provtranslator
+nosetests -v prov_interop.interop_tests.test_provstore
+```
 
 ## Publish xUnit test results
 
@@ -190,10 +224,19 @@ You can browse the nosetests test results. These are hierarchically organised by
 [config.xml](./jenkins/config.xml) contains the Jenkins configuration file for the job written following the above instructions. Assuming you have already done:
 
 * Install dependencies
+* Get ProvStore API key
 * Install Jenkins
 * Install workspace cleanup plugin
 
-You can import this into Jenkins as follows:
+Edit jenkins/config.xml and in the line:
+
+```
+echo &quot;API_KEY=you:12345qwert&quot; &gt;&gt; config.properties
+```
+
+replace `you:12345qwert` with your ProvStore username and API key.
+
+Import configuration into Jenkins:
 
 ```
 mkdir $HOME/.jenkins/jobs/PTS/
