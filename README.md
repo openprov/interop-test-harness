@@ -29,7 +29,7 @@ The interoperability test harness runs under Python. You can use the test harnes
 * Installed ProvPy's dependencies.
 * Installed ProvToolbox's dependencies.
 * Created a ProvStore API Key:
-  - Log in to [ProvStore}(https://provenance.ecs.soton.ac.uk/store)
+  - Log in to [ProvStore](https://provenance.ecs.soton.ac.uk/store)
   - Select Account => Developer Area
   - You will see your API key
 
