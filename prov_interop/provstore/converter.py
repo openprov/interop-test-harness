@@ -52,6 +52,13 @@ class ProvStoreConverter(Converter, RestComponent):
   HTTP header value
   """
 
+  STORE_CONTENT = "content"
+  """string or unicode: key for ProvStore request document content"""
+  STORE_PUBLIC = "public"
+  """string or unicode: key for ProvStore request public flag"""
+  STORE_REC_ID = "rec_id"
+  """string or unicode: key for ProvStore request document name"""
+
   def __init__(self):
     """Create converter.
     """
@@ -66,6 +73,20 @@ class ProvStoreConverter(Converter, RestComponent):
     :rtype: str or unicode
     """
     return self._authorization
+
+  def create_store_request(self, name, document):
+    """Create a ProvStore-compliant request, wrapping up a PROV document.
+
+    :param name: ID for the document
+    :type name: str or unicode
+    :param document: PROV document as a string
+    :type document: str or unicode
+    :returns: store request document
+    :rtype: JSON-compliant dict
+    """
+    return {ProvStoreConverter.STORE_CONTENT: document,
+            ProvStoreConverter.STORE_PUBLIC: True,
+            ProvStoreConverter.STORE_REC_ID: name}
 
   def configure(self, config):
    """Configure converter.
@@ -123,10 +144,7 @@ class ProvStoreConverter(Converter, RestComponent):
     super(ProvStoreConverter, self).check_formats(in_format, out_format)
     with open(in_file, "r") as f:
       doc = f.read()
-    # Prepare ProvStore request, including doc.
-    store_request={"content": doc,
-                   "public": True,
-                   "rec_id": in_file} # Use file name as ID.
+    store_request = self.create_store_request(in_file, doc)
     # Map prov_interop.standards formats to Content-Type supported by 
     # ProvStore. 
     content_type = ProvStoreConverter.CONTENT_TYPES[in_format]
