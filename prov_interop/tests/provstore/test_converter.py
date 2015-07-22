@@ -31,7 +31,6 @@ import requests
 import requests_mock
 import tempfile
 import unittest
-from nose.tools import nottest
 from nose_parameterized import parameterized
 
 from prov_interop import http
@@ -40,26 +39,6 @@ from prov_interop.component import ConfigError
 from prov_interop.converter import ConversionError
 from prov_interop.provstore.converter import ProvStoreConverter
 from prov_interop.provstore.converter import service
-
-@nottest
-def test_case_name(testcase_func, param_num, param):
-  """``nose_parameterized`` callback function to create custom
-  test function names.
-
-  :param testcase__func: test function
-  :type testcase__func: function
-  :param param_num: number of parameters in ``param``
-  :type param_num: int
-  :param param: tuple of arguments to test function of form (FORMAT, _)
-  :type param: tuple, assumed to be of form (str or unicode, _)
-  :returns: test function name of form ``testcase_func_FORMAT``
-  :rtype: str or unicode
-  """
-  (format, _) = param.args
-  return str("%s_%s" %(
-    testcase_func.__name__,
-    parameterized.to_safe_name(str(format))))
-
 
 class ProvStoreConverterTestCase(unittest.TestCase):
 
@@ -165,8 +144,7 @@ class ProvStoreConverterTestCase(unittest.TestCase):
       (standards.TTL, service.CONTENT_TYPES[standards.TTL]),
       (standards.TRIG, service.CONTENT_TYPES[standards.TRIG]),
       (standards.PROVX, service.CONTENT_TYPES[standards.PROVX]),
-      (standards.JSON, service.CONTENT_TYPES[standards.JSON])
-      ], testcase_func_name=test_case_name)
+      (standards.JSON, service.CONTENT_TYPES[standards.JSON])])
   def test_convert(self, format, content_type):
     self.provstore.configure(self.config)
     self.create_files(format)
