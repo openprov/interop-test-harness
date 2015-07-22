@@ -12,8 +12,6 @@ install:
   - pip install -r requirements.txt
 
 script: 
-  - cat config.properties
-  - mkdir localconfig
-  - python prov_interop/customise-config.py config localconfig config.properties
+  - PROVTRANSLATOR_TEST_CONFIGURATION=config/provtranslator.yaml
+  - PROVVALIDATOR_TEST_CONFIGURATION=config/provvalidator.yaml
   - nosetests --nocapture $PROV_TESTS
-# - nosetests --nocapture prov_interop/tests
