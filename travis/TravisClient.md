@@ -69,7 +69,7 @@ The password will not be displayed.
 Try running with --github-token or --auto if you don't want to enter your password anyway.
 
 Username: USERNAME
-Password for mikej888: PASSWORD
+Password for USERNAME: PASSWORD
 Successfully logged in as USERNAME!
 ```
 
@@ -80,24 +80,24 @@ Travis Client commands can be run within a Git repository and the client will tr
 ```
 prov-suite/interop-test-harness
 prov-suite/provpy-interop-job
-mikej888/provtoolsuite-provpy-interop-job
+user/provtoolsuite-provpy-interop-job
 ```
 
 ## View build history
 
 ```
 $ travis history -r prov-suite/interop-test-harness
-#5 passed:       master Merged in changes from mikej888
-#4 passed:       master Merge pull request #1 from mikej888/master
+#5 passed:       master Merged in changes from user
+#4 passed:       master Merge pull request #1 from user/master
 #3 passed:       master (PR #1) Added standalone usage information
 #2 passed:       master Runs unit tests correctly
-#1 passed:       master mikej888 -> prov-suite and removed provtoolsuite- prefix to reflect forking of repository into prov-suite
+#1 passed:       master user -> prov-suite and removed provtoolsuite- prefix to reflect forking of repository into prov-suite
 ```
 
 ```
 $ travis history -r prov-suite/provpy-interop-job
-#2 passed:       master Merged in changes from mikej888
-#1 passed:       master mikej888 -> prov-suite and removed provtoolsuite- prefix to reflect forking of repository into prov-suite
+#2 passed:       master Merged in changes from user
+#1 passed:       master user -> prov-suite and removed provtoolsuite- prefix to reflect forking of repository into prov-suite
 ```
 
 ## Restart builds
@@ -148,7 +148,7 @@ Instead of having to interactively log in, you can create a GitHub token. This t
 
 ```
 $ travis login --github-token TOKEN
-Successfully logged in as USERNAME!
+Successfully logged in as user!
 ```
 
 ## Sample script
@@ -165,12 +165,12 @@ Successfully logged in as USERNAME!
 * You should see output like:
 
 ```
-Successfully logged in as USERNAME!
-#5 passed:       master Merged in changes from mikej888
-#4 passed:       master Merge pull request #1 from mikej888/master
+Successfully logged in as user!
+#5 passed:       master Merged in changes from user
+#4 passed:       master Merge pull request #1 from user/master
 #3 passed:       master (PR #1) Added standalone usage information
 #2 passed:       master Runs unit tests correctly
-#1 passed:       master mikej888 -> prov-suite and removed provtoolsuite- prefix to reflect forking of repository into prov-suite
+#1 passed:       master user -> prov-suite and removed provtoolsuite- prefix to reflect forking of repository into prov-suite
 build #5 has been restarted
 Successfully logged out!
 ```
