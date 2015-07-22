@@ -25,6 +25,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import inspect
 import os
 import requests
 import tempfile
@@ -68,3 +69,22 @@ class ServiceTestCase(unittest.TestCase):
                             default_file_name)
     self.test_config = test_config[config_key]
     self.url = self.test_config[ServiceTestCase.URL]
+
+  def get_document(self, format):
+    """Load document with given extension from "documents" directory
+    assumed to be in the same directory as the calling test class.
+    
+    :param format: file format as defined in ``prov.standards```
+    :type format: str or unicode
+    :returns: document in requested format
+    :rtype: str or unicode
+    :raises OSError: if there are problems accessing the directory
+    or loading the file
+    """
+    directory = os.path.join(
+      os.path.dirname(os.path.abspath(inspect.getfile(
+            inspect.currentframe()))), "documents")
+    for file_name in os.listdir(directory):
+      if os.path.splitext(file_name)[1][1:] == format:
+        with open(os.path.join(directory, file_name), "r") as f:
+          return f.read()

@@ -25,9 +25,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import os
 import requests
-import tempfile
 import unittest
 from nose.tools import istest
 from nose_parameterized import parameterized
@@ -58,20 +56,15 @@ class ProvTranslatorTestCase(ServiceTestCase):
     self.load_configuration(ProvTranslatorTestCase.CONFIGURATION_FILE_ENV,
                             ProvTranslatorTestCase.DEFAULT_CONFIGURATION_FILE,
                             ProvTranslatorTestCase.CONFIGURATION_KEY)
-    print(os.path.dirname(os.path.realpath(__file__)))
-    print(os.getcwd())
-    self.docs = os.path.join(os.getcwd(), "documents")
 
   def tearDown(self):
     super(ProvTranslatorTestCase, self).tearDown()
 
   @parameterized.expand(standards.FORMATS)
   def test_translate(self, format):
-    self.in_file = os.path.join(self.docs, "primer." + format)
-    with open(self.in_file, "r") as f:
-      doc_str = f.read()
+    document = self.get_document(format)
     (response_code, _) = service.translate(self.url,
                                            format,
                                            format, 
-                                           doc_str)
+                                           document)
     self.assertEqual(requests.codes.ok, response_code) # 200 OK

@@ -1,0 +1,119 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ex: <http://example/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+
+ex:article a prov:Entity ;
+	dcterms:title "Crime rises in cities"^^xsd:string .
+
+ex:articleV1 a prov:Entity .
+
+ex:articleV2 a prov:Entity .
+
+ex:dataSet1 a prov:Entity .
+
+ex:dataSet2 a prov:Entity .
+
+ex:regionList a prov:Entity .
+
+ex:composition a prov:Entity .
+
+ex:chart1 a prov:Entity .
+
+ex:chart2 a prov:Entity .
+
+ex:blogEntry a prov:Entity .
+
+ex:compile a prov:Activity .
+
+ex:compile2 a prov:Activity .
+
+ex:compose a prov:Activity .
+
+ex:correct a prov:Activity ;
+	prov:startedAtTime "2012-03-31T09:21:00.000+01:00"^^xsd:dateTime ;
+	prov:endedAtTime "2012-04-01T15:21:00.000+01:00"^^xsd:dateTime .
+
+ex:illustrate a prov:Activity .
+
+ex:compose prov:used ex:dataSet1 , ex:regionList .
+
+ex:composition prov:wasGeneratedBy ex:compose .
+
+ex:illustrate prov:used ex:composition .
+
+ex:chart1 prov:wasGeneratedBy ex:illustrate .
+
+_:blank15 a prov:Generation ;
+	prov:activity ex:compile .
+
+ex:chart1 prov:qualifiedGeneration _:blank15 .
+
+_:blank15 prov:atTime "2012-03-02T10:30:00.000Z"^^xsd:dateTime .
+
+_:blank16 a prov:Generation ;
+	prov:activity ex:compile2 .
+
+ex:chart2 prov:qualifiedGeneration _:blank16 .
+
+_:blank16 prov:atTime "2012-04-01T15:21:00.000+01:00"^^xsd:dateTime .
+
+ex:derek a prov:Agent , prov:Person ;
+	foaf:givenName "Derek"^^xsd:string ;
+	foaf:mbox "<mailto:derek@example.org>"^^xsd:string .
+
+ex:compose prov:wasAssociatedWith ex:derek .
+
+ex:illustrate prov:wasAssociatedWith ex:derek .
+
+ex:chartgen a prov:Agent , prov:Organization ;
+	foaf:name "Chart Generators Inc"^^xsd:string .
+
+_:blank17 a prov:Delegation ;
+	prov:agent ex:chartgen .
+
+ex:derek prov:qualifiedDelegation _:blank17 .
+
+_:blank17 prov:hadActivity ex:compose .
+
+ex:chart1 prov:wasAttributedTo ex:derek .
+
+_:blank18 a prov:Usage ;
+	prov:entity ex:dataSet1 .
+
+ex:compose prov:qualifiedUsage _:blank18 .
+
+_:blank18 prov:hadRole ex:dataToCompose .
+
+_:blank19 a prov:Usage ;
+	prov:entity ex:regionList .
+
+ex:compose prov:qualifiedUsage _:blank19 .
+
+_:blank19 prov:hadRole ex:regionsToAggregateBy .
+
+ex:dataSet2 prov:wasGeneratedBy ex:correct .
+
+ex:correct prov:used ex:dataSet1 .
+
+_:blank20 a prov:Revision ;
+	prov:entity ex:dataSet1 .
+
+ex:dataSet2 prov:qualifiedRevision _:blank20 .
+
+ex:chart2 prov:wasDerivedFrom ex:dataSet2 .
+
+_:blank21 a prov:Quotation ;
+	prov:entity ex:article .
+
+ex:blogEntry prov:qualifiedQuotation _:blank21 .
+
+ex:articleV1 prov:specializationOf ex:article ;
+	prov:wasDerivedFrom ex:dataSet1 .
+
+ex:articleV2 prov:specializationOf ex:article ;
+	prov:wasDerivedFrom ex:dataSet2 ;
+	prov:alternateOf ex:articleV1 .

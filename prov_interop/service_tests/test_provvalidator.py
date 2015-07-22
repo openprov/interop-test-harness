@@ -25,9 +25,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import os
 import requests
-import tempfile
 import unittest
 from nose.tools import istest
 from nose_parameterized import parameterized
@@ -58,16 +56,13 @@ class ProvValidatorTestCase(ServiceTestCase):
     self.load_configuration(ProvValidatorTestCase.CONFIGURATION_FILE_ENV,
                             ProvValidatorTestCase.DEFAULT_CONFIGURATION_FILE,
                             ProvValidatorTestCase.CONFIGURATION_KEY)
-    self.docs = os.path.join(os.getcwd(), "documents")
 
   def tearDown(self):
     super(ProvValidatorTestCase, self).tearDown()
 
   @parameterized.expand(standards.FORMATS)
   def test_validate(self, format):
-    self.in_file = os.path.join(self.docs, "primer." + format)
-    with open(self.in_file, "r") as f:
-      document = f.read()
+    document = self.get_document(format)
     (response_code, response_text) = service.validate(self.url,
                                                       format,
                                                       document)

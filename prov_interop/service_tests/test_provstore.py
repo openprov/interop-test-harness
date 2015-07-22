@@ -25,9 +25,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import os
 import requests
-import tempfile
 import unittest
 from nose.tools import istest
 from nose_parameterized import parameterized
@@ -63,7 +61,6 @@ class ProvStoreTestCase(ServiceTestCase):
     self.load_configuration(ProvStoreTestCase.CONFIGURATION_FILE_ENV,
                             ProvStoreTestCase.DEFAULT_CONFIGURATION_FILE,
                             ProvStoreTestCase.CONFIGURATION_KEY)
-    self.docs = os.path.join(os.getcwd(), "documents")
     self.authorization = self.test_config[ProvStoreTestCase.AUTHORIZATION]
 
   def tearDown(self):
@@ -71,11 +68,9 @@ class ProvStoreTestCase(ServiceTestCase):
 
   @parameterized.expand(standards.FORMATS)
   def test_store(self, format):
-    self.in_file = os.path.join(self.docs, "primer." + format)
-    with open(self.in_file, "r") as f:
-      document = f.read()
+    document = self.get_document(format)
     (response_code, response_text) = service.store(self.url,
-                                                   self.in_file,
+                                                   self.__class__.__name__,
                                                    format,
                                                    document,
                                                    self.authorization)
