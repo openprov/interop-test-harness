@@ -6,12 +6,11 @@ python:
 
 env:
   - PROV_TESTS=prov_interop/tests
-  - PROV_TESTS=prov_interop/service_tests
+  - PROV_TESTS=prov_interop/service_tests/test_provtranslator.py PROVTRANSLATOR_TEST_CONFIGURATION=config/provtranslator.yaml
+  - PROV_TESTS=prov_interop/service_tests/test_provvalidator.py PROVVALIDATOR_TEST_CONFIGURATION=config/provvalidator.yaml
 
 install:
   - pip install -r requirements.txt
 
 script: 
-  - export PROVTRANSLATOR_TEST_CONFIGURATION=config/provtranslator.yaml
-  - export PROVVALIDATOR_TEST_CONFIGURATION=config/provvalidator.yaml
   - nosetests --nocapture $PROV_TESTS
