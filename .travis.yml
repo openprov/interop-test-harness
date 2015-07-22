@@ -4,8 +4,13 @@ python:
   - 2.7
   - 3.4
 
+env:
+  - PROV_TESTS=prov_interop/tests
+  - PROV_TESTS=prov_interop/service_tests
+
 install:
   - pip install -r requirements.txt
 
 script: 
- - nosetests --nocapture prov_interop/tests
+  - nosetests --nocapture $PROV_TESTS
+# - nosetests --nocapture prov_interop/tests
