@@ -35,32 +35,15 @@ from prov_interop.component import ConfigError
 from prov_interop.component import RestComponent
 from prov_interop.converter import ConversionError
 from prov_interop.converter import Converter
+from prov_interop.provstore import service
 
 class ProvStoreConverter(Converter, RestComponent):
   """Manages invocation of ProvStore service."""
-
-  CONTENT_TYPES = {
-    standards.PROVN: "text/provenance-notation",
-    standards.TTL: "text/turtle",
-    standards.TRIG: "application/trig",
-    standards.PROVX: "application/xml",
-    standards.JSON: "application/json"}
-  """list of str or unicode: list of mapping from formats in
-  ``prov_interop.standards`` to content types understood by the
-  service.
-  """
 
   AUTHORIZATION = "authorization"
   """str or unicode: configuration key for ProvStore Authorization 
   HTTP header value
   """
-
-  STORE_CONTENT = "content"
-  """str or unicode: key for ProvStore request document content"""
-  STORE_PUBLIC = "public"
-  """str or unicode: key for ProvStore request public flag"""
-  STORE_REC_ID = "rec_id"
-  """str or unicode: key for ProvStore request document name"""
 
   def __init__(self):
     """Create converter.
@@ -76,20 +59,6 @@ class ProvStoreConverter(Converter, RestComponent):
     :rtype: str or unicode
     """
     return self._authorization
-
-  def create_store_request(self, name, document):
-    """Create a ProvStore-compliant request, wrapping up a PROV document.
-
-    :param name: ID for the document
-    :type name: str or unicode
-    :param document: PROV document as a string
-    :type document: str or unicode
-    :returns: store request document
-    :rtype: JSON-compliant dict
-    """
-    return {ProvStoreConverter.STORE_CONTENT: document,
-            ProvStoreConverter.STORE_PUBLIC: True,
-            ProvStoreConverter.STORE_REC_ID: name}
 
   def configure(self, config):
    """Configure converter.
@@ -145,41 +114,29 @@ class ProvStoreConverter(Converter, RestComponent):
     in_format = os.path.splitext(in_file)[1][1:]
     out_format = os.path.splitext(out_file)[1][1:]
     super(ProvStoreConverter, self).check_formats(in_format, out_format)
+    # Store document
     with open(in_file, "r") as f:
       doc = f.read()
-    store_request = self.create_store_request(in_file, doc)
-    # Map prov_interop.standards formats to Content-Type supported by 
-    # ProvStore. 
-    content_type = ProvStoreConverter.CONTENT_TYPES[in_format]
-    # Request ProvStore response be JSON from which auto-generated
-    # document identifier will be extracted
-    accept_type = ProvStoreConverter.CONTENT_TYPES[standards.JSON]
-    headers = {http.CONTENT_TYPE: content_type, 
-               http.ACCEPT: accept_type,
-               http.AUTHORIZATION: self._authorization}
-    response = requests.post(self._url, 
-                             headers=headers, 
-                             data=json.dumps(store_request))
-    if (response.status_code != requests.codes.created): # 201 CREATED
+    (response_status, response_text) = service.store(self._url,
+                                                     in_file,
+                                                     in_format,
+                                                     doc,
+                                                     self._authorization)
+    if (response_status != requests.codes.created): # 201 CREATED
       raise ConversionError(self._url + " POST returned " + 
-                            str(response.status_code))
-    store_meta_data = json.loads(response.text)
-    doc_id = store_meta_data["id"]
-    doc_url = self._url + str(doc_id)
-    # Map prov_interop.standards formats to Accept-Type supported by 
-    # ProvStore. 
-    accept_type = ProvStoreConverter.CONTENT_TYPES[out_format]
-    headers = {http.ACCEPT: accept_type}
-    response = requests.get(doc_url + "." + out_format, 
-                            headers=headers, 
-                            allow_redirects=True)
-    if (response.status_code != requests.codes.ok): # 200 OK
-      raise ConversionError(self._url + " GET returned " + 
-                            str(response.status_code))
+                            str(response_status))
+    # Get document in desired format
+    doc_url = service.get_stored_url(self._url, response_text)
+    (response_status, response_text) = service.get(doc_url,
+                                                   out_format)
+    if (response_status != requests.codes.ok): # 200 OK
+      raise ConversionError(doc_url + " GET returned " + 
+                            str(response_status))
     with open(out_file, "w") as f:
-      f.write(response.text)
-    headers = {http.AUTHORIZATION: self._authorization}
-    response = requests.delete(doc_url, headers=headers)
-    if (response.status_code != requests.codes.no_content): # 204 NO CONTENT
+      f.write(response_text)
+    # Delete document / clean up
+    (response_status, response_text) = service.delete(doc_url,
+                                                      self._authorization)
+    if (response_status != requests.codes.no_content): # 204 NO CONTENT
       raise ConversionError(doc_url + " DELETE returned " + 
-                            str(response.status_code))
+                            str(response_status))

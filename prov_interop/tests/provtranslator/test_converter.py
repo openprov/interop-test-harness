@@ -38,6 +38,7 @@ from prov_interop import http
 from prov_interop import standards
 from prov_interop.component import ConfigError
 from prov_interop.converter import ConversionError
+from prov_interop.provtranslator import service
 from prov_interop.provtranslator.converter import ProvTranslatorConverter
 
 @nottest
@@ -122,9 +123,9 @@ class ProvTranslatorConverterTestCase(unittest.TestCase):
     doc = "mockDocument"
     # Set up mock service response.
     headers={http.CONTENT_TYPE: 
-             ProvTranslatorConverter.CONTENT_TYPES[standards.JSON],
+             service.CONTENT_TYPES[standards.JSON],
              http.ACCEPT: 
-             ProvTranslatorConverter.CONTENT_TYPES[standards.JSON]}
+             service.CONTENT_TYPES[standards.JSON]}
     with requests_mock.Mocker(real_http=False) as mocker:
       mocker.register_uri("POST", 
                           self.config[ProvTranslatorConverter.URL],
@@ -134,11 +135,11 @@ class ProvTranslatorConverterTestCase(unittest.TestCase):
         self.assertEqual(doc, f.read(), "Unexpected output file content")
 
   @parameterized.expand([
-      (standards.PROVN, ProvTranslatorConverter.CONTENT_TYPES[standards.PROVN]),
-      (standards.TTL, ProvTranslatorConverter.CONTENT_TYPES[standards.TTL]),
-      (standards.TRIG, ProvTranslatorConverter.CONTENT_TYPES[standards.TRIG]),
-      (standards.PROVX, ProvTranslatorConverter.CONTENT_TYPES[standards.PROVX]),
-      (standards.JSON, ProvTranslatorConverter.CONTENT_TYPES[standards.JSON])
+      (standards.PROVN, service.CONTENT_TYPES[standards.PROVN]),
+      (standards.TTL, service.CONTENT_TYPES[standards.TTL]),
+      (standards.TRIG, service.CONTENT_TYPES[standards.TRIG]),
+      (standards.PROVX, service.CONTENT_TYPES[standards.PROVX]),
+      (standards.JSON, service.CONTENT_TYPES[standards.JSON])
       ], testcase_func_name=test_case_name)
   def test_convert(self, format, content_type):
     self.provtranslator.configure(self.config)
