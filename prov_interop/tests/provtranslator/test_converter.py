@@ -22,6 +22,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import inspect
 import os
 import requests
@@ -52,10 +55,9 @@ def test_case_name(testcase_func, param_num, param):
   :rtype: str or unicode
   """
   (format, _) = param.args
-  return "%s_%s" %(
+  return str("%s_%s" %(
     testcase_func.__name__,
-    parameterized.to_safe_name(str(format)))
-
+    parameterized.to_safe_name(str(format))))
 
 class ProvTranslatorConverterTestCase(unittest.TestCase):
 
@@ -79,18 +81,18 @@ class ProvTranslatorConverterTestCase(unittest.TestCase):
         os.remove(tmp)
 
   def test_init(self):
-    self.assertEquals("", self.provtranslator.url)
-    self.assertEquals([], self.provtranslator.input_formats)
-    self.assertEquals([], self.provtranslator.output_formats)
+    self.assertEqual("", self.provtranslator.url)
+    self.assertEqual([], self.provtranslator.input_formats)
+    self.assertEqual([], self.provtranslator.output_formats)
 
   def test_configure(self):
     self.provtranslator.configure(self.config)
-    self.assertEquals(self.config[ProvTranslatorConverter.URL], 
-                      self.provtranslator.url)
-    self.assertEquals(self.config[ProvTranslatorConverter.INPUT_FORMATS], 
-                      self.provtranslator.input_formats)
-    self.assertEquals(self.config[ProvTranslatorConverter.OUTPUT_FORMATS], 
-                      self.provtranslator.output_formats)
+    self.assertEqual(self.config[ProvTranslatorConverter.URL], 
+                     self.provtranslator.url)
+    self.assertEqual(self.config[ProvTranslatorConverter.INPUT_FORMATS], 
+                     self.provtranslator.input_formats)
+    self.assertEqual(self.config[ProvTranslatorConverter.OUTPUT_FORMATS], 
+                     self.provtranslator.output_formats)
 
   def test_convert_missing_input_file(self):
     self.provtranslator.configure(self.config)
@@ -128,7 +130,7 @@ class ProvTranslatorConverterTestCase(unittest.TestCase):
                           self.config[ProvTranslatorConverter.URL],
                           text=doc)
       self.provtranslator.convert(self.in_file, self.out_file)
-      with open(self.out_file, 'r') as f:
+      with open(self.out_file, "r") as f:
         self.assertEqual(doc, f.read(), "Unexpected output file content")
 
   @parameterized.expand([
@@ -152,7 +154,7 @@ class ProvTranslatorConverterTestCase(unittest.TestCase):
                           request_headers=headers,
                           text=doc)
       self.provtranslator.convert(self.in_file, self.out_file)
-      with open(self.out_file, 'r') as f:
+      with open(self.out_file, "r") as f:
         self.assertEqual(doc, f.read(), "Unexpected output file content")
 
   def test_convert_server_error(self):

@@ -22,6 +22,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import os
 import shutil
 import tempfile
@@ -71,8 +74,8 @@ class CommandLineComponentTestCase(unittest.TestCase):
     self.command_line = CommandLineComponent()
 
   def test_init(self):
-    self.assertEquals("", self.command_line.executable)
-    self.assertEquals([], self.command_line.arguments)
+    self.assertEqual("", self.command_line.executable)
+    self.assertEqual([], self.command_line.arguments)
     self.assertEqual({}, self.command_line.configuration)
 
   def test_configure(self):
@@ -80,8 +83,8 @@ class CommandLineComponentTestCase(unittest.TestCase):
               CommandLineComponent.ARGUMENTS: ["c", 1]}
     self.command_line.configure(config)
     self.assertEqual(config, self.command_line.configuration)
-    self.assertEquals("b", self.command_line.executable)
-    self.assertEquals(["c", 1], self.command_line.arguments)
+    self.assertEqual("b", self.command_line.executable)
+    self.assertEqual(["c", 1], self.command_line.arguments)
 
   def test_configure_non_dict_error(self):
     with self.assertRaises(ConfigError):
@@ -103,14 +106,14 @@ class RestComponentTestCase(unittest.TestCase):
     self.rest = RestComponent()
 
   def test_init(self):
-    self.assertEquals("", self.rest.url)
+    self.assertEqual("", self.rest.url)
     self.assertEqual({}, self.rest.configuration)
 
   def test_configure(self):
     config = {RestComponent.URL: "a"}
     self.rest.configure(config)
     self.assertEqual(config, self.rest.configuration)
-    self.assertEquals("a", self.rest.url)
+    self.assertEqual("a", self.rest.url)
 
   def test_configure_non_dict_error(self):
     with self.assertRaises(ConfigError):

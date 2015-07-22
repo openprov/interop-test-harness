@@ -22,6 +22,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import os
 import tempfile
 import unittest
@@ -48,11 +51,11 @@ class ComparatorTestCase(unittest.TestCase):
         os.remove(tmp)
 
   def test_init(self):
-    self.assertEquals([], self.comparator.formats)
+    self.assertEqual([], self.comparator.formats)
 
   def test_configure(self):
     self.comparator.configure(self.config)
-    self.assertEquals(self.formats, self.comparator.formats)
+    self.assertEqual(self.formats, self.comparator.formats)
 
   def test_configure_non_dict_error(self):
     with self.assertRaises(ConfigError):

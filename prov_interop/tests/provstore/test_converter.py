@@ -22,6 +22,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import inspect
 import os
 import requests
@@ -52,9 +55,9 @@ def test_case_name(testcase_func, param_num, param):
   :rtype: str or unicode
   """
   (format, _) = param.args
-  return "%s_%s" %(
+  return str("%s_%s" %(
     testcase_func.__name__,
-    parameterized.to_safe_name(str(format)))
+    parameterized.to_safe_name(str(format))))
 
 
 class ProvStoreConverterTestCase(unittest.TestCase):
@@ -80,21 +83,21 @@ class ProvStoreConverterTestCase(unittest.TestCase):
         os.remove(tmp)
 
   def test_init(self):
-    self.assertEquals("", self.provstore.url)
-    self.assertEquals("", self.provstore.authorization)
-    self.assertEquals([], self.provstore.input_formats)
-    self.assertEquals([], self.provstore.output_formats)
+    self.assertEqual("", self.provstore.url)
+    self.assertEqual("", self.provstore.authorization)
+    self.assertEqual([], self.provstore.input_formats)
+    self.assertEqual([], self.provstore.output_formats)
 
   def test_configure(self):
     self.provstore.configure(self.config)
-    self.assertEquals(self.config[ProvStoreConverter.URL],
-                      self.provstore.url)
-    self.assertEquals(self.config[ProvStoreConverter.AUTHORIZATION],
-                      self.provstore.authorization)
-    self.assertEquals(self.config[ProvStoreConverter.INPUT_FORMATS],
-                      self.provstore.input_formats)
-    self.assertEquals(self.config[ProvStoreConverter.OUTPUT_FORMATS],
-                      self.provstore.output_formats)
+    self.assertEqual(self.config[ProvStoreConverter.URL],
+                     self.provstore.url)
+    self.assertEqual(self.config[ProvStoreConverter.AUTHORIZATION],
+                     self.provstore.authorization)
+    self.assertEqual(self.config[ProvStoreConverter.INPUT_FORMATS],
+                     self.provstore.input_formats)
+    self.assertEqual(self.config[ProvStoreConverter.OUTPUT_FORMATS],
+                     self.provstore.output_formats)
 
   def test_configure_no_authorization(self):
     del(self.config[ProvStoreConverter.AUTHORIZATION])

@@ -22,6 +22,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import inspect
 import os
 import tempfile
@@ -58,21 +61,21 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
         os.remove(tmp)
 
   def test_init(self):
-    self.assertEquals("", self.provtoolbox.executable)
-    self.assertEquals([], self.provtoolbox.arguments)
-    self.assertEquals([], self.provtoolbox.input_formats)
-    self.assertEquals([], self.provtoolbox.output_formats)
+    self.assertEqual("", self.provtoolbox.executable)
+    self.assertEqual([], self.provtoolbox.arguments)
+    self.assertEqual([], self.provtoolbox.input_formats)
+    self.assertEqual([], self.provtoolbox.output_formats)
 
   def test_configure(self):
     self.provtoolbox.configure(self.config)
-    self.assertEquals(self.config[ProvToolboxConverter.EXECUTABLE], 
-                      self.provtoolbox.executable)
-    self.assertEquals(self.config[ProvToolboxConverter.ARGUMENTS], 
-                      self.provtoolbox.arguments)
-    self.assertEquals(self.config[ProvToolboxConverter.INPUT_FORMATS], 
-                      self.provtoolbox.input_formats)
-    self.assertEquals(self.config[ProvToolboxConverter.OUTPUT_FORMATS], 
-                      self.provtoolbox.output_formats)
+    self.assertEqual(self.config[ProvToolboxConverter.EXECUTABLE], 
+                     self.provtoolbox.executable)
+    self.assertEqual(self.config[ProvToolboxConverter.ARGUMENTS], 
+                     self.provtoolbox.arguments)
+    self.assertEqual(self.config[ProvToolboxConverter.INPUT_FORMATS], 
+                     self.provtoolbox.input_formats)
+    self.assertEqual(self.config[ProvToolboxConverter.OUTPUT_FORMATS], 
+                     self.provtoolbox.output_formats)
 
   def test_configure_no_input(self):
     self.config[ProvToolboxConverter.ARGUMENTS].remove(

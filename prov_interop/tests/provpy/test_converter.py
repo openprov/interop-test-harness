@@ -22,6 +22,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import inspect
 import os
 import tempfile
@@ -60,21 +63,21 @@ class ProvPyConverterTestCase(unittest.TestCase):
         os.remove(tmp)
 
   def test_init(self):
-    self.assertEquals("", self.provpy.executable)
-    self.assertEquals([], self.provpy.arguments)
-    self.assertEquals([], self.provpy.input_formats)
-    self.assertEquals([], self.provpy.output_formats)
+    self.assertEqual("", self.provpy.executable)
+    self.assertEqual([], self.provpy.arguments)
+    self.assertEqual([], self.provpy.input_formats)
+    self.assertEqual([], self.provpy.output_formats)
 
   def test_configure(self):
     self.provpy.configure(self.config)
-    self.assertEquals(self.config[ProvPyConverter.EXECUTABLE], 
-                      self.provpy.executable)
-    self.assertEquals(self.config[ProvPyConverter.ARGUMENTS], 
-                      self.provpy.arguments)
-    self.assertEquals(self.config[ProvPyConverter.INPUT_FORMATS], 
-                      self.provpy.input_formats)
-    self.assertEquals(self.config[ProvPyConverter.OUTPUT_FORMATS], 
-                      self.provpy.output_formats)
+    self.assertEqual(self.config[ProvPyConverter.EXECUTABLE], 
+                     self.provpy.executable)
+    self.assertEqual(self.config[ProvPyConverter.ARGUMENTS], 
+                     self.provpy.arguments)
+    self.assertEqual(self.config[ProvPyConverter.INPUT_FORMATS], 
+                     self.provpy.input_formats)
+    self.assertEqual(self.config[ProvPyConverter.OUTPUT_FORMATS], 
+                     self.provpy.output_formats)
 
   def test_configure_no_format(self):
     self.config[ProvPyConverter.ARGUMENTS].remove(ProvPyConverter.FORMAT)

@@ -52,6 +52,9 @@ Usage:
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.  
 
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import argparse
 import filecmp
 import os
@@ -73,12 +76,12 @@ args = parser.parse_args()
 print("Running dummy ProvPy prov-compare...")
 for file_name in [args.file1, args.file2]:
   if not os.path.isfile(file_name):
-    print("No such file " + file_name)
+    print(("No such file " + file_name))
     sys.exit(2)
 formats = ["xml", "json"]
 for format in [args.f, args.F]:
   if format not in formats:
-    print("Unsupported format " + format)
+    print(("Unsupported format " + format))
     sys.exit(2)
 if not filecmp.cmp(args.file1, args.file2, shallow=False):
   print("Documents do not match")
