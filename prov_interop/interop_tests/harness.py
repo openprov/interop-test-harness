@@ -31,6 +31,7 @@ from prov_interop.harness import HarnessResources
 from prov_interop import component
 from prov_interop import standards
 from prov_interop.component import ConfigError
+from prov_interop.files import load_yaml
 
 CONFIGURATION_FILE_ENV = "PROV_HARNESS_CONFIGURATION"
 """str or unicode: environment variable holding interoperability test
@@ -66,17 +67,17 @@ def initialise_harness_from_file(file_name = None):
   :raises IOError: if the file is not found.
   :raises ConfigError: if the configuration in the file does not
   contain the configuration properties expected by
-  :class:`~prov_interop.harness.HarnessResources`, or is an invalid
-  YAML file
+  :class:`~prov_interop.harness.HarnessResources`
+  :raises YamlError: if the file is an invalid YAML file
   """
   global harness_resources
   global CONFIGURATION_FILE_ENV
   global DEFAULT_CONFIGURATION_FILE
   if harness_resources is None:
     harness_resources = HarnessResources()
-    config = component.load_configuration(CONFIGURATION_FILE_ENV,
-                                          DEFAULT_CONFIGURATION_FILE, 
-                                          file_name)
+    config = load_yaml(CONFIGURATION_FILE_ENV,
+                       DEFAULT_CONFIGURATION_FILE, 
+                       file_name)
     harness_resources.configure(config)
     print("Comparators available:")
     for format in harness_resources.format_comparators:

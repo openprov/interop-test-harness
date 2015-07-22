@@ -26,7 +26,6 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import os
-import yaml
 
 class ConfigurableComponent(object):
   """Base class for configurable components."""
@@ -182,35 +181,3 @@ class RestComponent(ConfigurableComponent):
     super(RestComponent, self).configure(config)
     self.check_configuration([RestComponent.URL])
     self._url = config[RestComponent.URL]
-
-
-def load_configuration(env_var, default_file_name, file_name = None):
-  """Load configuration from a YAML file.
-  - If ``file_name`` is provided then the contents of the file are
-  loaded and returned.
-  - Else, if an environment variable with name ``env_var`` is defined,
-  then the contents of the file named in that variable are loaded.
-  - Else, the contents of the default file, ``default_file_name``, 
-  are loaded.
-  
-  :param env_var: Environment variable with configuration file name
-  :type env_var: str or unicode
-  :param default_file_name: Default configuration file name
-  :type file_name: str or unicode
-  :param file_name: Configuration file name (optional)
-  :type file_name: str or unicode
-  :returns: configuration
-  :rtype: dict
-  :raises IOError: if the file is not found
-  :raises ConfigError: if the file does not parse into a dict
-  """
-  if (file_name is None):
-    try:
-      file_name = os.environ[env_var]
-    except KeyError:
-      file_name = default_file_name
-  with open(file_name, 'r') as f:
-    config = yaml.load(f)
-    if type(config) is not dict:
-      raise ConfigError(file_name + " does not contain a valid YAML document")
-    return config

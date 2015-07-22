@@ -37,9 +37,9 @@ from nose.tools import istest
 from nose.tools import nottest
 
 from prov_interop import standards
-from prov_interop.component import load_configuration
 from prov_interop.component import ConfigError
 from prov_interop.converter import Converter
+from prov_interop.files import load_yaml
 from prov_interop.interop_tests import harness
 
 @nottest
@@ -106,19 +106,19 @@ class ConverterTestCase(unittest.TestCase):
     :param default_file_name: Default configuration file name
     :type file_name: str or unicode
     :raises IOError: if the file is not found
-    :raises ConfigError: if the configuration file does not parse
-    into a dict, if there is no entry with the converter's class
+    :raises ConfigError: if there is no entry with the converter's class
     name within the configuration, or if converter-specific
     configuration information is missing.
+    :raises YamlError: if the configuration file does not parse
+    into a dict
     """
     config_key = self.converter.__class__.__name__
     config_file_name = None
     if config_key in harness.harness_resources.configuration:
       config_file_name = harness.harness_resources.configuration[config_key]
-    config = load_configuration( 
-      env_var,
-      default_file_name,
-      config_file_name)
+    config = load_yaml(env_var,
+                       default_file_name,
+                       config_file_name)
     if config_key not in config:
       raise ConfigError("Missing configuration for " + config_key)
     self.converter.configure(config[config_key])

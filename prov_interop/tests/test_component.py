@@ -25,16 +25,11 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import os
-import shutil
-import tempfile
 import unittest
-import yaml
 
 from prov_interop.component import CommandLineComponent
 from prov_interop.component import ConfigurableComponent
 from prov_interop.component import ConfigError
-from prov_interop.component import load_configuration
 from prov_interop.component import RestComponent
 
 class ConfigurableComponentTestCase(unittest.TestCase):
@@ -122,54 +117,3 @@ class RestComponentTestCase(unittest.TestCase):
   def test_configure_no_url(self):
     with self.assertRaises(ConfigError):
       self.rest.configure({})
-
-
-class LoadConfigurationTestCase(unittest.TestCase):
-
-  def setUp(self):
-    super(LoadConfigurationTestCase, self).setUp()
-    self.config={"counter": 12345}
-    (_, self.yaml) = tempfile.mkstemp(suffix=".yaml")
-    with open(self.yaml, 'w') as yaml_file:
-      yaml_file.write(yaml.dump(self.config, default_flow_style=False))
-    self.env_var = "PROV_LOAD_CONFIG"
-    self.default_file = os.path.join(os.getcwd(), "test_component.yaml")
-
-  def tearDown(self):
-    super(LoadConfigurationTestCase, self).tearDown()
-    if self.yaml != None and os.path.isfile(self.yaml):
-      os.remove(self.yaml)
-      
-  def test_load_configuration_from_file(self):
-    config = load_configuration(self.env_var,
-                                self.default_file,
-                                self.yaml)
-    self.assertEqual(12345, config["counter"])
-
-  def test_load_configuration_from_env(self):
-    os.environ[self.env_var] = self.yaml
-    config = load_configuration(self.env_var,
-                                self.default_file,
-                                self.yaml)
-    self.assertEqual(12345, config["counter"])
-
-  def test_load_configuration_from_default(self):
-    shutil.move(self.yaml, self.default_file)
-    self.yaml = self.default_file
-    config = load_configuration(self.env_var,
-                                self.default_file)
-    self.assertEqual(12345, config["counter"])
-
-  def test_load_configuration_from_file_missing_file(self):
-    with self.assertRaises(IOError):
-      config = load_configuration(self.env_var,
-                                  self.default_file,
-                                  "nosuchfile.yaml")
-      
-  def test_load_configuration_from_file_non_yaml_file(self):
-    with open(self.yaml, 'w') as yaml_file:
-      yaml_file.write("This is an invalid YAML file")
-      with self.assertRaises(ConfigError):
-        config = load_configuration(self.env_var,
-                                    self.default_file,
-                                    self.yaml)
