@@ -8,7 +8,8 @@ env:
   global:
     secure: ejhSNz1b+gLo9laVJrJG9OygHvlPN9vIEhv/fGQ3fb8410anN9Hk4+cLEdrTPz9jsWH/Z4LHhXHkPb+KhugHYBYUH7MfO4MSuV9CSxbC6t6Xc3Oi1WfSXR6wn/AuQINGlbw1bYmQdsdbMcZl+bRX782IELOAHC/Wsr/S2O/NvAbl/dsFxFeHyESF8x4ry6ToB8I5+zf1esCXXWS4ELxUouD3rYUNN9Nx9yBDJxueHkfJlfURthLTc1KE+8gaIQ1rrqlXi8XefC8oRvzhBfkrIV8oHgo1SBbokK1IhaeISrgqsDgkHO35WgdTgE34xXzZC/CW1KGz/AZC3EPk/vht1nxdC0rFiztCC/q4KX/AqAUTFnLFUU5Vm3V2TO5Ml0TS0fGLfsrLAMUobKt277MsiFzdFcxHvbNRwd1O4sYm2YBQAK5IOQ7ph7+AG91jx6CcLNFOJefGpfqVs/NahFc509d5RYDsqFSayhH592RbZr928jHzixB7uY3YSKL8pVhNobVA/B5LFScMNsf52MNk2rlRSTYC/cIljNrwlbj9DQFXylDc5Oow2f6KjjxvasezxXVNN0/buGzL+mSDUORoSAgR1ZOX2z/PZY2qv2C3uV4vlrPjKpffPf3ZYtJw2bE7XgrqyP8VxU4VosCARrj/ZVQPDSQO1WnBJ4xZRK3dAgM=
   matrix:
-  - PROV_TESTS=prov_interop/tests
+  - PROV_TESTS=prov_interop/service_tests
+#  - PROV_TESTS=prov_interop/tests
 #  - PROV_TESTS=prov_interop/service_tests/test_provtranslator.py PROVTRANSLATOR_TEST_CONFIGURATION=config/provtranslator.yaml
 #  - PROV_TESTS=prov_interop/service_tests/test_provvalidator.py PROVVALIDATOR_TEST_CONFIGURATION=config/provvalidator.yaml
 
@@ -16,10 +17,7 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - echo "API_KEY=$PROVSTORE_API_KEY=" >> config.properties
-  - cat config.properties
+  - echo "API_KEY=$PROVSTORE_API_KEY" >> config.properties
   - mkdir localconfig
   - python prov_interop/customise-config.py config localconfig config.properties
-  - echo "Test configuration..."
-  - cat localconfig/*
-#  - nosetests --nocapture $PROV_TESTS
+  - nosetests --nocapture $PROV_TESTS
