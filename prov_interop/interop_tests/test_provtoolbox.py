@@ -43,10 +43,15 @@ class ProvToolboxTestCase(ConverterTestCase):
   file name
   """
 
+  CONFIGURATION_KEY="ProvToolbox"
+  """str or unicode: key for ProvToolbox configuration in configuration
+  file"""
+
   def setUp(self):
     super(ProvToolboxTestCase, self).setUp()
     self.converter = ProvToolboxConverter()
     super(ProvToolboxTestCase, self).configure(
+      ProvToolboxTestCase.CONFIGURATION_KEY,
       ProvToolboxTestCase.CONFIGURATION_FILE_ENV,
       ProvToolboxTestCase.DEFAULT_CONFIGURATION_FILE)
 

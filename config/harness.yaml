@@ -7,7 +7,7 @@ comparators:
     arguments: [PROVPY_SCRIPTS_DIR/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
     # Formats must be in set [json, provn, provx, trig, ttl]
     formats: [provx, json]
-ProvPyConverter: PROV_LOCAL_CONFIG_DIR/provpy.yaml
-ProvToolboxConverter: PROV_LOCAL_CONFIG_DIR/provtoolbox.yaml
-ProvTranslatorConverter: PROV_LOCAL_CONFIG_DIR/provtranslator.yaml
-ProvStoreConverter: PROV_LOCAL_CONFIG_DIR/provstore.yaml
+ProvPy: PROV_LOCAL_CONFIG_DIR/provpy.yaml
+ProvToolbox: PROV_LOCAL_CONFIG_DIR/provtoolbox.yaml
+ProvTranslator: PROV_LOCAL_CONFIG_DIR/provtranslator.yaml
+ProvStore: PROV_LOCAL_CONFIG_DIR/provstore.yaml

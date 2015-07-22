@@ -43,10 +43,15 @@ class ProvStoreTestCase(ConverterTestCase):
   file name
   """
 
+  CONFIGURATION_KEY="ProvStore"
+  """str or unicode: key for ProvStore configuration in configuration
+  file"""
+
   def setUp(self):
     super(ProvStoreTestCase, self).setUp()
     self.converter = ProvStoreConverter()
     super(ProvStoreTestCase, self).configure(
+      ProvStoreTestCase.CONFIGURATION_KEY,
       ProvStoreTestCase.CONFIGURATION_FILE_ENV,
       ProvStoreTestCase.DEFAULT_CONFIGURATION_FILE)
 

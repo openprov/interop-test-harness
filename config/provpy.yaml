@@ -1,5 +1,5 @@
 ---
-ProvPyConverter: 
+ProvPy: 
   executable: PROVPY_CONVERT_EXE
   arguments: [PROVPY_SCRIPTS_DIR/prov-convert, -f, FORMAT, INPUT, OUTPUT]
   # Formats must be in set [json, provn, provx, trig, ttl]

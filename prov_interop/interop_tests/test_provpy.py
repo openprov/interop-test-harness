@@ -43,10 +43,16 @@ class ProvPyTestCase(ConverterTestCase):
   file name
   """
 
+  CONFIGURATION_KEY="ProvPy"
+  """str or unicode: key for ProvPy configuration in configuration
+  file"""
+
+
   def setUp(self):
     super(ProvPyTestCase, self).setUp()
     self.converter = ProvPyConverter()
     super(ProvPyTestCase, self).configure(
+      ProvPyTestCase.CONFIGURATION_KEY,
       ProvPyTestCase.CONFIGURATION_FILE_ENV,
       ProvPyTestCase.DEFAULT_CONFIGURATION_FILE)
 

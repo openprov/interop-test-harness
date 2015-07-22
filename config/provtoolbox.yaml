@@ -1,5 +1,5 @@
 ---
-ProvToolboxConverter: 
+ProvToolbox: 
   executable: PROVTOOLBOX_SCRIPTS_DIR/provconvert
   arguments: [-infile, INPUT, -outfile, OUTPUT]
   # Formats must be in set [json, provn, provx, trig, ttl]

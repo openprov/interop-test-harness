@@ -82,37 +82,36 @@ class ConverterTestCase(unittest.TestCase):
           os.path.isfile(self.converter_ext_out):
       os.remove(self.converter_ext_out)
 
-  def configure(self, env_var, default_file_name):
+  def configure(self, config_key, env_var, default_file_name):
     """Configure converter to be tested. 
     - This assumes :class:`~prov_interop.harness.HarnessResources` has
       been initialised by ``prov_interop.interop_tests.harness``.
     - This assumes ``self.converter`` has been assigned to a sub-class
       of ``:class:`~prov_interop.converter.Converter`.
-      - If harness configuration has key matching the converter's
-      class name, then its value is assumed to be a configuration
-      file for the converter.
+      - If harness configuration has key matching ``config_key``, then
+      its value is assumed to be a configuration file for the converter.
     - Else, if an environment variable with the name in
       ``env_var`` is defined, then this environment variable is assumed
        to hold a configuration file for the converter.
     - Else ``default_file_name`` is used as a configuration file.
     - The configuration file is assumed to be a YAML file, with 
-      an entry keyed using the class name of the converter
-      (e.g. ProvPyConverter) 
+      an entry keyed using ``config_key``.
     - The configuration file is loaded and the values under the
       converter's key used to configure the converter.
 
+    :param config_key: Key to access converter-specific configuration
+    :type config_key: str or unicode
     :param env_var: Environment variable with configuration file name
     :type env_var: str or unicode
     :param default_file_name: Default configuration file name
     :type file_name: str or unicode
     :raises IOError: if the file is not found
-    :raises ConfigError: if there is no entry with the converter's class
-    name within the configuration, or if converter-specific
+    :raises ConfigError: if there is no entry with ``config_key``
+    within the configuration, or if converter-specific
     configuration information is missing.
     :raises YamlError: if the configuration file does not parse
     into a dict
     """
-    config_key = self.converter.__class__.__name__
     config_file_name = None
     if config_key in harness.harness_resources.configuration:
       config_file_name = harness.harness_resources.configuration[config_key]

@@ -1,5 +1,5 @@
 ---
-ProvTranslatorConverter:
+ProvTranslator:
   url: https://provenance.ecs.soton.ac.uk/validator/provapi/documents/
   # Formats must be in set [json, provn, provx, trig, ttl]
   input-formats: [provn, ttl, trig, provx, json]

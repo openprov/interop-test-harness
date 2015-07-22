@@ -43,10 +43,15 @@ class ProvTranslatorTestCase(ConverterTestCase):
   file name
   """
 
+  CONFIGURATION_KEY="ProvTranslator"
+  """str or unicode: key for ProvTranslator configuration in configuration
+  file"""
+
   def setUp(self):
     super(ProvTranslatorTestCase, self).setUp()
     self.converter = ProvTranslatorConverter()
     super(ProvTranslatorTestCase, self).configure(
+      ProvTranslatorTestCase.CONFIGURATION_KEY,
       ProvTranslatorTestCase.CONFIGURATION_FILE_ENV,
       ProvTranslatorTestCase.DEFAULT_CONFIGURATION_FILE)
 
