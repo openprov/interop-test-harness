@@ -59,9 +59,9 @@ def test_case_name(testcase_func, param_num, param):
   :rtype: str or unicode
   """
   (index, ext_in, _, ext_out, _) =  param.args
-  return "%s_%s" %(
+  return str("%s_%s" %(
     testcase_func.__name__,
-    parameterized.to_safe_name(str(index) + "_" + ext_in + "_" + ext_out))
+    parameterized.to_safe_name(str(index) + "_" + ext_in + "_" + ext_out)))
 
 
 @nottest

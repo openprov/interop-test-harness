@@ -55,9 +55,9 @@ def test_case_name(testcase_func, param_num, param):
   :rtype: str or unicode
   """
   (format, _) = param.args
-  return "%s_%s" %(
+  return str("%s_%s" %(
     testcase_func.__name__,
-    parameterized.to_safe_name(str(format)))
+    parameterized.to_safe_name(str(format))))
 
 
 class ProvStoreConverterTestCase(unittest.TestCase):
