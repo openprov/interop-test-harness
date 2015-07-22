@@ -18,4 +18,4 @@ script:
   - echo "API_KEY=$PROVSTORE_API_KEY" >> config.properties
   - mkdir localconfig
   - python prov_interop/customise-config.py config localconfig config.properties
-  - nosetests --nocapture $PROV_TESTS
+  - nosetests -v --nocapture $PROV_TESTS
