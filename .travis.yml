@@ -12,6 +12,6 @@ install:
   - pip install -r requirements.txt
 
 script: 
-  - PROVTRANSLATOR_TEST_CONFIGURATION=config/provtranslator.yaml
-  - PROVVALIDATOR_TEST_CONFIGURATION=config/provvalidator.yaml
+  - export PROVTRANSLATOR_TEST_CONFIGURATION=config/provtranslator.yaml
+  - export PROVVALIDATOR_TEST_CONFIGURATION=config/provvalidator.yaml
   - nosetests --nocapture $PROV_TESTS
