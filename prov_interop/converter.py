@@ -35,9 +35,11 @@ class Converter(ConfigurableComponent):
   """Base class for converters."""
 
   INPUT_FORMATS = "input-formats"
-  """str or unicode: configuration key for converter's supported input formats"""
+  """str or unicode: configuration key for supported input formats
+  """ 
   OUTPUT_FORMATS = "output-formats"
-  """str or unicode: configuration key for converter's supported output formats"""
+  """str or unicode: configuration key for supported output formats
+  """ 
 
   def __init__(self):
     """Create converter.
@@ -48,8 +50,8 @@ class Converter(ConfigurableComponent):
 
   @property
   def input_formats(self):
-    """Gets list of input formats supported by the converter.
-   Formats are a subset of those in ``prov_interop.standards``.
+    """Gets input formats supported by the converter. Formats are
+    defined in ``prov_interop.standards``.
 
     :returns: formats
     :rtype: list of str or unicode
@@ -58,8 +60,8 @@ class Converter(ConfigurableComponent):
 
   @property
   def output_formats(self):
-    """Gets list of canonical ouput formats supported by the converter.
-   Formats are a subset of those in ``prov_interop.standards``.
+    """Gets ouput formats supported by the converter. Formats are
+    defined in ``prov_interop.standards``.
 
     :returns: formats
     :rtype: list of str or unicode
@@ -67,26 +69,23 @@ class Converter(ConfigurableComponent):
     return self._output_formats
 
   def configure(self, config):
-    """Configure converter.
-    ``config`` is expected to hold configuration of form::
+    """Configure converter. ``config`` must hold entries::
 
-        input-formats: [...list of formats...]
-        output-formats: [...list of formats...]
+        input-formats: [...list of formats from prov_interop.standards...]
+        output-formats: [...list of formats from prov_interop.standards...]
 
     For example::
 
         input-formats: [json]
         output-formats: [provn, provx, json]
 
-    Formats must be as defined in ``prov_interop.standards``.
-
     :param config: Configuration
     :type config: dict
     :raises ConfigError: if ``config`` does not hold the above entries
     """
     super(Converter, self).configure(config)
-    Converter.check_configuration(
-      config, [Converter.INPUT_FORMATS, Converter.OUTPUT_FORMATS])
+    self.check_configuration(
+      [Converter.INPUT_FORMATS, Converter.OUTPUT_FORMATS])
     for key in [Converter.INPUT_FORMATS, Converter.OUTPUT_FORMATS]:
       for format in config[key]:
         if format not in standards.FORMATS:
@@ -96,15 +95,13 @@ class Converter(ConfigurableComponent):
     self._output_formats = config[Converter.OUTPUT_FORMATS]
 
   def check_formats(self, in_format, out_format):
-    """Check given formats are in the input and output formats
-    supported by the converter.
+    """Check given formats are supported.
 
     :param in_format: Input format
     :type in_format: str or unicode
     :param out_format: Output format
     :type out_format: str or unicode
-    :raises ConversionError: if the input or output formats are
-    not in those supported by the converter
+    :raises ConversionError: if either format is not supported
     """
     if in_format not in self.input_formats:
       raise ConversionError("Unsupported input format: " + in_format)
@@ -112,9 +109,8 @@ class Converter(ConfigurableComponent):
       raise ConversionError("Unsupported input format: " + out_format)
 
   def convert(self, in_file, out_file):
-    """Use converter to convert an input file into an output
-    file. Each file must have an extension matching one of those
-    in ``prov_interop.standards``.
+    """Convert input file into output file. Each file must have an
+    extension matching a format in ``prov_interop.standards``.
 
     :param in_file: Input file name
     :type in_file: str or unicode
@@ -124,6 +120,7 @@ class Converter(ConfigurableComponent):
     """
     if not os.path.isfile(in_file):
       raise ConversionError("Input file not found: " + in_file)
+
 
 class ConversionError(Exception):
   """Conversion error."""

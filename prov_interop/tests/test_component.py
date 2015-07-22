@@ -34,13 +34,14 @@ import yaml
 from prov_interop.component import CommandLineComponent
 from prov_interop.component import ConfigurableComponent
 from prov_interop.component import ConfigError
+from prov_interop.component import load_configuration
 from prov_interop.component import RestComponent
-import prov_interop.component as component
 
 class ConfigurableComponentTestCase(unittest.TestCase):
 
   def setUp(self):
     super(ConfigurableComponentTestCase, self).setUp()
+    self.config = {"a":"b", "c":"d", "e":["f", "g", 123]}
     self.component = ConfigurableComponent()
 
   def test_configure_empty(self):
@@ -48,23 +49,22 @@ class ConfigurableComponentTestCase(unittest.TestCase):
     self.assertEqual({}, self.component.configuration)
 
   def test_configure_non_empty(self):
-    config = {"a":"b", "c":"d", "e":["f", "g", 123]}
-    self.component.configure(config)
-    self.assertEqual(config, self.component.configuration)
+    self.component.configure(self.config)
+    self.assertEqual(self.config, self.component.configuration)
 
   def test_configure_non_dict_error(self):
     with self.assertRaises(ConfigError):
       self.component.configure(123)
 
   def test_check_configuration(self):
-    ConfigurableComponent.check_configuration(
-      {"a":"b", "c":"d", "e":"f"}, ["a", "c", "e"])
+    self.component.configure(self.config)
+    self.component.check_configuration(["a", "c", "e"])
     self.assertTrue(True)
 
   def test_check_configuration_error(self):
+    self.component.configure(self.config)
     with self.assertRaises(ConfigError):
-      ConfigurableComponent.check_configuration(
-        {"a":"b", "c":"d", "e":"f"}, ["a", "c", "expectfail"])
+      self.component.check_configuration(["a", "c", "expectfail"])
 
 
 class CommandLineComponentTestCase(unittest.TestCase):
@@ -79,12 +79,12 @@ class CommandLineComponentTestCase(unittest.TestCase):
     self.assertEqual({}, self.command_line.configuration)
 
   def test_configure(self):
-    config = {CommandLineComponent.EXECUTABLE: "b", 
-              CommandLineComponent.ARGUMENTS: ["c", 1]}
+    config = {CommandLineComponent.EXECUTABLE: "a", 
+              CommandLineComponent.ARGUMENTS: ["b", 1]}
     self.command_line.configure(config)
     self.assertEqual(config, self.command_line.configuration)
-    self.assertEqual("b", self.command_line.executable)
-    self.assertEqual(["c", 1], self.command_line.arguments)
+    self.assertEqual("a", self.command_line.executable)
+    self.assertEqual(["b", 1], self.command_line.arguments)
 
   def test_configure_non_dict_error(self):
     with self.assertRaises(ConfigError):
@@ -92,11 +92,11 @@ class CommandLineComponentTestCase(unittest.TestCase):
 
   def test_configure_no_executable(self):
     with self.assertRaises(ConfigError):
-      self.command_line.configure({CommandLineComponent.ARGUMENTS: ["c", 1]})
+      self.command_line.configure({CommandLineComponent.ARGUMENTS: ["b", 1]})
 
   def test_configure_no_arguments(self):
     with self.assertRaises(ConfigError):
-      self.command_line.configure({CommandLineComponent.EXECUTABLE: "b"})
+      self.command_line.configure({CommandLineComponent.EXECUTABLE: "a"})
 
 
 class RestComponentTestCase(unittest.TestCase):
@@ -141,35 +141,35 @@ class LoadConfigurationTestCase(unittest.TestCase):
       os.remove(self.yaml)
       
   def test_load_configuration_from_file(self):
-    config = component.load_configuration(self.env_var,
-                                          self.default_file,
-                                          self.yaml)
+    config = load_configuration(self.env_var,
+                                self.default_file,
+                                self.yaml)
     self.assertEqual(12345, config["counter"])
 
   def test_load_configuration_from_env(self):
     os.environ[self.env_var] = self.yaml
-    config = component.load_configuration(self.env_var,
-                                          self.default_file,
-                                          self.yaml)
+    config = load_configuration(self.env_var,
+                                self.default_file,
+                                self.yaml)
     self.assertEqual(12345, config["counter"])
 
   def test_load_configuration_from_default(self):
     shutil.move(self.yaml, self.default_file)
     self.yaml = self.default_file
-    config = component.load_configuration(self.env_var,
-                                          self.default_file)
+    config = load_configuration(self.env_var,
+                                self.default_file)
     self.assertEqual(12345, config["counter"])
 
   def test_load_configuration_from_file_missing_file(self):
     with self.assertRaises(IOError):
-      config = component.load_configuration(self.env_var,
-                                            self.default_file,
-                                            "nosuchfile.yaml")
+      config = load_configuration(self.env_var,
+                                  self.default_file,
+                                  "nosuchfile.yaml")
       
   def test_load_configuration_from_file_non_yaml_file(self):
     with open(self.yaml, 'w') as yaml_file:
       yaml_file.write("This is an invalid YAML file")
-    with self.assertRaises(ConfigError):
-      config = component.load_configuration(self.env_var,
-                                            self.default_file,
-                                            self.yaml)
+      with self.assertRaises(ConfigError):
+        config = load_configuration(self.env_var,
+                                    self.default_file,
+                                    self.yaml)

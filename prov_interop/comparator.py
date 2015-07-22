@@ -35,7 +35,8 @@ class Comparator(ConfigurableComponent):
   """Base class for comparators."""
 
   FORMATS = "formats"
-  """str or unicode: configuration key for comparator's supported formats"""
+  """str or unicode: configuration key for supported formats
+  """
 
   def __init__(self):
     """Create comparator.
@@ -45,8 +46,8 @@ class Comparator(ConfigurableComponent):
 
   @property
   def formats(self):
-    """Gets list of canonical formats supported by the comparator.
-   Formats are a subset of those in ``prov_interop.standards``.
+    """Gets formats supported by the comparator. Formats are defined
+    in ``prov_interop.standards``.
 
     :returns: formats
     :rtype: list of str or unicode
@@ -54,23 +55,20 @@ class Comparator(ConfigurableComponent):
     return self._formats
 
   def configure(self, config):
-    """Configure comparator.
-    ``config`` is expected to hold configuration of form::
+    """Configure comparator. ``config`` must hold entries::
 
-        formats: [...list of formats...]
+        formats: [...list of formats from prov_interop.standards...]
 
     For example::
 
         formats: [provx, json]
-
-    Formats must be as defined in ``prov_interop.standards``.
 
     :param config: Configuration
     :type config: dict
     :raises ConfigError: if ``config`` does not hold the above entries
     """
     super(Comparator, self).configure(config)
-    Comparator.check_configuration(config, [Comparator.FORMATS])
+    self.check_configuration([Comparator.FORMATS])
     for format in config[Comparator.FORMATS]:
       if format not in standards.FORMATS:
         raise ConfigError("Unrecognised format in " + Comparator.FORMATS +
@@ -78,19 +76,18 @@ class Comparator(ConfigurableComponent):
     self._formats = config[Comparator.FORMATS]
 
   def check_format(self, format):
-    """Check given format is in the formats supported by the comparator.
+    """Check given format is supported.
 
     :param format: Format
     :type iormat: str or unicode
-    :raises ComparisonError: if the formats is not in those supported
-    by the comparator.
+    :raises ComparisonError: if the format is not supported
     """
     if format not in self.formats:
       raise ComparisonError("Unsupported format: " + format)
 
   def compare(self, file1, file2):
-    """Use comparator to compare two files. Each file must have an
-    extension matching one of those in ``prov_interop.standards``.
+    """Compare two files. Each file must have an extension matching a
+    format in ``prov_interop.standards``.
 
     :param file1: File name
     :type file1: str or unicode
@@ -101,9 +98,10 @@ class Comparator(ConfigurableComponent):
     :rtype: bool
     :raises ComparisonError: if either of the files are not found
     """
-    for afile in [file1, file2]:
-      if not os.path.isfile(afile):
-        raise ComparisonError("File not found: " + afile)
+    for f in [file1, file2]:
+      if not os.path.isfile(f):
+        raise ComparisonError("File not found: " + f)
+
 
 class ComparisonError(Exception):
   """Comparison error."""

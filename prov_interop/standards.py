@@ -36,5 +36,5 @@ PROVX = "provx"
 JSON = "json"
 """str or unicode: PROV-JSON name/file extension"""
 
-FORMATS = set([PROVN, TTL, TRIG, PROVX, JSON])
-"""set of str or unicode: list of PROV name/file extensions"""
+FORMATS = [PROVN, TTL, TRIG, PROVX, JSON]
+"""list of str or unicode: list of PROV name/file extensions"""

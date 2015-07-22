@@ -61,13 +61,13 @@ class ProvStoreConverter(Converter, RestComponent):
     return self._authorization
 
   def configure(self, config):
-   """Configure converter.
-    ``config`` is expected to hold configuration of form::
+   """Configure converter. ``config`` must hold entries::
+
 
         url: ...endpoint URL...
         authorization: ... ProvStore authorixation header...
-        input-formats: [...list of formats...]
-        output-formats: [...list of formats...]
+        input-formats: [...list of formats from prov_interop.standards...]
+        output-formats: [...list of formats from prov_interop.standards...]
 
     For example::
 
@@ -76,30 +76,23 @@ class ProvStoreConverter(Converter, RestComponent):
         input-formats: [provn, ttl, trig, provx, json]
         output-formats: [provn, ttl, trig, provx, json]
 
-    Input and output formats must be as defined in
-    ``prov_interop.standards``.
-
     :param config: Configuration
     :type config: dict
     :raises ConfigError: if ``config`` does not hold the above entries
     """
    super(ProvStoreConverter, self).configure(config)
-   ProvStoreConverter.check_configuration(config,
-                                          [ProvStoreConverter.AUTHORIZATION])
+   self.check_configuration([ProvStoreConverter.AUTHORIZATION])
    self._authorization = config[ProvStoreConverter.AUTHORIZATION]
 
   def convert(self, in_file, out_file):
-    """Use ProvStore to convert an input file into an output
-    file. Each file must have an extension matching one of those
-    in ``prov_interop.standards``. This consists of 3 stages:
+    """Convert input file into output file. Each file must have an
+    extension matching a format in
+    ``prov_interop.standards``. Conversion is done in three stages:
 
     - Issue a POST request to deposit ``in_file`` into ProvStore.
     - Issue a GET request to request the document in the desired
       output format. This is saved into ``out_file``.
     - Issue a POST request to remove the document from ProvStore.
-
-    ``in_file`` and ``out_file`` file extensions are mapped to 
-    content and accept types using ``CONTENT_TYPES``.
 
     :param in_file: Input file name
     :type in_file: str or unicode
@@ -134,7 +127,7 @@ class ProvStoreConverter(Converter, RestComponent):
                             str(response_status))
     with open(out_file, "w") as f:
       f.write(response_text)
-    # Delete document / clean up
+    # Delete document
     (response_status, response_text) = service.delete(doc_url,
                                                       self._authorization)
     if (response_status != requests.codes.no_content): # 204 NO CONTENT

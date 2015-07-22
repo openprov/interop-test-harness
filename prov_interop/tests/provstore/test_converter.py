@@ -49,18 +49,16 @@ class ProvStoreConverterTestCase(unittest.TestCase):
     self.out_file = None
     self.config = {}  
     self.config[ProvStoreConverter.URL] = \
-        "https://" + self.__class__.__name__ + "/converter"
-    self.config[ProvStoreConverter.AUTHORIZATION] = "ApiKey user:12345qwerty"
-    self.config[ProvStoreConverter.INPUT_FORMATS] = list(
-      standards.FORMATS)
-    self.config[ProvStoreConverter.OUTPUT_FORMATS] = list(
-      standards.FORMATS)
+        "https://" + self.__class__.__name__
+    self.config[ProvStoreConverter.AUTHORIZATION] = "ApiKey user:12345"
+    self.config[ProvStoreConverter.INPUT_FORMATS] = standards.FORMATS
+    self.config[ProvStoreConverter.OUTPUT_FORMATS] = standards.FORMATS
 
   def tearDown(self):
     super(ProvStoreConverterTestCase, self).tearDown()
-    for tmp in [self.in_file, self.out_file]:
-      if tmp != None and os.path.isfile(tmp):
-        os.remove(tmp)
+    for f in [self.in_file, self.out_file]:
+      if f != None and os.path.isfile(f):
+        os.remove(f)
 
   def test_init(self):
     self.assertEqual("", self.provstore.url)
@@ -105,10 +103,6 @@ class ProvStoreConverterTestCase(unittest.TestCase):
     with self.assertRaises(ConversionError):
       self.provstore.convert(self.in_file, self.out_file)
 
-  def create_files(self, format):
-    (_, self.in_file) = tempfile.mkstemp(suffix="." + format)
-    (_, self.out_file) = tempfile.mkstemp(suffix="." + format)
-
   def register_post(self, mocker, content_type, doc_id, 
                     status_code = requests.codes.created):
     headers={http.CONTENT_TYPE: content_type,
@@ -139,16 +133,13 @@ class ProvStoreConverterTestCase(unittest.TestCase):
                         request_headers=headers,
                         status_code=status_code)
 
-  @parameterized.expand([
-      (standards.PROVN, service.CONTENT_TYPES[standards.PROVN]),
-      (standards.TTL, service.CONTENT_TYPES[standards.TTL]),
-      (standards.TRIG, service.CONTENT_TYPES[standards.TRIG]),
-      (standards.PROVX, service.CONTENT_TYPES[standards.PROVX]),
-      (standards.JSON, service.CONTENT_TYPES[standards.JSON])])
-  def test_convert(self, format, content_type):
+  @parameterized.expand(standards.FORMATS)
+  def test_convert(self, format):
+    content_type = service.CONTENT_TYPES[format]
     self.provstore.configure(self.config)
-    self.create_files(format)
-    doc = "mockDocument"
+    (_, self.in_file) = tempfile.mkstemp(suffix="." + format)
+    (_, self.out_file) = tempfile.mkstemp(suffix="." + format)
+    doc = "mockdocument"
     doc_id = 123
     # Set up mock service response.
     with requests_mock.Mocker(real_http=False) as mocker:
@@ -162,7 +153,8 @@ class ProvStoreConverterTestCase(unittest.TestCase):
   def test_convert_post_server_error(self):
     self.provstore.configure(self.config)
     format = standards.JSON
-    self.create_files(format)
+    (_, self.in_file) = tempfile.mkstemp(suffix="." + format)
+    (_, self.out_file) = tempfile.mkstemp(suffix="." + format)
     content_type = service.CONTENT_TYPES[format]
     # Set up mock service response with POST causing server error.
     with requests_mock.Mocker(real_http=False) as mocker:
@@ -176,7 +168,8 @@ class ProvStoreConverterTestCase(unittest.TestCase):
   def test_convert_get_server_error(self):
     self.provstore.configure(self.config)
     format = standards.JSON
-    self.create_files(format)
+    (_, self.in_file) = tempfile.mkstemp(suffix="." + format)
+    (_, self.out_file) = tempfile.mkstemp(suffix="." + format)
     content_type = service.CONTENT_TYPES[format]
     doc = "mockDocument"
     doc_id = 123
@@ -191,7 +184,8 @@ class ProvStoreConverterTestCase(unittest.TestCase):
   def test_convert_delete_server_error(self):
     self.provstore.configure(self.config)
     format = standards.JSON
-    self.create_files(format)
+    (_, self.in_file) = tempfile.mkstemp(suffix="." + format)
+    (_, self.out_file) = tempfile.mkstemp(suffix="." + format)
     content_type = service.CONTENT_TYPES[format]
     doc = "mockDocument"
     doc_id = 123

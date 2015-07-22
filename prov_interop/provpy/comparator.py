@@ -26,8 +26,6 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import os.path
-import re
-import shutil
 import subprocess
 
 from prov_interop import standards
@@ -48,8 +46,8 @@ class ProvPyComparator(Comparator, CommandLineComponent):
   FILE2 = "FILE2"
   """str or unicode: token for file1 in command-line specification"""
   LOCAL_FORMATS = {standards.PROVX: "xml"}
-  """list of str or unicode: list of mapping from formats in
-  ``prov_interop.standards`` to formats understood by prov-compare
+  """dict: mapping from formats in ``prov_interop.standards`` to
+  formats understood by prov-compare
 ` """
 
   def __init__(self):
@@ -58,12 +56,11 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     super(ProvPyComparator, self).__init__()
 
   def configure(self, config):
-    """Configure comparator.
-    ``config`` is expected to hold configuration of form::
+    """Configure comparator. ``config`` must hold entries::
 
         executable: ...executable name...
-        arguments: [...list of arguments including tokens FORMAT1, FORMAT2, FILE1, FILE2...]
-        formats: [...list of formats...]
+        arguments: [...list of arguments including tokens INPUT, OUTPUT...]
+        formats: [...list of formats from prov_interop.standards...]
 
     For example::
 
@@ -72,26 +69,27 @@ class ProvPyComparator(Comparator, CommandLineComponent):
         arguments: [/home/user/prov/scripts/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
         formats: [provx, json]
 
-    Formats must be as defined in ``prov_interop.standards``.
-
     :param config: Configuration
     :type config: dict
     :raises ConfigError: if ``config`` does not hold the above entries
     """
     super(ProvPyComparator, self).configure(config)
-    ProvPyComparator.check_configuration(
-      self._arguments,
-      [ProvPyComparator.FORMAT1, ProvPyComparator.FORMAT2,
-       ProvPyComparator.FILE1, ProvPyComparator.FILE2])
+    for token in [ProvPyComparator.FORMAT1,
+                  ProvPyComparator.FORMAT2, 
+                  ProvPyComparator.FILE1, 
+                  ProvPyComparator.FILE2]:
+      if token not in self._arguments:
+        raise ConfigError("Missing token " + token)
 
   def compare(self, file1, file2):
-    """Use prov-compare to compare two files. Each file must have an
-    extension matching one of those in ``prov_interop.standards``.
-    ``executable`` and ``arguments`` in the configuration are used to
-    create a command to execute at the shell. ``FORMAT1``,
-    ``FORMAT2``, ``FILE1`` and ``FILE2`` tokens are populated using
-    ``file1``, ``file2`` values, with mappings to local formats
-    supported by prov-compare being done if needed.
+    """Compare two files. Each file must have an extension matching a
+    format in ``prov_interop.standards``.
+
+    ``FORMAT1``, ``FORMAT2``, ``FILE1`` and ``FILE2`` tokens from
+    configuration ``arguments`` value are replaced with ``file1`` and
+    ``file2`` formats and ``file1`` and ``file2`` values and output
+    format, then prepended with ``executable`` value to create
+    command-line invocation.
 
     :param file1: File name
     :type file1: str or unicode
@@ -111,15 +109,12 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     format2 = os.path.splitext(file2)[1][1:]
     for format in [format1, format2]:
       super(ProvPyComparator, self).check_format(format)
-    # Map prov_interop.standards formats to formats supported by 
-    # prov-compare
     local_format1 = format1
     if (format1 in ProvPyComparator.LOCAL_FORMATS):
       local_format1 = ProvPyComparator.LOCAL_FORMATS[format1]
     local_format2 = format2
     if (format2 in ProvPyComparator.LOCAL_FORMATS):
       local_format2 = ProvPyComparator.LOCAL_FORMATS[format2]
-    # Replace tokens in arguments
     command_line = [local_format1 if x==ProvPyComparator.FORMAT1 else x 
                     for x in self._arguments]
     command_line = [local_format2 if x==ProvPyComparator.FORMAT2 else x 
@@ -129,7 +124,6 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     command_line = [file2 if x==ProvPyComparator.FILE2 else x 
                     for x in command_line]
     command_line.insert(0, self.executable)
-    # Execute
     print((" ".join(command_line)))
     return_code = subprocess.call(command_line)
     if return_code == 0:

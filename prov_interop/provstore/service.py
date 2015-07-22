@@ -37,19 +37,17 @@ CONTENT_TYPES = {
   standards.TRIG: "application/trig",
   standards.PROVX: "application/xml",
   standards.JSON: "application/json"}
-"""list of str or unicode: list of mapping from formats in
-``prov_interop.standards`` to content types understood by the
-service.
+"""dict: mapping from formats in ``prov_interop.standards`` to content types
 """
 
 CONTENT = "content"
-"""str or unicode: key for ProvStore request document content"""
+"""str or unicode: key for request document content"""
 PUBLIC = "public"
-"""str or unicode: key for ProvStore request public flag"""
+"""str or unicode: key for request public flag"""
 REC_ID = "rec_id"
-"""str or unicode: key for ProvStore request document name"""
+"""str or unicode: key for request document name"""
 ID = "id"
-"""str or unicode: key for ProvStore response document ID"""
+"""str or unicode: key for response document ID"""
 
 def create_store_request(name, document, is_public=True):
   """Create a ProvStore-compliant request, wrapping up a PROV document.
@@ -66,9 +64,8 @@ def create_store_request(name, document, is_public=True):
   return {CONTENT: document, PUBLIC: is_public, REC_ID: name}
 
 def store(url, name, format, document, authorization, is_public=True):
-  """Store a document of the given format in ProvStore. The format
-  must be as defined in ``prov_interop.standards``. The "Accept" type
-  is set to JSON.
+  """Store a document. The format must be in
+  ``prov_interop.standards``. The "Accept" type is set to JSON.
   
   :param url: ProvStore URL
   :type url: str or unicode
@@ -116,16 +113,15 @@ def get_stored_url(url, response):
   return document_url
 
 def get(url, format, authorization=""):
-  """Get a document in the given format from ProvStore. The format
-  must be as defined in ``prov_interop.standards``.
+  """Get a document in the given format. The format must be in
+  ``prov_interop.standards``.
   
   :param url: ProvStore document URL
   :type url: str or unicode
   :param format: Document format
   :type format: str or unicode
   :param authorization: Authorization token (API key)
-  :type autoorization: str or unicode
-
+  :type authorization: str or unicode
   :returns: response status code and response text
   :rtype: tuple (int, str or unicode)
   :raises requests.exceptions.ConnectionError: if there are
@@ -140,8 +136,8 @@ def get(url, format, authorization=""):
   return (response.status_code, response.text)
 
 def delete(url, authorization):
-  """Delete a document from ProvStore.
-  
+  """Delete a document.
+
   :param url: ProvStore document URL
   :type url: str or unicode
   :param authorization: Authorization token (API key)

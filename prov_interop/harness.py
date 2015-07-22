@@ -45,9 +45,8 @@ class HarnessResources(ConfigurableComponent):
   CLASS = "class"
   """str or unicode: configuration key for comparator class names"""
   TEST_CASE_PREFIX="testcase"
-  """
-  str or unicode: assumed prefix for individual test case directories
-  and files
+  """str or unicode: assumed prefix for individual test case
+  directories and files
   """
 
   def __init__(self):
@@ -61,7 +60,7 @@ class HarnessResources(ConfigurableComponent):
 
   @property
   def test_cases_dir(self):
-    """Get test cases directory
+    """Get test cases directory.
 
     :returns: directory name
     :rtype: list of str or unicode
@@ -76,13 +75,14 @@ class HarnessResources(ConfigurableComponent):
     (test case index, ocument 1 format, full path to document 1,
     document 2 format, full path to document 2) where formats are
     assumed to be as in ``prov_interop.standards``
-    :rtype: list of tuple of (int, str or unicode, str or unicode, str or unicode, str or unicode)
+    :rtype: list of tuple of (int, str or unicode, str or unicode, str
+    or unicode, str or unicode)
     """
     return self._test_cases
 
   @property
   def comparators(self):
-    """Get dictionary of comparators.
+    """Get dictionary of comparators, keyed by name.
 
     :returns: comparators
     :rtype: dict from str or unicode to instances of
@@ -102,21 +102,20 @@ class HarnessResources(ConfigurableComponent):
     return self._format_comparators
 
   def register_comparators(self, comparators):
-    """Populate dictionaries mapping both comparator names and formats 
-    to instances of :class:`~prov_interop.comparator.Comparator`.
-
-    ``comparators`` must be a dictionary with entries of form::
+    """Populate dictionaries mapping both comparator names and formats
+    to instances of :class:`~prov_interop.comparator.Comparator`. 
+    ``comparators`` must include entries:: 
 
         Comparator nick-name
           class: ... class name...
-          ...class-specific configuration...
+          ...comparator class-specific configuration...
 
     For example::
 
         ProvPyComparator: 
           class: prov_interop.provpy.comparator.ProvPyComparator
           executable: python
-          arguments: [/home/user/prov/scripts/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
+          arguments: [/home/user/prov-convert, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
           formats: [provx, json]
 
     :param comparators: Mapping of comparator names to 
@@ -131,8 +130,9 @@ class HarnessResources(ConfigurableComponent):
       raise ConfigError("There must be at least one comparator defined")
     for comparator_name in comparators:
       config = comparators[comparator_name]
-      HarnessResources.check_configuration(
-        config, [HarnessResources.CLASS])
+      if HarnessResources.CLASS not in config:
+        raise ConfigError("Missing " + HarnessResources.CLASS + 
+                          " for " + comparator_name)
       class_name = config[HarnessResources.CLASS]
       comparator = factory.get_instance(class_name)
       comparator.configure(config)
@@ -167,7 +167,8 @@ class HarnessResources(ConfigurableComponent):
     for test_case in sorted(os.listdir(test_cases_dir)):
       test_case_dir = os.path.join(test_cases_dir, test_case)
       # Only consider directories of form testcaseNNNN.
-      if pattern.match(test_case) is not None and os.path.isdir(test_case_dir):
+      if pattern.match(test_case) is not None \
+            and os.path.isdir(test_case_dir):
         index = int(index_pattern.search(test_case).group(0))
         files = []
         for test_file in sorted(os.listdir(test_case_dir)):
@@ -185,8 +186,7 @@ class HarnessResources(ConfigurableComponent):
         self._test_cases.extend(test_case_tests)
 
   def configure(self, config):
-    """Configure harness.
-    ``config`` is expected to hold configuration of form::
+    """Configure harness. ``config`` must hold entries::
 
         test-cases: ...test cases directory...
         comparators:
@@ -194,15 +194,6 @@ class HarnessResources(ConfigurableComponent):
             class: ... class name...
             ...class-specific configuration...
         ...other configuration...
-
-    Other configuration is saved but not processed by this class.
-    
-    ``register_comparators`` is called to create and populate
-    available comparators.
-
-    ``register_test_cases`` is called to create applicable test
-    cases based on directories in ``test-cases`` and formats 
-    supported by available comparators.
 
     For example::
 
@@ -213,10 +204,15 @@ class HarnessResources(ConfigurableComponent):
             executable: python
             arguments: [/home/user/prov/scripts/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
             formats: [provx, json]
-        ProvPy: /home/user/interop/config/provpy.yaml
-        ProvToolbox: /home/user/interop/config/provtoolbox.yaml
-        ProvTranslator: /home/user/interop/config/provtranslator.yaml
-        ProvStore: /home/user/interop/config/provstore.yaml
+
+    Other configuration is saved but not processed by this method.
+    
+    :func:`register_comparators` is called to create and populate
+    available comparators.
+
+    :func:`register_test_cases` is called to create applicable test
+    cases based on directories in ``test-cases`` and formats 
+    supported by available comparators.
 
     :param config: Configuration
     :type config: dict
@@ -224,8 +220,7 @@ class HarnessResources(ConfigurableComponent):
     entries, or problems arise invoking :func:`configure`
     """
     super(HarnessResources, self).configure(config)
-    HarnessResources.check_configuration(
-      config,
+    self.check_configuration(
       [HarnessResources.TEST_CASES_DIR, HarnessResources.COMPARATORS])
     self._test_cases_dir = config[HarnessResources.TEST_CASES_DIR]
     self.register_comparators(config[HarnessResources.COMPARATORS])  

@@ -26,8 +26,6 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import os.path
-import re
-import shutil
 import subprocess
 
 from prov_interop import standards
@@ -46,8 +44,8 @@ class ProvPyConverter(Converter, CommandLineComponent):
   OUTPUT = "OUTPUT"
   """str or unicode: token for output file in command-line specification"""
   LOCAL_FORMATS = {standards.PROVX: "xml"}
-  """list of str or unicode: list of mapping from formats in
-  ``prov_interop.standards`` to formats understood by prov-convert
+  """dict: mapping from formats in ``prov_interop.standards`` to
+  formats understood by prov-convert
 ` """
 
   def __init__(self):
@@ -56,13 +54,12 @@ class ProvPyConverter(Converter, CommandLineComponent):
     super(ProvPyConverter, self).__init__()
 
   def configure(self, config):
-   """Configure converter.
-    ``config`` is expected to hold configuration of form::
+   """Configure converter. ``config`` must hold entries::
 
         executable: ...executable name...
         arguments: [...list of arguments including tokens INPUT, OUTPUT...]
-        input-formats: [...list of formats...]
-        output-formats: [...list of formats...]
+        input-formats: [...list of formats from prov_interop.standards...]
+        output-formats: [...list of formats from prov_interop.standards...]
 
     For example::
 
@@ -71,28 +68,25 @@ class ProvPyConverter(Converter, CommandLineComponent):
         input-formats: [json]
         output-formats: [provn, provx, json]
 
-    Input and output formats must be as defined in
-    ``prov_interop.standards``.
-
     :param config: Configuration
     :type config: dict
     :raises ConfigError: if ``config`` does not hold the above entries
     """
    super(ProvPyConverter, self).configure(config)
-   ProvPyConverter.check_configuration(
-     self._arguments,
-     [ProvPyConverter.FORMAT, ProvPyConverter.INPUT,
-      ProvPyConverter.OUTPUT])
+   for token in [ProvPyConverter.FORMAT,
+                 ProvPyConverter.INPUT, 
+                 ProvPyConverter.OUTPUT]:
+     if token not in self._arguments:
+       raise ConfigError("Missing token " + token)
 
   def convert(self, in_file, out_file):
-    """Use prov-convert to convert an input file into an output
-    file. Each file must have an extension matching one of those
-    in ``prov_interop.standards``.
-    ``executable`` and ``arguments`` in the configuration are used to
-    create a command to execute at the shell. ``FORMAT``,
-    ``INPUT`` and ``OUTPUT`` tokens are populated using
-    ``in_file``, ``out_file`` values, with mappings to local formats
-    supported by prov-cconvert being done if needed.
+    """Convert input file into output file. Each file must have an
+    extension matching a format in ``prov_interop.standards``
+.
+    ``INPUT``, ``OUTPUT`` and ``FORMAT`` tokens from configuration
+    ``arguments`` value are replaced with ``in_file`` and ``out_file``
+    values and ``out_file`` format, then prepended with ``executable``
+    value to create command-line invocation.
 
     :param in_file: Input file name
     :type in_file: str or unicode
@@ -108,12 +102,9 @@ class ProvPyConverter(Converter, CommandLineComponent):
     in_format = os.path.splitext(in_file)[1][1:]
     out_format = os.path.splitext(out_file)[1][1:]
     super(ProvPyConverter, self).check_formats(in_format, out_format)
-    # Map prov_interop.standards output format to format supported 
-    # by prov-convert
     local_format = out_format
     if (out_format in ProvPyConverter.LOCAL_FORMATS):
       local_format = ProvPyConverter.LOCAL_FORMATS[out_format]
-    # Replace tokens in arguments
     command_line = [local_format if x==ProvPyConverter.FORMAT else x 
                     for x in self._arguments]
     command_line = [in_file if x==ProvPyConverter.INPUT else x 
@@ -121,7 +112,6 @@ class ProvPyConverter(Converter, CommandLineComponent):
     command_line = [out_file if x==ProvPyConverter.OUTPUT else x 
                     for x in command_line]
     command_line.insert(0, self.executable)
-    # Execute
     print((" ".join(command_line)))
     return_code = subprocess.call(command_line)
     if return_code != 0:

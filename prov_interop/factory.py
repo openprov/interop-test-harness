@@ -30,8 +30,8 @@ import importlib
 import yaml
 
 def get_class(name):
-  """Load class given a module-prefixed class name.
-  A valid module-prefixed class name is, for example,
+  """Load class given a module-prefixed class name. A valid
+  module-prefixed class name is, for example,
   ``prov_interop.component.Component``. An invalid class name is
   ``Component``.
    
@@ -45,15 +45,15 @@ def get_class(name):
   """
   module_class = name.rsplit(".",1)
   if len(module_class) != 2:
-    raise ValueError("Class name must be module-prefixed")
+    raise ValueError(("Class name " + name + " must be module-prefixed"))
   (module_name, class_name) = module_class
   module = importlib.import_module(module_name)
   clazz = getattr(module, class_name)
   return clazz
 
 def get_instance(name):
-  """Return instance of class given a module-prefixed class name.
-  A valid module-prefixed class name is, for example,
+  """Return instance of class given a module-prefixed class name. A
+  valid module-prefixed class name is, for example,
   ``prov_interop.component.Component``. An invalid class name is
   ``Component``. The class must have a 0-arity constructor.
 

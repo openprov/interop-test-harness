@@ -47,13 +47,12 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
     super(ProvToolboxConverter, self).__init__()
 
   def configure(self, config):
-    """Configure converter.
-    ``config`` is expected to hold configuration of form::
+    """Configure converter. ``config`` must hold entries::
 
         executable: ...executable name...
         arguments: [...list of arguments including tokens INPUT, OUTPUT...]
-        input-formats: [...list of formats...]
-        output-formats: [...list of formats...]
+        input-formats: [...list of formats from prov_interop.standards...]
+        output-formats: [...list of formats from prov_interop.standards...]
 
     For example::
 
@@ -62,28 +61,24 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
         input-formats: [provn, ttl, trig, provx, json]
         output-formats: [provn, ttl, trig, provx, json]
 
-    Input and output formats must be as defined in
-    ``prov_interop.standards``.
-
     :param config: Configuration
     :type config: dict
     :raises ConfigError: if ``config`` does not hold the above
     entries
     """
     super(ProvToolboxConverter, self).configure(config)
-    ProvToolboxConverter.check_configuration(
-      self._arguments,
-      [ProvToolboxConverter.INPUT, ProvToolboxConverter.OUTPUT])
+    for token in [ProvToolboxConverter.INPUT, ProvToolboxConverter.OUTPUT]:
+      if token not in self._arguments:
+        raise ConfigError("Missing token " + token)
 
   def convert(self, in_file, out_file):
-    """Use provconvert to convert an input file into an output
-    file. Each file must have an extension matching one of those
-    in ``prov_interop.standards``.
-    ``executable`` and ``arguments`` in the configuration are used to
-    create a command to execute at the shell. `
-    ``INPUT`` and ``OUTPUT`` tokens are populated using
-    ``in_file``, ``out_file`` values, with mappings to local formats
-    supported by provcconvert being done if needed.
+    """Convert input file into output file. Each file must have an
+    extension matching a format in ``prov_interop.standards``
+.
+    ``INPUT`` and ``OUTPUT`` tokens from configuration ``arguments``
+    value are replaced with ``in_file`` and ``out_file`` values, then
+    prepended with ``executable`` value to create command-line
+    invocation.
 
     :param in_file: Input file name
     :type in_file: str or unicode
@@ -99,13 +94,11 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
     in_format = os.path.splitext(in_file)[1][1:]
     out_format = os.path.splitext(out_file)[1][1:]
     super(ProvToolboxConverter, self).check_formats(in_format, out_format)
-    # Replace tokens in arguments
     command_line = [in_file if x==ProvToolboxConverter.INPUT else x 
                     for x in self._arguments]
     command_line = [out_file if x==ProvToolboxConverter.OUTPUT else x 
                     for x in command_line]
     command_line.insert(0, self.executable)
-    # Execute
     print((" ".join(command_line)))
     return_code = subprocess.call(command_line)
     if return_code != 0:

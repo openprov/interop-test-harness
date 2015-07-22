@@ -49,17 +49,15 @@ class ProvTranslatorConverterTestCase(unittest.TestCase):
     self.out_file = None
     self.config = {}  
     self.config[ProvTranslatorConverter.URL] = \
-        "https://" + self.__class__.__name__ + "/converter"
-    self.config[ProvTranslatorConverter.INPUT_FORMATS] = list(
-      standards.FORMATS)
-    self.config[ProvTranslatorConverter.OUTPUT_FORMATS] = list(
-      standards.FORMATS)
+        "https://" + self.__class__.__name__
+    self.config[ProvTranslatorConverter.INPUT_FORMATS] = standards.FORMATS
+    self.config[ProvTranslatorConverter.OUTPUT_FORMATS] = standards.FORMATS
 
   def tearDown(self):
     super(ProvTranslatorConverterTestCase, self).tearDown()
-    for tmp in [self.in_file, self.out_file]:
-      if tmp != None and os.path.isfile(tmp):
-        os.remove(tmp)
+    for f in [self.in_file, self.out_file]:
+      if f != None and os.path.isfile(f):
+        os.remove(f)
 
   def test_init(self):
     self.assertEqual("", self.provtranslator.url)
@@ -96,31 +94,9 @@ class ProvTranslatorConverterTestCase(unittest.TestCase):
     with self.assertRaises(ConversionError):
       self.provtranslator.convert(self.in_file, self.out_file)
 
-  def test_convert(self):
-    self.provtranslator.configure(self.config)
-    (_, self.in_file) = tempfile.mkstemp(suffix="." + standards.JSON)
-    (_, self.out_file) = tempfile.mkstemp(suffix="." + standards.JSON)
-    doc = "mockDocument"
-    # Set up mock service response.
-    headers={http.CONTENT_TYPE: 
-             service.CONTENT_TYPES[standards.JSON],
-             http.ACCEPT: 
-             service.CONTENT_TYPES[standards.JSON]}
-    with requests_mock.Mocker(real_http=False) as mocker:
-      mocker.register_uri("POST", 
-                          self.config[ProvTranslatorConverter.URL],
-                          text=doc)
-      self.provtranslator.convert(self.in_file, self.out_file)
-      with open(self.out_file, "r") as f:
-        self.assertEqual(doc, f.read(), "Unexpected output file content")
-
-  @parameterized.expand([
-      (standards.PROVN, service.CONTENT_TYPES[standards.PROVN]),
-      (standards.TTL, service.CONTENT_TYPES[standards.TTL]),
-      (standards.TRIG, service.CONTENT_TYPES[standards.TRIG]),
-      (standards.PROVX, service.CONTENT_TYPES[standards.PROVX]),
-      (standards.JSON, service.CONTENT_TYPES[standards.JSON])])
-  def test_convert(self, format, content_type):
+  @parameterized.expand(standards.FORMATS)
+  def test_convert(self, format):
+    content_type = service.CONTENT_TYPES[format]
     self.provtranslator.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix="." + format)
     (_, self.out_file) = tempfile.mkstemp(suffix="." + format)

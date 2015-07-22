@@ -50,8 +50,10 @@ class ProvPyComparatorTestCase(unittest.TestCase):
             inspect.currentframe()))), "prov-compare-dummy.py")
     self.config[ProvPyComparator.ARGUMENTS] = [
       script,
-      "-f", ProvPyComparator.FORMAT1, "-F", ProvPyComparator.FORMAT2,
-      ProvPyComparator.FILE1, ProvPyComparator.FILE2]
+      "-f", ProvPyComparator.FORMAT1, 
+      "-F", ProvPyComparator.FORMAT2,
+      ProvPyComparator.FILE1, 
+      ProvPyComparator.FILE2]
     self.config[ProvPyComparator.FORMATS] = [
       standards.PROVX, standards.JSON]
 

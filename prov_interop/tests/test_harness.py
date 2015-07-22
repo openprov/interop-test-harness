@@ -31,12 +31,44 @@ import tempfile
 import unittest
 
 from prov_interop import standards
-from prov_interop.component import CommandLineComponent
+from prov_interop.comparator import Comparator
 from prov_interop.component import ConfigurableComponent
 from prov_interop.component import ConfigError
-from prov_interop.converter import Converter
 from prov_interop.harness import HarnessResources
 from prov_interop.provpy.comparator import ProvPyComparator
+
+class DummyComparator(Comparator):
+  """Dummy comparator for testing ``prov_interop.harness``.
+  """
+
+  def __init__(self):
+    """Create comparator.
+    """
+    super(DummyComparator, self).__init__()
+
+  def configure(self, config):
+    """Configure comparator. ``config`` must hold entries::
+
+        formats: [...list of formats from prov_interop.standards...]
+
+    :param config: Configuration
+    :type config: dict
+    :raises ConfigError: if ``config`` does not hold the above entries
+    """
+    super(DummyComparator, self).configure(config)
+
+  def compare(self, file1, file2):
+    """This is a no-op.
+
+    :param file1: File name
+    :type file1: str or unicode
+    :param file2: File name
+    :type file2: str or unicode
+    :returns: True always
+    :rtype: bool
+    """
+    return True
+
 
 class HarnessResourcesTestCase(unittest.TestCase):
 
@@ -48,18 +80,10 @@ class HarnessResourcesTestCase(unittest.TestCase):
     self.config[HarnessResources.TEST_CASES_DIR] = self.test_cases_dir
     self.comparators = {}
     comparator = {}
-    comparator[ProvPyComparator.EXECUTABLE] = "python"
-    script = "prov-compare"
-    comparator[ProvPyComparator.ARGUMENTS] = [
-      script,
-      "-f", ProvPyComparator.FORMAT1,
-      "-F", ProvPyComparator.FORMAT2,
-      ProvPyComparator.FILE1,
-      ProvPyComparator.FILE2]
-    comparator[ProvPyComparator.FORMATS] = [standards.PROVX, standards.JSON]
+    comparator[Comparator.FORMATS] = [standards.PROVX, standards.JSON]
     comparator[HarnessResources.CLASS] = \
-        ProvPyComparator.__module__ + "." + ProvPyComparator.__name__
-    self.comparators[ProvPyComparator.__name__] = comparator
+        DummyComparator.__module__ + "." + DummyComparator.__name__
+    self.comparators[DummyComparator.__name__] = comparator
     self.config[HarnessResources.COMPARATORS] = self.comparators
 
   def tearDown(self):
@@ -82,16 +106,16 @@ class HarnessResourcesTestCase(unittest.TestCase):
     # Check comparators
     comparators = self.harness.comparators
     self.assertEqual(1, len(comparators))
-    self.assertTrue(ProvPyComparator.__name__ in comparators)
-    comparator = comparators[ProvPyComparator.__name__]
-    self.assertIsInstance(comparator, ProvPyComparator)
+    self.assertTrue(DummyComparator.__name__ in comparators)
+    comparator = comparators[DummyComparator.__name__]
+    self.assertIsInstance(comparator, DummyComparator)
     # Check comparators indexed by format
     comparators = self.harness.format_comparators
     self.assertEqual(2, len(comparators))
     for format in [standards.PROVX, standards.JSON]:
       self.assertTrue(format in comparators)
       format_comparator = comparators[format]
-      self.assertIsInstance(format_comparator, ProvPyComparator)
+      self.assertIsInstance(format_comparator, DummyComparator)
       self.assertEqual(comparator, format_comparator)
 
   def test_configure_no_test_cases(self):
@@ -109,14 +133,13 @@ class HarnessResourcesTestCase(unittest.TestCase):
       self.harness.register_comparators({})
 
   def test_register_comparator_class_error(self):
-    self.comparators[ProvPyComparator.__name__][
+    self.comparators[DummyComparator.__name__][
       HarnessResources.CLASS] = "nosuchmodule.Comparator"
     with self.assertRaises(ImportError):
       self.harness.configure(self.config)
 
   def test_register_comparator_config_error(self):
-    del self.comparators[ProvPyComparator.__name__][
-      ProvPyComparator.EXECUTABLE]
+    del self.comparators[DummyComparator.__name__][Comparator.FORMATS]
     with self.assertRaises(ConfigError):
       self.harness.configure(self.config)
 

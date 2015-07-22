@@ -38,12 +38,25 @@ class ConfigurableComponent(object):
 
   @property
   def configuration(self):
-    """Get raw configuration.
+    """Get configuration.
 
     :returns: configuration
     :rtype: dict
     """
     return self._config
+
+  def check_configuration(self, keys):
+    """Check configuration contains keys.
+
+    :param config: Configuration
+    :type config: dict or list
+    :param keys: Keys to check for
+    :type keys: dict or list
+    :raises ConfigError: if config does not contain one of the keys
+    """
+    for key in keys:
+      if key not in self._config:
+        raise ConfigError("Missing " + key)
 
   def configure(self, config):
     """Configure component.
@@ -55,20 +68,6 @@ class ConfigurableComponent(object):
     if type(config) is not dict:
       raise ConfigError("config must be a dictionary")
     self._config = config
-
-  @staticmethod
-  def check_configuration(config, keys):
-    """Check configuration contains keys.
-
-    :param config: Configuration
-    :type config: dict or list
-    :param keys: Keys to check for
-    :type keys: list of str or unicode
-    :raises ConfigError: if config does not contain one of the keys
-    """
-    for key in keys:
-      if key not in config:
-        raise ConfigError("Missing " + key)
 
 
 class ConfigError(Exception):
@@ -95,9 +94,9 @@ class CommandLineComponent(ConfigurableComponent):
   """Base class for configurable command-line components."""
 
   EXECUTABLE = "executable"
-  """str or unicode: configuration key for component's executable"""
+  """str or unicode: configuration key for executable"""
   ARGUMENTS = "arguments"
-  """str or unicode: configuration key for component's arguments"""
+  """str or unicode: configuration key for arguments"""
 
   def __init__(self):
     """Create component.
@@ -125,8 +124,7 @@ class CommandLineComponent(ConfigurableComponent):
     return self._arguments
 
   def configure(self, config):
-    """Configure component.
-    ``config`` is expected to hold configuration of form::
+    """Configure component. Configuration must hold entries::
 
         executable: ...executable name...
         arguments: [...list of arguments ...]
@@ -134,17 +132,15 @@ class CommandLineComponent(ConfigurableComponent):
     For example::
 
         executable: python
-        arguments: [/home/user/prov/scripts/prov-convert, -f, FORMAT, INPUT, OUT
-PUT]
+        arguments: [/home/user/prov-convert, -f, FORMAT, INPUT, OUTPUT]
 
     :param config: Configuration
     :type config: dict
     :raises ConfigError: if ``config`` does not hold the above entries
     """
     super(CommandLineComponent, self).configure(config)
-    CommandLineComponent.check_configuration(
-      config, [CommandLineComponent.EXECUTABLE, 
-               CommandLineComponent.ARGUMENTS])
+    self.check_configuration([CommandLineComponent.EXECUTABLE, 
+                              CommandLineComponent.ARGUMENTS])
     self._executable = config[CommandLineComponent.EXECUTABLE]
     self._arguments = config[CommandLineComponent.ARGUMENTS]
 
@@ -171,8 +167,7 @@ class RestComponent(ConfigurableComponent):
     return self._url
 
   def configure(self, config):
-    """Configure component.
-    ``config`` is expected to hold configuration of form::
+    """Configure component. Configuration must hold entries::
 
         url: ...REST endpoint URL...
 
@@ -185,7 +180,7 @@ class RestComponent(ConfigurableComponent):
     :raises ConfigError: if ``config`` does not hold the above entries
     """
     super(RestComponent, self).configure(config)
-    RestComponent.check_configuration(config, [RestComponent.URL])
+    self.check_configuration([RestComponent.URL])
     self._url = config[RestComponent.URL]
 
 

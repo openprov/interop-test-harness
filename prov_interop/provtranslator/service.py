@@ -36,17 +36,14 @@ CONTENT_TYPES = {
   standards.TRIG: "application/trig",
   standards.PROVX: "application/provenance+xml",
   standards.JSON: "application/json"}
-"""list of str or unicode: list of mapping from formats in
-``prov_interop.standards`` to content types understood by the
-service.
+"""dict: mapping from formats in ``prov_interop.standards`` to content types
 """
 
 def translate(url, in_format, out_format, document):
-  """Use ProvTranslator to convert a document from one format
-  to another. Each format must be as defined in
-  ``prov_interop.standards``.
+  """Convert a document from one format to another. Each format must
+  be in ``prov_interop.standards``.
   
-  :param url: ProvTranslate URL
+  :param url: ProvTranslator URL
   :type url: str or unicode
   :param in_format: Input format
   :type in_format: str or unicode

@@ -45,21 +45,17 @@ class ProvTranslatorConverter(Converter, RestComponent):
     super(ProvTranslatorConverter, self).__init__()
 
   def configure(self, config):
-   """Configure converter.
-    ``config`` is expected to hold configuration of form::
+   """Configure converter. ``config`` must hold entries::
 
         url: ...endpoint URL...
-        input-formats: [...list of formats...]
-        output-formats: [...list of formats...]
+        input-formats: [...list of formats from prov_interop.standards...]
+        output-formats: [...list of formats from prov_interop.standards...]
 
     For example::
 
         url: https://provenance.ecs.soton.ac.uk/validator/provapi/documents/
         input-formats: [provn, ttl, trig, provx, json]
         output-formats: [provn, ttl, trig, provx, json]
-
-    Input and output formats must be as defined in
-    ``prov_interop.standards``.
 
     :param config: Configuration
     :type config: dict
@@ -68,12 +64,8 @@ class ProvTranslatorConverter(Converter, RestComponent):
    super(ProvTranslatorConverter, self).configure(config)
 
   def convert(self, in_file, out_file):
-    """Use ProvTranslator to convert an input file into an output
-    file. Each file must have an extension matching one of those
-    in ``prov_interop.standards``.
-
-    ``in_file`` and ``out_file`` file extensions are mapped to 
-    content and accept types using ``service.CONTENT_TYPES``.
+    """Convert input file into output file. Each file must have an
+    extension matching a format in ``prov_interop.standards``.
 
     :param in_file: Input file name
     :type in_file: str or unicode

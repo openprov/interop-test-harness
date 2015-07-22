@@ -25,8 +25,6 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import os
-import tempfile
 import unittest
 
 from prov_interop import standards
@@ -48,9 +46,6 @@ class ConverterTestCase(unittest.TestCase):
 
   def tearDown(self):
     super(ConverterTestCase, self).tearDown()
-    for tmp in [self.in_file, self.out_file]:
-      if tmp != None and os.path.isfile(tmp):
-        os.remove(tmp)
 
   def test_init(self):
     self.assertEqual([], self.converter.input_formats)

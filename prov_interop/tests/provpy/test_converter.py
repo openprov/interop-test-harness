@@ -50,7 +50,8 @@ class ProvPyConverterTestCase(unittest.TestCase):
     self.config[ProvPyConverter.ARGUMENTS] = [
       script,
       "-f", ProvPyConverter.FORMAT, 
-      ProvPyConverter.INPUT, ProvPyConverter.OUTPUT]
+      ProvPyConverter.INPUT, 
+      ProvPyConverter.OUTPUT]
     self.config[ProvPyConverter.INPUT_FORMATS] = [
       standards.JSON]
     self.config[ProvPyConverter.OUTPUT_FORMATS] = [
