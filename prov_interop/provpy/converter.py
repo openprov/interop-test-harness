@@ -56,17 +56,19 @@ class ProvPyConverter(Converter, CommandLineComponent):
   def configure(self, config):
    """Configure converter. ``config`` must hold entries::
 
-        executable: ...executable name...
-        arguments: [...list of arguments including tokens INPUT, OUTPUT...]
+        executable: ...executable...
+        arguments: ...arguments including tokens INPUT, OUTPUT...
         input-formats: [...list of formats from prov_interop.standards...]
         output-formats: [...list of formats from prov_interop.standards...]
 
     For example::
 
-        executable: python
-        arguments: [/home/user/prov/scripts/prov-convert, -f, FORMAT, INPUT, OUTPUT]
+        executable: prov-convert
+        arguments: -f FORMAT INPUT OUTPUT
         input-formats: [json]
         output-formats: [provn, provx, json]
+
+    Executables and arguments are split on whitespace and stored as lists.
 
     :param config: Configuration
     :type config: dict
@@ -105,16 +107,18 @@ class ProvPyConverter(Converter, CommandLineComponent):
     local_format = out_format
     if (out_format in ProvPyConverter.LOCAL_FORMATS):
       local_format = ProvPyConverter.LOCAL_FORMATS[out_format]
+    command_line = list(self._executable)
+    command_line.extend(self._arguments)
     command_line = [local_format if x==ProvPyConverter.FORMAT else x 
-                    for x in self._arguments]
+                    for x in command_line]
     command_line = [in_file if x==ProvPyConverter.INPUT else x 
                     for x in command_line]
     command_line = [out_file if x==ProvPyConverter.OUTPUT else x 
                     for x in command_line]
-    command_line.insert(0, self.executable)
     print((" ".join(command_line)))
     return_code = subprocess.call(command_line)
     if return_code != 0:
-      raise ConversionError(self._executable + " returned " + str(return_code))
+      raise ConversionError(" ".join(command_line) + \
+                              " returned " + str(return_code))
     if not os.path.isfile(out_file):
       raise ConversionError("Output file not found: " + out_file)

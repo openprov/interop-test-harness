@@ -58,16 +58,17 @@ class ProvPyComparator(Comparator, CommandLineComponent):
   def configure(self, config):
     """Configure comparator. ``config`` must hold entries::
 
-        executable: ...executable name...
-        arguments: [...list of arguments including tokens INPUT, OUTPUT...]
+        executable: ...executable...
+        arguments: ...arguments including tokens INPUT, OUTPUT...
         formats: [...list of formats from prov_interop.standards...]
 
     For example::
 
-        class: prov_interop.provpy.comparator.ProvPyComparator
-        executable: python
-        arguments: [/home/user/prov/scripts/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
+        executable: prov-compare
+        arguments: -f FORMAT1 -F FORMAT2 FILE1 FILE2
         formats: [provx, json]
+
+    Executables and arguments are split on whitespace and stored as lists.
 
     :param config: Configuration
     :type config: dict
@@ -115,15 +116,16 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     local_format2 = format2
     if (format2 in ProvPyComparator.LOCAL_FORMATS):
       local_format2 = ProvPyComparator.LOCAL_FORMATS[format2]
+    command_line = list(self._executable)
+    command_line.extend(self._arguments)
     command_line = [local_format1 if x==ProvPyComparator.FORMAT1 else x 
-                    for x in self._arguments]
+                    for x in command_line]
     command_line = [local_format2 if x==ProvPyComparator.FORMAT2 else x 
                     for x in command_line]
     command_line = [file1 if x==ProvPyComparator.FILE1 else x 
                     for x in command_line]
     command_line = [file2 if x==ProvPyComparator.FILE2 else x 
                     for x in command_line]
-    command_line.insert(0, self.executable)
     print((" ".join(command_line)))
     return_code = subprocess.call(command_line)
     if return_code == 0:
@@ -131,4 +133,5 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     elif return_code == 1:
       return False
     else:
-      raise ComparisonError(self._executable + " returned " + str(return_code))
+      raise ComparisonError(" ".join(command_line) + \
+                              " returned " + str(return_code))

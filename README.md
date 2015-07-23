@@ -86,56 +86,45 @@ Run the test harness unit tests:
 nosetests prov_interop/tests
 ```
 
-Create ``localconfig.properties``:
+Edit ``create_local_config.sh``:
 
-* In the following, replace ``/home/user`` with the paths to where you cloned the repositories.
-* Add location of test cases clone:
+* In the following, replace ``$HOME`` with the paths to where you cloned the repositories.
 
-```
-PROV_TEST_CASES_DIR=/home/user/testcases
-```
-
-* Add location of a directory that will hold local configuration files e.g.
+* Update, if required, location of test cases clone:
 
 ```
-PROV_LOCAL_CONFIG_DIR=/home/user/interop-test-harness/localconfig
+PROV_TEST_CASES=$HOME/provtoolsuite-testcases
 ```
 
-* Add location of ProvPy scripts:
+* Update, if required, location of ProvPy scripts:
 
 ```
-PROVPY_SCRIPTS_DIR=/home/user/ProvPy/scripts
+PROVPY_COMPARE="python $HOME/ProvPy/scripts/prov-compare"
+PROVPY_CONVERT="python $HOME/ProvPy/scripts/prov-convert"
 ```
 
-* Add ProvPy prov-compare executable name:
+* Update, if required, location of ProvToolbox provconvert script:
 
 ```
-PROVPY_COMPARE_EXE=python
+PROVTOOLBOX_CONVERT=$HOME/ProvToolbox/toolbox/target/appassembler/bin/provconvert
 ```
 
-* Add ProvPy prov-convert executable name:
+* Update ProvStore API key, to use yours:
 
 ```
-PROVPY_CONVERT_EXE=python
-```
-
-* Add location of ProvToolbox provconvert script:
-
-```
-PROVTOOLBOX_SCRIPTS_DIR=/home/user/toolbox/target/appassembler/bin
-```
-
-* Add your ProvStore API key:
-
-```
-API_KEY=you:12345qwert
+API_KEY="ApiKey you:12345qwert"
 ```
 
 Create custom configuration files:
 
 ```
-mkdir localconfig
-python prov_interop/customise-config.py config localconfig config.properties
+source create_local_config.sh
+```
+
+Run test harness unit tests:
+
+```
+nosetests -v prov_interop/tests
 ```
 
 Run interoperability tests for ProvPy, ProvToolbox, ProvTranslator and ProvStore:

@@ -1,7 +1,7 @@
 ---
 ProvToolbox: 
-  executable: PROVTOOLBOX_SCRIPTS_DIR/provconvert
-  arguments: [-infile, INPUT, -outfile, OUTPUT]
+  executable: provconvert
+  arguments: -infile INPUT -outfile OUTPUT
   # Formats must be in set [json, provn, provx, trig, ttl]
   input-formats: [provn, ttl, trig, provx, json]
   output-formats: [provn, ttl, trig, provx, json]

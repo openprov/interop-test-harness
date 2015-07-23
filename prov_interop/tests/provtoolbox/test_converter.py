@@ -47,10 +47,10 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
     script = os.path.join(
       os.path.dirname(os.path.abspath(inspect.getfile(
             inspect.currentframe()))), "provconvert-dummy.py")
-    self.config[ProvToolboxConverter.ARGUMENTS] = [
-      script,
-      "-infile", ProvToolboxConverter.INPUT, 
-      "-outfile", ProvToolboxConverter.OUTPUT]
+    self.config[ProvToolboxConverter.ARGUMENTS] = " ".join(
+      [script,
+       "-infile", ProvToolboxConverter.INPUT,
+       "-outfile", ProvToolboxConverter.OUTPUT])
     self.config[ProvToolboxConverter.INPUT_FORMATS] = standards.FORMATS
     self.config[ProvToolboxConverter.OUTPUT_FORMATS] = standards.FORMATS
 
@@ -68,9 +68,9 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
 
   def test_configure(self):
     self.provtoolbox.configure(self.config)
-    self.assertEqual(self.config[ProvToolboxConverter.EXECUTABLE], 
+    self.assertEqual(self.config[ProvToolboxConverter.EXECUTABLE].split(), 
                      self.provtoolbox.executable)
-    self.assertEqual(self.config[ProvToolboxConverter.ARGUMENTS], 
+    self.assertEqual(self.config[ProvToolboxConverter.ARGUMENTS].split(), 
                      self.provtoolbox.arguments)
     self.assertEqual(self.config[ProvToolboxConverter.INPUT_FORMATS], 
                      self.provtoolbox.input_formats)
@@ -78,14 +78,14 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
                      self.provtoolbox.output_formats)
 
   def test_configure_no_input(self):
-    self.config[ProvToolboxConverter.ARGUMENTS].remove(
-      ProvToolboxConverter.INPUT)
+    self.config[ProvToolboxConverter.ARGUMENTS] = \
+        "provconvert-dummy.py -outfile " + ProvToolboxConverter.OUTPUT
     with self.assertRaises(ConfigError):
       self.provtoolbox.configure(self.config)
 
   def test_configure_no_output(self):
-    self.config[ProvToolboxConverter.ARGUMENTS].remove(
-      ProvToolboxConverter.OUTPUT)
+    self.config[ProvToolboxConverter.ARGUMENTS] = \
+        "provconvert-dummy.py -infile " + ProvToolboxConverter.INPUT 
     with self.assertRaises(ConfigError):
       self.provtoolbox.configure(self.config)
 

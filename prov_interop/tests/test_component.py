@@ -75,11 +75,35 @@ class CommandLineComponentTestCase(unittest.TestCase):
 
   def test_configure(self):
     config = {CommandLineComponent.EXECUTABLE: "a", 
-              CommandLineComponent.ARGUMENTS: ["b", 1]}
+              CommandLineComponent.ARGUMENTS: "b"}
     self.command_line.configure(config)
     self.assertEqual(config, self.command_line.configuration)
-    self.assertEqual("a", self.command_line.executable)
-    self.assertEqual(["b", 1], self.command_line.arguments)
+    self.assertEqual(["a"], self.command_line.executable)
+    self.assertEqual(["b"], self.command_line.arguments)
+
+  def test_configure_multi_part_executable(self):
+    config = {CommandLineComponent.EXECUTABLE: "a b c", 
+              CommandLineComponent.ARGUMENTS: "d"}
+    self.command_line.configure(config)
+    self.assertEqual(config, self.command_line.configuration)
+    self.assertEqual(["a", "b", "c"], self.command_line.executable)
+    self.assertEqual(["d"], self.command_line.arguments)
+
+  def test_configure_multi_part_arguments(self):
+    config = {CommandLineComponent.EXECUTABLE: "a", 
+              CommandLineComponent.ARGUMENTS: "b c d"}
+    self.command_line.configure(config)
+    self.assertEqual(config, self.command_line.configuration)
+    self.assertEqual(["a"], self.command_line.executable)
+    self.assertEqual(["b", "c", "d"], self.command_line.arguments)
+
+  def test_configure_empty_executable_arguments(self):
+    config = {CommandLineComponent.EXECUTABLE: "",
+              CommandLineComponent.ARGUMENTS: ""}
+    self.command_line.configure(config)
+    self.assertEqual(config, self.command_line.configuration)
+    self.assertEqual([], self.command_line.executable)
+    self.assertEqual([], self.command_line.arguments)
 
   def test_configure_non_dict_error(self):
     with self.assertRaises(ConfigError):
@@ -87,7 +111,7 @@ class CommandLineComponentTestCase(unittest.TestCase):
 
   def test_configure_no_executable(self):
     with self.assertRaises(ConfigError):
-      self.command_line.configure({CommandLineComponent.ARGUMENTS: ["b", 1]})
+      self.command_line.configure({CommandLineComponent.ARGUMENTS: "b, 1"})
 
   def test_configure_no_arguments(self):
     with self.assertRaises(ConfigError):

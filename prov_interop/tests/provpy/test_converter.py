@@ -47,11 +47,11 @@ class ProvPyConverterTestCase(unittest.TestCase):
     script = os.path.join(
       os.path.dirname(os.path.abspath(inspect.getfile(
             inspect.currentframe()))), "prov-convert-dummy.py")
-    self.config[ProvPyConverter.ARGUMENTS] = [
-      script,
-      "-f", ProvPyConverter.FORMAT, 
-      ProvPyConverter.INPUT, 
-      ProvPyConverter.OUTPUT]
+    self.config[ProvPyConverter.ARGUMENTS] = " ".join(
+      [script,
+       "-f", ProvPyConverter.FORMAT,
+       ProvPyConverter.INPUT,
+       ProvPyConverter.OUTPUT])
     self.config[ProvPyConverter.INPUT_FORMATS] = [
       standards.JSON]
     self.config[ProvPyConverter.OUTPUT_FORMATS] = [
@@ -71,9 +71,9 @@ class ProvPyConverterTestCase(unittest.TestCase):
 
   def test_configure(self):
     self.provpy.configure(self.config)
-    self.assertEqual(self.config[ProvPyConverter.EXECUTABLE], 
+    self.assertEqual(self.config[ProvPyConverter.EXECUTABLE].split(), 
                      self.provpy.executable)
-    self.assertEqual(self.config[ProvPyConverter.ARGUMENTS], 
+    self.assertEqual(self.config[ProvPyConverter.ARGUMENTS].split(), 
                      self.provpy.arguments)
     self.assertEqual(self.config[ProvPyConverter.INPUT_FORMATS], 
                      self.provpy.input_formats)
@@ -81,17 +81,26 @@ class ProvPyConverterTestCase(unittest.TestCase):
                      self.provpy.output_formats)
 
   def test_configure_no_format(self):
-    self.config[ProvPyConverter.ARGUMENTS].remove(ProvPyConverter.FORMAT)
+    self.config[ProvPyConverter.ARGUMENTS] = " ".join(
+      ["prov-convert-dummy.py",
+       ProvPyConverter.INPUT,
+       ProvPyConverter.OUTPUT])
     with self.assertRaises(ConfigError):
       self.provpy.configure(self.config)
 
   def test_configure_no_input(self):
-    self.config[ProvPyConverter.ARGUMENTS].remove(ProvPyConverter.INPUT)
+    self.config[ProvPyConverter.ARGUMENTS] = " ".join(
+      ["prov-convert-dummy.py",
+       "-f", ProvPyConverter.FORMAT,
+       ProvPyConverter.OUTPUT])
     with self.assertRaises(ConfigError):
       self.provpy.configure(self.config)
 
   def test_configure_no_output(self):
-    self.config[ProvPyConverter.ARGUMENTS].remove(ProvPyConverter.OUTPUT)
+    self.config[ProvPyConverter.ARGUMENTS] = " ".join(
+      ["prov-convert-dummy.py",
+       "-f", ProvPyConverter.FORMAT,
+       ProvPyConverter.INPUT])
     with self.assertRaises(ConfigError):
       self.provpy.configure(self.config)
 

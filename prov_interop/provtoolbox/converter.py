@@ -49,17 +49,19 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
   def configure(self, config):
     """Configure converter. ``config`` must hold entries::
 
-        executable: ...executable name...
-        arguments: [...list of arguments including tokens INPUT, OUTPUT...]
+        executable: ...executable...
+        arguments: ...rguments including tokens INPUT, OUTPUT...
         input-formats: [...list of formats from prov_interop.standards...]
         output-formats: [...list of formats from prov_interop.standards...]
 
     For example::
 
         executable: /home/user/ProvToolbox/bin/provconvert
-        arguments: [-infile, INPUT, -outfile, OUTPUT]
+        arguments: -infile INPUT -outfile OUTPUT
         input-formats: [provn, ttl, trig, provx, json]
         output-formats: [provn, ttl, trig, provx, json]
+
+    Executables and arguments are split on whitespace and stored as lists.
 
     :param config: Configuration
     :type config: dict
@@ -94,14 +96,16 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
     in_format = os.path.splitext(in_file)[1][1:]
     out_format = os.path.splitext(out_file)[1][1:]
     super(ProvToolboxConverter, self).check_formats(in_format, out_format)
+    command_line = list(self._executable)
+    command_line.extend(self._arguments)
     command_line = [in_file if x==ProvToolboxConverter.INPUT else x 
-                    for x in self._arguments]
+                    for x in command_line]
     command_line = [out_file if x==ProvToolboxConverter.OUTPUT else x 
                     for x in command_line]
-    command_line.insert(0, self.executable)
     print((" ".join(command_line)))
     return_code = subprocess.call(command_line)
     if return_code != 0:
-      raise ConversionError(self._executable + " returned " + str(return_code))
+      raise ConversionError(" ".join(command_line) + \
+                              " returned " + str(return_code))
     if not os.path.isfile(out_file):
       raise ConversionError("Output file not found: " + out_file)

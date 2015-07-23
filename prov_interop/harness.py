@@ -114,8 +114,8 @@ class HarnessResources(ConfigurableComponent):
 
         ProvPyComparator: 
           class: prov_interop.provpy.comparator.ProvPyComparator
-          executable: python
-          arguments: [/home/user/prov-convert, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
+          executable: prov-compare
+          arguments: -f FORMAT1 -F FORMAT2 FILE1 FILE2
           formats: [provx, json]
 
     :param comparators: Mapping of comparator names to 
@@ -201,8 +201,8 @@ class HarnessResources(ConfigurableComponent):
         comparators:
           ProvPyComparator: 
             class: prov_interop.provpy.comparator.ProvPyComparator
-            executable: python
-            arguments: [/home/user/prov/scripts/prov-compare, -f, FORMAT1, -F, FORMAT2, FILE1, FILE2]
+            executable: prov-compare
+            arguments: -f FORMAT1 -F FORMAT2 FILE1 FILE2
             formats: [provx, json]
 
     Other configuration is saved but not processed by this method.

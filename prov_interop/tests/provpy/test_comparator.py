@@ -48,12 +48,12 @@ class ProvPyComparatorTestCase(unittest.TestCase):
     script = os.path.join(
       os.path.dirname(os.path.abspath(inspect.getfile(
             inspect.currentframe()))), "prov-compare-dummy.py")
-    self.config[ProvPyComparator.ARGUMENTS] = [
-      script,
-      "-f", ProvPyComparator.FORMAT1, 
-      "-F", ProvPyComparator.FORMAT2,
-      ProvPyComparator.FILE1, 
-      ProvPyComparator.FILE2]
+    self.config[ProvPyComparator.ARGUMENTS] = " ".join(
+      [script,
+       "-f", ProvPyComparator.FORMAT1,
+       "-F", ProvPyComparator.FORMAT2,
+       ProvPyComparator.FILE1,
+       ProvPyComparator.FILE2])
     self.config[ProvPyComparator.FORMATS] = [
       standards.PROVX, standards.JSON]
 
@@ -70,30 +70,46 @@ class ProvPyComparatorTestCase(unittest.TestCase):
 
   def test_configure(self):
     self.provpy.configure(self.config)
-    self.assertEqual(self.config[ProvPyComparator.EXECUTABLE],
+    self.assertEqual(self.config[ProvPyComparator.EXECUTABLE].split(),
                      self.provpy.executable) 
-    self.assertEqual(self.config[ProvPyComparator.ARGUMENTS],
+    self.assertEqual(self.config[ProvPyComparator.ARGUMENTS].split(),
                      self.provpy.arguments) 
     self.assertEqual(self.config[ProvPyComparator.FORMATS],
                      self.provpy.formats) 
 
   def test_configure_no_format1(self):
-    self.config[ProvPyComparator.ARGUMENTS].remove(ProvPyComparator.FORMAT1)
+    self.config[ProvPyComparator.ARGUMENTS] = " ".join(
+      ["prov-compare-dummy.py",
+       "-F", ProvPyComparator.FORMAT2,
+       ProvPyComparator.FILE1,
+       ProvPyComparator.FILE2])
     with self.assertRaises(ConfigError):
       self.provpy.configure(self.config)
 
   def test_configure_no_format2(self):
-    self.config[ProvPyComparator.ARGUMENTS].remove(ProvPyComparator.FORMAT2)
+    self.config[ProvPyComparator.ARGUMENTS] = " ".join(
+      ["prov-compare-dummy.py",
+       "-f", ProvPyComparator.FORMAT1,
+       ProvPyComparator.FILE1,
+       ProvPyComparator.FILE2])
     with self.assertRaises(ConfigError):
       self.provpy.configure(self.config)
 
   def test_configure_no_file1(self):
-    self.config[ProvPyComparator.ARGUMENTS].remove(ProvPyComparator.FILE1)
+    self.config[ProvPyComparator.ARGUMENTS] = " ".join(
+      ["prov-compare-dummy.py",
+       "-f", ProvPyComparator.FORMAT1,
+       "-F", ProvPyComparator.FORMAT2,
+       ProvPyComparator.FILE2])
     with self.assertRaises(ConfigError):
       self.provpy.configure(self.config)
 
   def test_configure_no_file2(self):
-    self.config[ProvPyComparator.ARGUMENTS].remove(ProvPyComparator.FILE2)
+    self.config[ProvPyComparator.ARGUMENTS] = " ".join(
+      ["prov-compare-dummy.py",
+       "-f", ProvPyComparator.FORMAT1,
+       "-F", ProvPyComparator.FORMAT2,
+       ProvPyComparator.FILE1])
     with self.assertRaises(ConfigError):
       self.provpy.configure(self.config)
 

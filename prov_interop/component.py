@@ -106,7 +106,7 @@ class CommandLineComponent(ConfigurableComponent):
 
   @property
   def executable(self):
-    """Get the executable.
+    """Get the executable as a list.
     
     :returns: executable
     :rtype: str or unicode
@@ -115,7 +115,7 @@ class CommandLineComponent(ConfigurableComponent):
 
   @property
   def arguments(self):
-    """Get the arguments.
+    """Get the arguments as a list.
     
     :returns: arguments
     :rtype: list of str or unicode or int or float
@@ -125,13 +125,15 @@ class CommandLineComponent(ConfigurableComponent):
   def configure(self, config):
     """Configure component. Configuration must hold entries::
 
-        executable: ...executable name...
-        arguments: [...list of arguments ...]
+        executable: ...executable...
+        arguments: ...arguments...
 
     For example::
 
-        executable: python
-        arguments: [/home/user/prov-convert, -f, FORMAT, INPUT, OUTPUT]
+        executable: prov-convert
+        arguments: -f FORMAT INPUT OUTPUT
+
+    Executables and arguments are split on whitespace and stored as lists.
 
     :param config: Configuration
     :type config: dict
@@ -140,8 +142,8 @@ class CommandLineComponent(ConfigurableComponent):
     super(CommandLineComponent, self).configure(config)
     self.check_configuration([CommandLineComponent.EXECUTABLE, 
                               CommandLineComponent.ARGUMENTS])
-    self._executable = config[CommandLineComponent.EXECUTABLE]
-    self._arguments = config[CommandLineComponent.ARGUMENTS]
+    self._executable = config[CommandLineComponent.EXECUTABLE].split()
+    self._arguments = config[CommandLineComponent.ARGUMENTS].split()
 
 
 class RestComponent(ConfigurableComponent):
