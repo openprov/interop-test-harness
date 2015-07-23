@@ -13,8 +13,8 @@ install:
   - pip install -r requirements.txt
 
 script:
-# PROVSTORE_API_KEY value must be defined in Travis CI job configuration
-  - echo "API_KEY=$PROVSTORE_API_KEY" >> config.properties
   - mkdir localconfig
-  - python prov_interop/customise-config.py config localconfig config.properties
+  - cp -r config localconfig
+# PROVSTORE_API_KEY value must be defined in Travis CI job configuration
+  - python prov_interop/set-yaml-value.py localconfig/provstore.yaml ProvStore.authorization="$PROVSTORE_API_KEY"
   - nosetests -v --nocapture $PROV_TESTS
