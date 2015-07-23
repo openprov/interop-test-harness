@@ -135,17 +135,15 @@ Ad step to configure test harness:
 
 ```
 cd test-harness
-echo "PROV_TEST_CASES_DIR=$WORKSPACE/testcases" > config.properties
-echo "PROVPY_SCRIPTS_DIR=$WORKSPACE/ProvPy/scripts" >> config.properties
-echo "PROVPY_CONVERT_EXE=python" >> config.properties
-echo "PROVPY_COMPARE_EXE=python" >> config.properties
-echo "PROVTOOLBOX_SCRIPTS_DIR=$WORKSPACE/ProvToolbox/toolbox/target/appassembler/bin" >> config.properties
-echo "PROV_LOCAL_CONFIG_DIR=$WORKSPACE/test-harness/localconfig" >> config.properties
-echo "API_KEY=you:12345qwert" >> config.properties
-cat config.properties
-mkdir localconfig
-python prov_interop/customise-config.py config localconfig config.properties
+CONFIG_DIR=localconfig
+rm -rf $CONFIG_DIR
+cp -r config/ $CONFIG_DIR
+python prov_interop/set-yaml-value.py $CONFIG_DIR/harness.yaml test-cases="$WORKSPACE/testcases"
+python prov_interop/set-yaml-value.py $CONFIG_DIR/harness.yaml comparators.ProvPyComparator.executable="python $WORKSPACE/ProvPy/scripts/prov-compare"
+python prov_interop/set-yaml-value.py $CONFIG_DIR/provpy.yaml ProvPy.executable="python $WORKSPACE/ProvPy/scripts/prov-convert"
+python prov_interop/set-yaml-value.py $CONFIG_DIR/provtoolbox.yaml ProvToolbox.executable="$WORKSPACE/ProvToolbox/toolbox/target/appassembler/bin/provconvert"
 cat localconfig/*
+python prov_interop/set-yaml-value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization="ApiKey you:12345qwert"
 ```
 
 Add step to run all interoperability tests:
@@ -256,4 +254,4 @@ Jenkins stores its files in `$HOME/.jenkins`.
 
 Jenkins does the build in job-specific workspace directory, `.jenkins/workspace/JOB`, e.g. `.jenkins/workspace/PTS/`.
 
-Jenkins job configuration, ``config.xml``, and logs and xUnit test results from all the builds are stored in a job-specific jobs directory, `.jenkins/jobs/JOB`, e.g. `.jenkins/jobs/PTS/`.
+Jenkins job configuration, ``config.xml``, and logs and xUnit test results from all the builds, and the previous workspace, are stored in a job-specific jobs directory, `.jenkins/jobs/JOB`, e.g. `.jenkins/jobs/PTS/`.
