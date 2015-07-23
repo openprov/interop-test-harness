@@ -35,10 +35,27 @@ from prov_interop.component import ConfigError
 from prov_interop.component import RestComponent
 from prov_interop.converter import ConversionError
 from prov_interop.converter import Converter
-from prov_interop.provstore import service
 
 class ProvStoreConverter(Converter, RestComponent):
   """Manages invocation of ProvStore service."""
+
+  CONTENT_TYPES = {
+    standards.PROVN: "text/provenance-notation",
+    standards.TTL: "text/turtle",
+    standards.TRIG: "application/trig",
+    standards.PROVX: "application/xml",
+    standards.JSON: "application/json"}
+  """dict: mapping from formats in ``prov_interop.standards`` to
+    content types"""
+
+  CONTENT = "content"
+  """str or unicode: key for request document content"""
+  PUBLIC = "public"
+  """str or unicode: key for request public flag"""
+  REC_ID = "rec_id"
+  """str or unicode: key for request document name"""
+  ID = "id"
+  """str or unicode: key for response document ID"""
 
   AUTHORIZATION = "authorization"
   """str or unicode: configuration key for ProvStore Authorization 
@@ -110,26 +127,38 @@ class ProvStoreConverter(Converter, RestComponent):
     # Store document
     with open(in_file, "r") as f:
       doc = f.read()
-    (response_status, response_text) = service.store(self._url,
-                                                     in_file,
-                                                     in_format,
-                                                     doc,
-                                                     self._authorization)
-    if (response_status != requests.codes.created): # 201 CREATED
+    content_type = ProvStoreConverter.CONTENT_TYPES[in_format]
+    accept_type = ProvStoreConverter.CONTENT_TYPES[standards.JSON]
+    headers = {http.CONTENT_TYPE: content_type, 
+               http.ACCEPT: accept_type,
+               http.AUTHORIZATION: self._authorization}
+    store_request = {ProvStoreConverter.CONTENT: doc, 
+                     ProvStoreConverter.PUBLIC: True, 
+                     ProvStoreConverter.REC_ID: in_file}
+    response = requests.post(self._url, 
+                             headers=headers, 
+                             data=json.dumps(store_request))
+    if (response.status_code != requests.codes.created): # 201 CREATED
       raise ConversionError(self._url + " POST returned " + 
-                            str(response_status))
+                            str(response.status_code))
     # Get document in desired format
-    doc_url = service.get_stored_url(self._url, response_text)
-    (response_status, response_text) = service.get(doc_url,
-                                                   out_format)
-    if (response_status != requests.codes.ok): # 200 OK
+    response_json = json.loads(response.text)
+    document_id = response_json[ProvStoreConverter.ID]
+    doc_url = self._url + str(document_id)
+    accept_type = ProvStoreConverter.CONTENT_TYPES[out_format]
+    headers = {http.ACCEPT: accept_type}
+    response = requests.get(doc_url + "." + out_format, 
+                            headers=headers, 
+                            allow_redirects=True)
+    if (response.status_code != requests.codes.ok): # 200 OK
       raise ConversionError(doc_url + " GET returned " + 
-                            str(response_status))
+                            str(response.status_code))
     with open(out_file, "w") as f:
-      f.write(response_text)
+      f.write(response.text)
     # Delete document
-    (response_status, response_text) = service.delete(doc_url,
-                                                      self._authorization)
-    if (response_status != requests.codes.no_content): # 204 NO CONTENT
+    headers = {http.AUTHORIZATION: self._authorization}
+    response = requests.delete(doc_url, headers=headers)
+    if (response.status_code != requests.codes.no_content): # 204 NO CONTENT
       raise ConversionError(doc_url + " DELETE returned " + 
-                            str(response_status))
+                            str(response.status_code))
+

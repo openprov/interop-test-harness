@@ -38,7 +38,6 @@ from prov_interop import standards
 from prov_interop.component import ConfigError
 from prov_interop.converter import ConversionError
 from prov_interop.provstore.converter import ProvStoreConverter
-from prov_interop.provstore.converter import service
 
 class ProvStoreConverterTestCase(unittest.TestCase):
 
@@ -106,7 +105,7 @@ class ProvStoreConverterTestCase(unittest.TestCase):
   def register_post(self, mocker, content_type, doc_id, 
                     status_code = requests.codes.created):
     headers={http.CONTENT_TYPE: content_type,
-             http.ACCEPT: service.CONTENT_TYPES[standards.JSON],
+             http.ACCEPT: ProvStoreConverter.CONTENT_TYPES[standards.JSON],
              http.AUTHORIZATION: self.config[ProvStoreConverter.AUTHORIZATION]}
     mocker.register_uri("POST", 
                         self.config[ProvStoreConverter.URL],
@@ -135,7 +134,7 @@ class ProvStoreConverterTestCase(unittest.TestCase):
 
   @parameterized.expand(standards.FORMATS)
   def test_convert(self, format):
-    content_type = service.CONTENT_TYPES[format]
+    content_type = ProvStoreConverter.CONTENT_TYPES[format]
     self.provstore.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix="." + format)
     (_, self.out_file) = tempfile.mkstemp(suffix="." + format)
@@ -155,7 +154,7 @@ class ProvStoreConverterTestCase(unittest.TestCase):
     format = standards.JSON
     (_, self.in_file) = tempfile.mkstemp(suffix="." + format)
     (_, self.out_file) = tempfile.mkstemp(suffix="." + format)
-    content_type = service.CONTENT_TYPES[format]
+    content_type = ProvStoreConverter.CONTENT_TYPES[format]
     # Set up mock service response with POST causing server error.
     with requests_mock.Mocker(real_http=False) as mocker:
       self.register_post(mocker, 
@@ -170,7 +169,7 @@ class ProvStoreConverterTestCase(unittest.TestCase):
     format = standards.JSON
     (_, self.in_file) = tempfile.mkstemp(suffix="." + format)
     (_, self.out_file) = tempfile.mkstemp(suffix="." + format)
-    content_type = service.CONTENT_TYPES[format]
+    content_type = ProvStoreConverter.CONTENT_TYPES[format]
     doc = "mockDocument"
     doc_id = 123
     # Set up mock service response with GET causing server error.
@@ -186,7 +185,7 @@ class ProvStoreConverterTestCase(unittest.TestCase):
     format = standards.JSON
     (_, self.in_file) = tempfile.mkstemp(suffix="." + format)
     (_, self.out_file) = tempfile.mkstemp(suffix="." + format)
-    content_type = service.CONTENT_TYPES[format]
+    content_type = ProvStoreConverter.CONTENT_TYPES[format]
     doc = "mockDocument"
     doc_id = 123
     # Set up mock service response with DELETE causing server error.

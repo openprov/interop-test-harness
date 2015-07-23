@@ -34,10 +34,19 @@ from prov_interop.component import ConfigError
 from prov_interop.component import RestComponent
 from prov_interop.converter import ConversionError
 from prov_interop.converter import Converter
-from prov_interop.provtranslator import service
 
 class ProvTranslatorConverter(Converter, RestComponent):
   """Manages invocation of ProvTranslator service."""
+
+  CONTENT_TYPES = {
+    standards.PROVN: "text/provenance-notation",
+    standards.TTL: "text/turtle",
+    standards.TRIG: "application/trig",
+    standards.PROVX: "application/provenance+xml",
+    standards.JSON: "application/json"}
+  """dict: mapping from formats in ``prov_interop.standards`` to
+  content types 
+  """
 
   def __init__(self):
     """Create converter.
@@ -82,12 +91,15 @@ class ProvTranslatorConverter(Converter, RestComponent):
     super(ProvTranslatorConverter, self).check_formats(in_format, out_format)
     with open(in_file, "r") as f:
       doc_str = f.read()
-    (response_code, response_text) = service.translate(self._url, 
-                                                       in_format, 
-                                                       out_format, 
-                                                       doc_str)
-    if (response_code != requests.codes.ok): # 200 OK
+    content_type = ProvTranslatorConverter.CONTENT_TYPES[in_format]
+    accept_type = ProvTranslatorConverter.CONTENT_TYPES[out_format]
+    headers = {http.CONTENT_TYPE: content_type, 
+               http.ACCEPT: accept_type}
+    response = requests.post(self._url, 
+                             headers=headers, 
+                             data=doc_str)
+    if (response.status_code != requests.codes.ok): # 200 OK
       raise ConversionError(self._url + " POST returned " + 
-                            str(response_code))
+                            str(response.status_code))
     with open(out_file, "w") as f:
-      f.write(response_text)
+      f.write(response.text)

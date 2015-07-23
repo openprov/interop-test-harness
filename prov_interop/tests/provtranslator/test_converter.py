@@ -37,7 +37,6 @@ from prov_interop import http
 from prov_interop import standards
 from prov_interop.component import ConfigError
 from prov_interop.converter import ConversionError
-from prov_interop.provtranslator import service
 from prov_interop.provtranslator.converter import ProvTranslatorConverter
 
 class ProvTranslatorConverterTestCase(unittest.TestCase):
@@ -96,7 +95,7 @@ class ProvTranslatorConverterTestCase(unittest.TestCase):
 
   @parameterized.expand(standards.FORMATS)
   def test_convert(self, format):
-    content_type = service.CONTENT_TYPES[format]
+    content_type = ProvTranslatorConverter.CONTENT_TYPES[format]
     self.provtranslator.configure(self.config)
     (_, self.in_file) = tempfile.mkstemp(suffix="." + format)
     (_, self.out_file) = tempfile.mkstemp(suffix="." + format)
