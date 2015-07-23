@@ -5,4 +5,4 @@ ProvPy:
   # Formats must be in set [json, provn, provx, trig, ttl]
   input-formats: [json]
   output-formats: [provn, provx, json]
-  skip-tests: [3]
+  skip-tests: []

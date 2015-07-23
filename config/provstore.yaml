@@ -5,4 +5,4 @@ ProvStore:
   # Formats must be in set [json, provn, provx, trig, ttl]
   input-formats: [provn, ttl, trig, provx, json]
   output-formats: [provn, ttl, trig, provx, json]
-  skip-tests: [3]
+  skip-tests: []
