@@ -203,4 +203,4 @@ The Travis user documentation comments that:
 
 > Encryption and decryption keys are tied to the repository. If you fork a project and add it to Travis CI, it will have different keys to the original.
 
-Alternatively, you can use the Travis web interface and [define variables in repository settings](http://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings.
+Alternatively, you can use the Travis web interface and [define variables in repository settings](http://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings).
