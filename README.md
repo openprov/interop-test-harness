@@ -16,11 +16,15 @@ The test harness includes support for:
 The test harness can be run under:
 
 * [Travis CI](https://travis-ci.org). See, for example:
-  - ProvPy prov-convert interoperability testing: [GitHub](https://github.com/prov-suite/provpy-interop-job) and [TravisCI](https://travis-ci.org/prov-suite/provpy-interop-job)
-  - ProvToolbox provconvert interoperability testing: [GitHub](https://github.com/prov-suite/provtoolbox-interop-job) and [TravisCI](https://travis-ci.org/prov-suite/provtoolbox-interop-job)
-  - ProvTranslator interoperability testing: [GitHub](https://github.com/prov-suite/provtranslator-interop-job) and [TravisCI](https://travis-ci.org/prov-suite/provtranslator-interop-job)
-* [Jenkins](https://jenkins-ci.org). See:
-  - [Running the interoperability test harness under Jenkins](./Jenkins.md)
+
+| Component | Travis CI job repository | Travis CI job | Build status |
+| --------- | ------------------------ | ------------- | ------------ |
+| ProvPy prov-convert | [GitHub](https://github.com/prov-suite/provpy-interop-job) | [TravisCI](https://travis-ci.org/prov-suite/provpy-interop-job) | [![Build Status](https://travis-ci.org/prov-suite/provpy-interop-job.svg)](https://travis-ci.org/prov-suite/provpy-interop-job) |
+| ProvToolbox provconvert | [GitHub](https://github.com/prov-suite/provtoolbox-interop-job) | [TravisCI](https://travis-ci.org/prov-suite/provtoolbox-interop-job) | [![Build Status](https://travis-ci.org/prov-suite/provtoolbox-interop-job.svg)](https://travis-ci.org/prov-suite/provtoolbox-interop-job) |
+| ProvTranslator | [GitHub](https://github.com/prov-suite/provtranslator-interop-job) | [TravisCI](https://travis-ci.org/prov-suite/provtranslator-interop-job) | [![Build Status](https://travis-ci.org/prov-suite/provtranslator-interop-job.svg)](https://travis-ci.org/prov-suite/provtranslator-interop-job) |
+| ProvStore | [GitHub](https://github.com/prov-suite/provstore-interop-job) | [TravisCI](https://travis-ci.org/prov-suite/provstore-interop-job) | [![Build Status](https://travis-ci.org/prov-suite/provstore-interop-job.svg)](https://travis-ci.org/prov-suite/provstore-interop-job) |
+
+* [Jenkins](https://jenkins-ci.org). See [Running the interoperability test harness under Jenkins](./Jenkins.md)
 
 ## Standalone use
 
