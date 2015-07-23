@@ -13,9 +13,9 @@ The test harness includes support for:
   - [ProvTranslator](https://provenance.ecs.soton.ac.uk/validator/view/translator.html)
   - [ProvStore](https://provenance.ecs.soton.ac.uk/store/)
 
-The test harness can be run under:
+## Running under Travis CI
 
-* [Travis CI](https://travis-ci.org). See, for example:
+The test harness can be run under [Travis CI](https://travis-ci.org). See, for example, the following repositories, each of which contain a Travis CI test job to run interoperability tests for each component above:
 
 | Component | Travis CI job repository | Travis CI job | Build status |
 | --------- | ------------------------ | ------------- | ------------ |
@@ -24,11 +24,19 @@ The test harness can be run under:
 | ProvTranslator | [GitHub](https://github.com/prov-suite/provtranslator-interop-job) | [TravisCI](https://travis-ci.org/prov-suite/provtranslator-interop-job) | [![Build Status](https://travis-ci.org/prov-suite/provtranslator-interop-job.svg)](https://travis-ci.org/prov-suite/provtranslator-interop-job) |
 | ProvStore | [GitHub](https://github.com/prov-suite/provstore-interop-job) | [TravisCI](https://travis-ci.org/prov-suite/provstore-interop-job) | [![Build Status](https://travis-ci.org/prov-suite/provstore-interop-job.svg)](https://travis-ci.org/prov-suite/provstore-interop-job) |
 
-* [Jenkins](https://jenkins-ci.org). See [Running the interoperability test harness under Jenkins](./Jenkins.md)
+Here we have set up one repository per component so we can have one test job per component. There is no reason, though, why a single test job cannot run all the tests for all the components, to reduce the number of repositories needed.
 
-## Standalone use
+The test harness also includes unit tests for the harness itself - these are tested under Travis CI using a job configuration file within this repository.
 
-The interoperability test harness runs under Python. You can use the test harness stand-alone. These instructions assume you have:
+## Running under Jenkins
+
+[Jenkins](https://jenkins-ci.org) is a popular, open source continuous integration server that runs under Java.
+
+See [Running the interoperability test harness under Jenkins](./Jenkins.md) which includes an example of running all the interoperability tests from within a single job.
+
+## Running standalone
+
+The interoperability test harness runs under Python. The test harness can be run stand-alone. These instructions assume you have:
 
 * Installed ProvPy's dependencies.
 * Installed ProvToolbox's dependencies.
