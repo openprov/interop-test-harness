@@ -42,17 +42,15 @@ pip install -r requirements.txt
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
       <command>cd test-harness
-echo &quot;PROV_TEST_CASES_DIR=$WORKSPACE/testcases&quot; &gt; config.properties
-echo &quot;PROVPY_SCRIPTS_DIR=$WORKSPACE/ProvPy/scripts&quot; &gt;&gt; config.properties
-echo &quot;PROVPY_CONVERT_EXE=python&quot; &gt;&gt; config.properties
-echo &quot;PROVPY_COMPARE_EXE=python&quot; &gt;&gt; config.properties
-echo &quot;PROVTOOLBOX_SCRIPTS_DIR=$WORKSPACE/ProvToolbox/toolbox/target/appassembler/bin&quot; &gt;&gt; config.properties
-echo &quot;PROV_LOCAL_CONFIG_DIR=$WORKSPACE/test-harness/localconfig&quot; &gt;&gt; config.properties
-echo &quot;API_KEY=you:12345qwert&quot; &gt;&gt; config.properties
-cat config.properties
-mkdir localconfig
-python prov_interop/customise-config.py config localconfig config.properties
+CONFIG_DIR=localconfig
+rm -rf $CONFIG_DIR
+cp -r config/ $CONFIG_DIR
+python prov_interop/set-yaml-value.py $CONFIG_DIR/harness.yaml test-cases=&quot;$WORKSPACE/testcases&quot;
+python prov_interop/set-yaml-value.py $CONFIG_DIR/harness.yaml comparators.ProvPyComparator.executable=&quot;python $WORKSPACE/ProvPy/scripts/prov-compare&quot;
+python prov_interop/set-yaml-value.py $CONFIG_DIR/provpy.yaml ProvPy.executable=&quot;python $WORKSPACE/ProvPy/scripts/prov-convert&quot;
+python prov_interop/set-yaml-value.py $CONFIG_DIR/provtoolbox.yaml ProvToolbox.executable=&quot;$WORKSPACE/ProvToolbox/toolbox/target/appassembler/bin/provconvert&quot;
 cat localconfig/*
+python prov_interop/set-yaml-value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization=&quot;ApiKey you:12345qwert&quot;
 </command>
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
