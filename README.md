@@ -28,6 +28,28 @@ Here we have set up one repository per component so we can have one test job per
 
 The test harness also includes unit tests for the harness itself - these are tested under Travis CI using a job configuration file within this repository.
 
+### ProvStore jobs and API keys
+
+Running ProvStore tests require you to:
+
+* Create a ProvStore API Key:
+  - Log in to [ProvStore](https://provenance.ecs.soton.ac.uk/
+store)
+  - Select Account => Developer Area
+  - You will see your API key
+
+* Define a Travis CI variable, `PROVSTORE_API_KEY` holding your ProvStore user name and API key:
+
+* Visit your job's settings page in Travis CI
+* Select settings
+* Click Environment Variables
+* Click Add a new variable
+* Name: `PROVSTORE_API_KEY`
+* Value: `user:qwert12345`
+* Ensure Display value in build logs is *not* selected
+
+See [define variables in repository settings](http://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings).
+
 ## Running under Jenkins
 
 [Jenkins](https://jenkins-ci.org) is a popular, open source continuous integration server that runs under Java.
