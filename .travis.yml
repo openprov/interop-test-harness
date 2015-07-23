@@ -4,16 +4,8 @@ python:
   - 2.7
   - 3.4
 
-env: 
-  matrix:
-  - PROV_TESTS=prov_interop/tests
-  - PROV_TESTS=prov_interop/service_tests
-
 install:
   - pip install -r requirements.txt
 
 script:
-  - cp -r config localconfig
-# PROVSTORE_API_KEY value must be defined in Travis CI job configuration
-  - python prov_interop/set-yaml-value.py localconfig/provstore.yaml ProvStore.authorization="ApiKey $PROVSTORE_API_KEY"
-  - nosetests -v --nocapture $PROV_TESTS
+  - nosetests -v --nocapture prov_interop/tests
