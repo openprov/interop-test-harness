@@ -8,7 +8,7 @@ PROVPY_CONVERT="python $HOME/ProvPy/scripts/prov-convert"
 # Configure to use ProvToolbox source release
 PROVTOOLBOX_CONVERT=$HOME/ProvToolbox/toolbox/target/appassembler/bin/provconvert
 # Configure ProvStore
-API_KEY="ApiKey you:12345qwert"
+API_KEY="ApiKey user:12345qwert"
 
 # Create local configuration directory with default name expected
 # by tests.

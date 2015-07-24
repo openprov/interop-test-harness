@@ -2,8 +2,6 @@
 
 Interoperability test harness for the [Southampton Provenance Suite](https://provenance.ecs.soton.ac.uk).
 
-[![Build Status](https://travis-ci.org/prov-suite/interop-test-harness.svg)](https://travis-ci.org/prov-suite/interop-test-harness)
-
 The test harness includes support for:
 
 * Software:
@@ -12,6 +10,18 @@ The test harness includes support for:
 * Services:
   - [ProvTranslator](https://provenance.ecs.soton.ac.uk/validator/view/translator.html)
   - [ProvStore](https://provenance.ecs.soton.ac.uk/store/)
+
+The test harness runs under Python 2.7+ and Python 3.
+
+[![Build Status](https://travis-ci.org/prov-suite/interop-test-harness.svg)](https://travis-ci.org/prov-suite/interop-test-harness)
+
+## ProvStore tests and API keys
+
+Running ProvStore tests require you to create a ProvStore API Key:
+
+* Log in to [ProvStore](https://provenance.ecs.soton.ac.uk/store)
+* Select Account => Developer Area
+* You will see your API key
 
 ## Running under Travis CI
 
@@ -26,19 +36,7 @@ The test harness can be run under [Travis CI](https://travis-ci.org). See, for e
 
 Here we have set up one repository per component so we can have one test job per component. There is no reason, though, why a single test job cannot run all the tests for all the components, to reduce the number of repositories needed.
 
-The test harness also includes unit tests for the harness itself - these are tested under Travis CI using a job configuration file within this repository.
-
-### ProvStore jobs and API keys
-
-Running ProvStore tests require you to:
-
-* Create a ProvStore API Key:
-  - Log in to [ProvStore](https://provenance.ecs.soton.ac.uk/
-store)
-  - Select Account => Developer Area
-  - You will see your API key
-
-* Define a Travis CI variable, `PROVSTORE_API_KEY` holding your ProvStore user name and API key:
+Running ProvStore tests require you to define a Travis CI variable, `PROVSTORE_API_KEY` holding your ProvStore user name and API key:
 
 * Visit your job's settings page in Travis CI
 * Select settings
@@ -50,6 +48,8 @@ store)
 
 See [define variables in repository settings](http://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings).
 
+The test harness includes unit tests for the harness itself. This respository contains a TravisCI, .travis.yml, job configuration file to run these unit tests.
+
 ## Running under Jenkins
 
 [Jenkins](https://jenkins-ci.org) is a popular, open source continuous integration server that runs under Java.
@@ -58,7 +58,7 @@ See [Running the interoperability test harness under Jenkins](./Jenkins.md) whic
 
 ## Running standalone
 
-The interoperability test harness runs under Python. The test harness can be run stand-alone. These instructions assume you have:
+The test harness can be run stand-alone. These instructions assume you have:
 
 * Installed ProvPy's dependencies.
 * Installed ProvToolbox's dependencies.
@@ -70,42 +70,42 @@ The interoperability test harness runs under Python. The test harness can be run
 Get and install the latest version of ProvPy:
 
 ```
-git clone https://github.com/trungdong/prov.git ProvPy
-cd ProvPy
-python setup.py install
-./scripts/prov-convert --version
-./scripts/prov-compare --version
-cd ..
+$ git clone https://github.com/trungdong/prov.git ProvPy
+$ cd ProvPy
+$ python setup.py install
+$ ./scripts/prov-convert --version
+$ ./scripts/prov-compare --version
+$ cd ..
 ```
 
 Get and install the latest version of ProvToolbox:
 
 ```
-git clone https://github.com/lucmoreau/ProvToolbox.git ProvToolbox
-cd ProvToolbox
-mvn clean install
-./toolbox/target/appassembler/bin/provconvert -version
-cd ..
+$ git clone https://github.com/lucmoreau/ProvToolbox.git ProvToolbox
+$ cd ProvToolbox
+$ mvn clean install
+$ ./toolbox/target/appassembler/bin/provconvert -version
+$ cd ..
 ```
 
 Get the interoperability test cases:
 
 ```
-git clone https://github.com/prov-suite/testcases
+$ git clone https://github.com/prov-suite/testcases
 ```
 
 Get this interoperability test harness:
 
 ```
-git clone https://github.com/prov-suite/interop-test-harness
-cd interop-test-harness
-pip install -r requirements.txt
+$ git clone https://github.com/prov-suite/interop-test-harness
+$ cd interop-test-harness
+$ pip install -r requirements.txt
 ```
 
 Run the test harness unit tests:
 
 ```
-nosetests prov_interop/tests
+$ nosetests prov_interop/tests
 ```
 
 Edit ``create_local_config.sh``:
@@ -134,7 +134,7 @@ PROVTOOLBOX_CONVERT=$HOME/ProvToolbox/toolbox/target/appassembler/bin/provconver
 * Update ProvStore API key, to use yours:
 
 ```
-API_KEY="ApiKey you:12345qwert"
+API_KEY="ApiKey user:12345qwert"
 ```
 
 Create custom configuration files:
@@ -143,25 +143,19 @@ Create custom configuration files:
 source create_local_config.sh
 ```
 
-Run test harness unit tests:
-
-```
-nosetests -v prov_interop/tests
-```
-
 Run interoperability tests for ProvPy, ProvToolbox, ProvTranslator and ProvStore:
 
 ```
-nosetests -v prov_interop.interop_tests
+$ nosetests -v prov_interop.interop_tests
 ```
 
 To run tests for a specific component:
 
 ```
-nosetests -v prov_interop.interop_tests.test_provpy
-nosetests -v prov_interop.interop_tests.test_provtoolbox
-nosetests -v prov_interop.interop_tests.test_provtranslator
-nosetests -v prov_interop.interop_tests.test_provstore
+$ nosetests -v prov_interop.interop_tests.test_provpy
+$ nosetests -v prov_interop.interop_tests.test_provtoolbox
+$ nosetests -v prov_interop.interop_tests.test_provtranslator
+$ nosetests -v prov_interop.interop_tests.test_provstore
 ```
 
 ## Automatically rerunning interoperability tests in Travis CI

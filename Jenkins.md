@@ -18,9 +18,9 @@ as well as downloading Jenkins.
 To run the script:
 
 ```
-sudo apt-get install -y git
-git clone https://github.com/prov-suite/interop-test-harness
-source interop-test-harness/jenkins/ubuntu-dependencies.sh 
+$ sudo apt-get install -y git
+$ git clone https://github.com/prov-suite/interop-test-harness
+$ source interop-test-harness/jenkins/ubuntu-dependencies.sh 
 ```
 
 ## Get ProvStore API key
@@ -34,13 +34,13 @@ source interop-test-harness/jenkins/ubuntu-dependencies.sh
 [Jenkins](https://jenkins-ci.org/) is available as an executable Java archive. If you ran the script above then you will already have ``jenkins.war``, otherwise, run:
 
 ```
-wget http://mirrors.jenkins-ci.org/war/latest/jenkins.war
+$ wget http://mirrors.jenkins-ci.org/war/latest/jenkins.war
 ```
 
 To start Jenkins, run:
 
 ```
-java -jar jenkins.war
+$ java -jar jenkins.war
 ```
 
 * Open a web browser and go to to http://localhost:8080
@@ -131,7 +131,7 @@ pip install -r requirements.txt
 Ad step to configure test harness:
 
 * Select Add build step => Execute shell
-* Enter the following, replacing `you:12345qwert` with your ProvStore API key:
+* Enter the following, replacing `user:12345qwert` with your ProvStore API key:
 
 ```
 cd test-harness
@@ -143,7 +143,7 @@ python prov_interop/set-yaml-value.py $CONFIG_DIR/harness.yaml comparators.ProvP
 python prov_interop/set-yaml-value.py $CONFIG_DIR/provpy.yaml ProvPy.executable="python $WORKSPACE/ProvPy/scripts/prov-convert"
 python prov_interop/set-yaml-value.py $CONFIG_DIR/provtoolbox.yaml ProvToolbox.executable="$WORKSPACE/ProvToolbox/toolbox/target/appassembler/bin/provconvert"
 cat localconfig/*
-python prov_interop/set-yaml-value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization="ApiKey you:12345qwert"
+python prov_interop/set-yaml-value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization="ApiKey user:12345qwert"
 ```
 
 Add step to run all interoperability tests:
@@ -229,16 +229,16 @@ You can browse the nosetests test results. These are hierarchically organised by
 Edit jenkins/config.xml and in the line:
 
 ```
-echo &quot;API_KEY=you:12345qwert&quot; &gt;&gt; config.properties
+echo &quot;API_KEY=user:12345qwert&quot; &gt;&gt; config.properties
 ```
 
-replace `you:12345qwert` with your ProvStore username and API key.
+replace `user:12345qwert` with your ProvStore username and API key.
 
 Import configuration into Jenkins:
 
 ```
-mkdir $HOME/.jenkins/jobs/PTS/
-cp jenkins/config.xml $HOME/.jenkins/jobs/PTS/
+$ mkdir $HOME/.jenkins/jobs/PTS/
+$ cp jenkins/config.xml $HOME/.jenkins/jobs/PTS/
 ```
 
 On the Jenkins dashboard:

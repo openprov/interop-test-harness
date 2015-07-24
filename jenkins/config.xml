@@ -50,7 +50,7 @@ python prov_interop/set-yaml-value.py $CONFIG_DIR/harness.yaml comparators.ProvP
 python prov_interop/set-yaml-value.py $CONFIG_DIR/provpy.yaml ProvPy.executable=&quot;python $WORKSPACE/ProvPy/scripts/prov-convert&quot;
 python prov_interop/set-yaml-value.py $CONFIG_DIR/provtoolbox.yaml ProvToolbox.executable=&quot;$WORKSPACE/ProvToolbox/toolbox/target/appassembler/bin/provconvert&quot;
 cat localconfig/*
-python prov_interop/set-yaml-value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization=&quot;ApiKey you:12345qwert&quot;
+python prov_interop/set-yaml-value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization=&quot;ApiKey user:12345qwert&quot;
 </command>
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
