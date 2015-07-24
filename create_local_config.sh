@@ -1,5 +1,6 @@
-# Local configuration
+#!/bin/sh
 
+# Local configuration
 PROV_TEST_CASES=$HOME/testcases
 # Configure to use ProvPy source release
 PROVPY_COMPARE="python $HOME/ProvPy/scripts/prov-compare"
