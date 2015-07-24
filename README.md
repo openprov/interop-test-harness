@@ -62,10 +62,7 @@ The test harness can be run stand-alone. These instructions assume you have:
 
 * Installed ProvPy's dependencies.
 * Installed ProvToolbox's dependencies.
-* Created a ProvStore API Key:
-  - Log in to [ProvStore](https://provenance.ecs.soton.ac.uk/store)
-  - Select Account => Developer Area
-  - You will see your API key
+* Created a ProvStore API Key.
 
 Get and install the latest version of ProvPy:
 
