@@ -115,7 +115,7 @@ Edit ``create_local_config.sh``:
 * Update, if required, location of test cases clone:
 
 ```
-PROV_TEST_CASES=$HOME/provtoolsuite-testcases
+PROV_TEST_CASES=$HOME/testcases
 ```
 
 * Update, if required, location of ProvPy scripts:

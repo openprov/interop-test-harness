@@ -1,6 +1,6 @@
 # Local configuration
 
-PROV_TEST_CASES=$HOME/provtoolsuite-testcases
+PROV_TEST_CASES=$HOME/testcases
 # Configure to use ProvPy source release
 PROVPY_COMPARE="python $HOME/ProvPy/scripts/prov-compare"
 PROVPY_CONVERT="python $HOME/ProvPy/scripts/prov-convert"
