@@ -223,7 +223,7 @@ You can browse the nosetests test results. These are hierarchically organised by
 Edit jenkins/config-interop.xml and in the line:
 
 ```
-echo &quot;API_KEY=user:12345qwert&quot; &gt;&gt; config.properties
+python prov_interop/set-yaml-value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization=&quot;ApiKey user:12345qwert&quot;
 ```
 
 replace `user:12345qwert` with your ProvStore username and API key.
