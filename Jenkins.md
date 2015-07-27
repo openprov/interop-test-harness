@@ -151,7 +151,6 @@ Add step to run all interoperability tests:
 
 ```
 cd test-harness
-nosetests prov_interop/tests
 nosetests -v --with-xunit prov_interop.interop_tests
 ```
 
@@ -167,10 +166,10 @@ The Execute shell steps can, alternatively, be done within a single Execute shel
 If you are only interested in running interoperability tests for a specific omponent then use the relevant line from:
 
 ```
-nosetests -v prov_interop.interop_tests.test_provpy
-nosetests -v prov_interop.interop_tests.test_provtoolbox
-nosetests -v prov_interop.interop_tests.test_provtranslator
-nosetests -v prov_interop.interop_tests.test_provstore
+nosetests -v --with-xunit prov_interop.interop_tests.test_provpy
+nosetests -v --with-xunit prov_interop.interop_tests.test_provtoolbox
+nosetests -v --with-xunit prov_interop.interop_tests.test_provtranslator
+nosetests -v --with-xunit prov_interop.interop_tests.test_provstore
 ```
 
 ## Publish xUnit test results
@@ -192,7 +191,7 @@ nosetests, with the ``--with-xunit`` option set, outputs test results in xUnit-c
 
 You can browse the nosetests test results. These are hierarchically organised by Python module, class and method name.
 
-* EITHER On the Project PTS_Interoperability page
+* EITHER On the Project PTS-Interop page
   - Click the Latest Test Result link
   - If all went well, should say (no failures)
 * OR On the Jenkins dashboard/front-page
@@ -200,11 +199,7 @@ You can browse the nosetests test results. These are hierarchically organised by
   - Click drop-down arrow
   - Select Test Result
 * Click Python package names to browse down to test classes
-  - prov_interop.interop_tests.test_provpy
-  - prov_interop.interop_tests.test_provtoolbox
 * Click Python class names to browse down to test functions
-  - ProvPyTestCase
-  - ProvToolboxTestCase
 
 ## Start builds manually
 
