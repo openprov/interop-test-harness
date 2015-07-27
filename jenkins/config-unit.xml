@@ -23,7 +23,7 @@ pip install -r requirements.txt
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
       <command>cd test-harness
-nosetests prov_interop/tests
+nosetests --with-xunit prov_interop/tests
 </command>
     </hudson.tasks.Shell>
   </builders>

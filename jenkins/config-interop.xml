@@ -55,7 +55,6 @@ python prov_interop/set-yaml-value.py $CONFIG_DIR/provstore.yaml ProvStore.autho
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
       <command>cd test-harness
-nosetests prov_interop/tests
 nosetests -v --with-xunit prov_interop.interop_tests
 </command>
     </hudson.tasks.Shell>
