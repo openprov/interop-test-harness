@@ -257,7 +257,7 @@ Jenkins job configuration, ``config.xml``, and logs and xUnit test results from 
 
 ## Jenkins and interoperability test harness unit tests
 
-[config-unit.xml](./jenkins/config-nit.xml) contains the Jenkins configuration file for a simpe job written to run only the interoperability test harness unit tests.
+[config-unit.xml](./jenkins/config-unit.xml) contains the Jenkins configuration file for a simpe job written to run only the interoperability test harness unit tests.
 
 Import configuration into Jenkins:
 
