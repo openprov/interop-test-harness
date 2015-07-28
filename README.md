@@ -46,19 +46,23 @@ Running the interoperability tests under Travis CI require you to:
 
 ## Automatically rerunning interoperability tests in Travis CI
 
-[Travis Client](./travis/TravisClient.md) explains how to automatically trigger re-runs of interoperability tests without having to either submit a GitHub pull request on the repository holding the Travis CI configuration file, or going via Travis CI's web interface.
+[Travis Client](./docs/TravisClient.md) explains how to automatically trigger re-runs of interoperability tests without having to either submit a GitHub pull request on the repository holding the Travis CI configuration file, or going via Travis CI's web interface.
 
 ## Running under Jenkins
 
-[Jenkins](https://jenkins-ci.org) is a popular, open source continuous integration server that runs under Java. See [Running the interoperability test harness under Jenkins](./Jenkins.md) which includes an example of running all the interoperability tests from within a single Jenkins job.
+[Jenkins](https://jenkins-ci.org) is a popular, open source continuous integration server that runs under Java. See [Running the interoperability test harness under Jenkins](./docs/Jenkins.md) which includes an example of running all the interoperability tests from within a single Jenkins job.
 
 ## Running standalone
 
-The test harness can be run stand-alone. See [Running the interoperability test harness standalone](./Standalone.md).
+The test harness can be run stand-alone. See [Running the interoperability test harness standalone](./docs/Standalone.md).
 
 ## Interoperability test harness unit tests
 
 The interoperability test harness includes unit tests for the harness itself. This respository contains a TravisCI, .travis.yml, job configuration file to run these unit tests.
+
+## Design and implementation
+
+For details, see [nteroperability test harness design and implementation](./docs/Design.md).
 
 ## Author
 

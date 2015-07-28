@@ -12,7 +12,7 @@ This page assumes that [pyenv](https://github.com/yyuu/pyenv) is used to manage 
 
 The dependencies required by ProvPy and ProvToolbox must already be installed. Jenkins runs under the same version of Java as used for ProvToolbox.
 
-[ubuntu-dependencies.sh](./ubuntu-dependencies.sh) is a simple shell script which both installs these dependencies, including Java and Python (via pyenv) as well as downloading Jenkins. 
+`ubuntu-dependencies.sh` is a simple shell script which both installs these dependencies, including Java and Python (via pyenv) as well as downloading Jenkins. 
 
 To run the script:
 
@@ -58,7 +58,7 @@ Jenkins uses a "workspace" directory to store any build artefacts. This plugin a
 
 ## Create job to run interoperability tests
 
-These steps create a Jenkins job to run the interoperability tests. If you do not want to execute these manually, there is one we have prepared earlier in [config-interop.xml](./jenkins/config-interop.xml) - to use this see "Importing a Jenkins job" below.
+These steps create a Jenkins job to run the interoperability tests. If you do not want to execute these manually, there is one we have prepared earlier in `jenkins/config-interop.xml` - to use this see "Importing a Jenkins job" below.
 
 * Click create new jobs
 * Item name: PTS-Interop
@@ -213,7 +213,7 @@ You can browse the nosetests test results. These are hierarchically organised by
 
 ## Importing a Jenkins job
 
-[config-interop.xml](./jenkins/config-interop.xml) contains the Jenkins configuration file for the job written following the above instructions. Assuming you have already done:
+`jenkins/config-interop.xml` contains the Jenkins configuration file for the job written following the above instructions. Assuming you have already done:
 
 * Install dependencies
 * Get ProvStore API key
@@ -252,7 +252,7 @@ Jenkins job configuration, ``config.xml``, and logs and xUnit test results from 
 
 ## Jenkins and interoperability test harness unit tests
 
-[config-unit.xml](./jenkins/config-unit.xml) contains the Jenkins configuration file for a simpe job written to run only the interoperability test harness unit tests.
+`jenkins/config-unit.xml` contains the Jenkins configuration file for a simpe job written to run only the interoperability test harness unit tests.
 
 Import configuration into Jenkins:
 
