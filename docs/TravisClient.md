@@ -156,7 +156,7 @@ Successfully logged in as user!
 
 ## Sample script
 
-[travis-restart.sh](./travis-restart.sh) contains a simple example of a script to automatically trigger a rerun of a Travis CI build of the prov-suite/interop-test-harness build. To use this script:
+`travis/travis-restart.sh` contains a simple example of a script to automatically trigger a rerun of a Travis CI build of the prov-suite/interop-test-harness build. To use this script:
 
 * Edit it and replace `GITHUB_TOKEN` with your GitHub token
 * Run:

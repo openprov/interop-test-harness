@@ -12,7 +12,7 @@ This page assumes that [pyenv](https://github.com/yyuu/pyenv) is used to manage 
 
 The dependencies required by ProvPy and ProvToolbox must already be installed.
 
-[ubuntu-dependencies.sh](./ubuntu-dependencies.sh) is a simple shell script which both installs these dependencies, including Java and Python (via pyenv).
+`ubuntu-dependencies.sh` is a simple shell script which both installs these dependencies, including Java and Python (via pyenv).
 
 To run the script:
 
