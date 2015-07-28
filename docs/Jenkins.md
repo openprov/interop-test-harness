@@ -174,7 +174,7 @@ nosetests -v --with-xunit prov_interop.interop_tests.test_provstore
 
 ## Publish xUnit test results
 
-nosetests, with the ``--with-xunit`` option set, outputs test results in xUnit-compliant XML. By default, this file is called nosetests.xml. Jenkins can parse and present this informationy.
+nosetests, with the ``--with-xunit`` option set, outputs test results in xUnit-compliant XML. By default, this file is called `nosetests.xml`. Jenkins can parse and present this informationy.
 
 * Go to Project PTS-Interop page
 * Click Configure
