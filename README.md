@@ -62,7 +62,7 @@ The interoperability test harness includes unit tests for the harness itself. Th
 
 ## Design and implementation
 
-For details, see [nteroperability test harness design and implementation](./docs/Design.md).
+For details, see [Interoperability test harness design and implementation](./docs/Design.md).
 
 ## Author
 
