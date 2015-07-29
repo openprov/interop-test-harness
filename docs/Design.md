@@ -595,7 +595,7 @@ comparators:
 
 ---
 
-## `interop_tests.converter` - interoperability test procedure
+## `interop_tests.test_converter` - interoperability test procedure
 
 This module provides a generic test class to represent the test procedure. This class is sub-classed by test classes for each converter.
 
@@ -705,7 +705,7 @@ ProvPy:
 }
 ```
 
-### `interop_tests.converter.test_provpy` - ProvPy `provconvert` interoperability tests
+### `interop_tests.test_provpy` - ProvPy `provconvert` interoperability tests
 
 This module provides the interoperability test class for ProvPy's `prov-convert`:
 
@@ -733,7 +733,7 @@ ProvPy:
   skip-tests: []
 ```
 
-### `interop_tests.converter.test_provtoolbox` - ProvToolbox `prov-convert` interoperability tests
+### `interop_tests.test_provtoolbox` - ProvToolbox `prov-convert` interoperability tests
 
 This module provides the interoperability test class for ProvToolbox's `provconvert`:
 
@@ -761,7 +761,7 @@ ProvToolbox:
   skip-tests: []
 ```
 
-### `interop_tests.converter.test_provstore` - ProvStore interoperability tests
+### `interop_tests.test_provstore` - ProvStore interoperability tests
 
 This module provides the interoperability test class for ProvStore:
 
@@ -789,7 +789,7 @@ ProvStore:
   skip-tests: []
 ```
 
-### `interop_tests.converter.test_provtranslator` - ProvTranslator interoperability tests
+### `interop_tests.test_provtranslator` - ProvTranslator interoperability tests
 
 This module provides the interoperability test class for ProvTranslator:
 
