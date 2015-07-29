@@ -54,7 +54,7 @@ def test_case_name(testcase_func, param_num, param):
   :param param: tuple of arguments to test function
   :type param: tuple, assumed to be of form (int, str or unicode, _,
   str or unicode, )
-  :returns: test functionname of form N_EXTIN_EXTOUT (e.g. 
+  :return: test functionname of form N_EXTIN_EXTOUT (e.g. 
   ``test_case_1_provx_json``)
   :rtype: str or unicode
   """
