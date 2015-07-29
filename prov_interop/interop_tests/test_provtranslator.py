@@ -1,4 +1,4 @@
-"""Interoperability tests for ProvTranslator service.
+"""Interoperability tests for ProvTranslator.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -32,15 +32,36 @@ from prov_interop.interop_tests.test_converter import ConverterTestCase
 
 @istest
 class ProvTranslatorTestCase(ConverterTestCase):
+  """Interoperability tests for ProvTranslator.
+  
+  Its configuration, loaded via
+  :meth:`prov_interop.interop_tests.test_converter.ConverterTestCase.configure`,
+  is expected to be in a YAML file: 
+  
+  - Either provided as the value of a ``ProvTranslator`` key in the
+    :class:`prov_interop.harness.HarnessResource` configuration. 
+  - Or, named in an environment variable, 
+    ``PROVTRANSLATOR_TEST_CONFIGURATION``.
+  - Or in ``localconfig/provtranslator.yaml``.
 
+  The configuration itself, within this file, is expected to have the
+  key `ProvTranslator``. 
+
+  A valid YAML configuration file is::
+
+    ---
+    ProvTranslator:
+      url: https://provenance.ecs.soton.ac.uk/validator/provapi/documents/
+      input-formats: [provn, ttl, trig, provx, json]
+      output-formats: [provn, ttl, trig, provx, json]
+      skip-tests: []
+  """
   CONFIGURATION_FILE_ENV = "PROVTRANSLATOR_TEST_CONFIGURATION"
-  """str or unicode: environment variable holding ProvTranslator
-  interoperability test harness configuration file name  
+  """str or unicode: environment variable holding configuration file name  
   """
 
   DEFAULT_CONFIGURATION_FILE="localconfig/provtranslator.yaml"
-  """str or unicode: default interoperability test harness configuration
-  file name
+  """str or unicode: default configuration file name
   """
 
   CONFIGURATION_KEY="ProvTranslator"
