@@ -1,4 +1,6 @@
 """Interoperability test harness boot-strapping.
+
+This module bootstraps the test harness. As soon as this module is loaded, it invokes :func:`initialise_harness_from_file`.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -44,30 +46,52 @@ file name
 """
 
 harness_resources = None
-""":class:`~prov_interop.harness.HarnessResources`:
+""":class:`prov_interop.harness.HarnessResources`:
 interoperability test harness resources
 """
 
 def initialise_harness_from_file(file_name = None):
   """Initialise interoperability test harness.
-  Create :class:`~prov_interop.harness.HarnessResources` 
-  and assigns to module variable ``harness``. 
-  - If ``file_name`` is provided then the contents of the file are
-    loaded and used as configuration.
-  - Else, if an environment variable with name
-    ``PROV_HARNESS_CONFIGURATION`` is defined, then the contents
-    of the file named in that variable are loaded and used.
-  - Else, the contents of the default file, ``harness.yaml``, 
-    are loaded and used.
-  If ``harness`` has already been created and initialised, this
-  function does nothing.
+
+  This function creates an instance of
+  :class:`prov_interop.harness.HarnessResources` and then configures
+  it using configuration loaded from a YAML file (using
+  :func:`prov_interop.factory.load_yaml`). The file loaded is: 
+
+  - `file_name` if this argument is provided (when called from within
+    this module itself, no value is provided). 
+  - Else, the file named in an environment variable with name
+    ``PROV_HARNESS_CONFIGURATION``, if such an environment variable has
+    been defined. 
+  - Else, ``localconfig/harness.yaml``.
+
+  The function will not reinitialise the
+  :class:`prov_interop.harness.HarnessResources` instance once it has 
+  been created and initialisaed. 
+
+  The test harness needs to be bootstrapped as soon as the module is
+  loaded to allow the use of dynamic test method generation from the
+  test cases, as described below. 
+
+  A valid YAML configuration file, which, when loaded, yields a Python
+  dictionary holding the configuration required by
+  :class:`prov_interop.harness.HarnessResources` is::
+
+    ---
+    test-cases: /home/user/test-cases
+    comparators:
+      ProvPyComparator: 
+        class: prov_interop.provpy.comparator.ProvPyComparator
+        executable: prov-compare
+        arguments: -f FORMAT1 -F FORMAT2 FILE1 FILE2
+        formats: [provx, json]
 
   :param file_name: Configuration file name (optional)
   :type file_name: str or unicode
   :raises IOError: if the file is not found.
   :raises ConfigError: if the configuration in the file does not
-  contain the configuration properties expected by
-  :class:`~prov_interop.harness.HarnessResources`
+    contain the configuration properties expected by
+    :class:`prov_interop.harness.HarnessResources`
   :raises YamlError: if the file is an invalid YAML file
   """
   global harness_resources

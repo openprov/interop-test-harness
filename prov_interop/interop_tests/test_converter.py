@@ -1,4 +1,11 @@
 """Base class for converter interoperability tests.
+
+This module imports :mod:`prov_interop.interop_tests.harness`
+thereby bootstrapping the test harness. This bootstrapping is
+necessary so that the list of tuples is available to
+:mod:`nose_parameterized` when it dynamically creates the test
+methods (see
+:meth:`prov_interop.interop_tests.test_converter.ConverterTestCase.test_case`).
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -32,7 +39,7 @@ import tempfile
 import unittest
 
 from nose_parameterized import parameterized
-from nose.plugins.skip import Skip, SkipTest
+from nose.plugins.skip import SkipTest
 from nose.tools import istest
 from nose.tools import nottest
 
@@ -44,18 +51,21 @@ from prov_interop.interop_tests import harness
 
 @nottest
 def test_case_name(testcase_func, param_num, param):
-  """``nose_parameterized`` callback function to create custom
+  """:mod:`nose_parameterized` callback function to create custom 
   test function names.
 
-  :param testcase__func: test function
-  :type testcase__func: function
-  :param param_num: number of parameters in ``param``
+  This overrides the default method names created by
+  :mod:`nose_parameterized`.
+
+  :param testcase_func: test function
+  :type testcase_func: function
+  :param param_num: number of parameters in `param`
   :type param_num: int
   :param param: tuple of arguments to test function
-  :type param: tuple, assumed to be of form (int, str or unicode, _,
-  str or unicode, )
-  :return: test functionname of form N_EXTIN_EXTOUT (e.g. 
-  ``test_case_1_provx_json``)
+  :type param: tuple of form (int, str or unicode, _, str or unicode,
+    _) 
+  :return: test function name of form ``N_EXTIN_EXTOUT`` (e.g. 
+    ``test_case_1_provx_json``)
   :rtype: str or unicode
   """
   (index, ext_in, _, ext_out, _) =  param.args
@@ -63,9 +73,21 @@ def test_case_name(testcase_func, param_num, param):
     testcase_func.__name__,
     parameterized.to_safe_name(str(index) + "_" + ext_in + "_" + ext_out)))
 
-
 @nottest
 class ConverterTestCase(unittest.TestCase):
+  """Base class for converter interoperability tests.
+
+  This class implements the procedure for testing a converter using a
+  test case and a comparator: 
+  
+  - A converter translates ``testcaseNNNN/file.<ext_in>`` to 
+    ``converted.<ext_out>``.
+  - A comparator compares ``testcaseNNNN/file.<ext_out>`` to 
+    ``converted.<ext_out>`` for equivalence, which results in either
+    success or failure. 
+
+  This class is sub-classed by test classes for each converter.
+  """
 
   SKIP_TESTS = "skip-tests"
   """str or unicode: configuration key for tests to skip"""
@@ -83,21 +105,55 @@ class ConverterTestCase(unittest.TestCase):
       os.remove(self.converter_ext_out)
 
   def configure(self, config_key, env_var, default_file_name):
-    """Configure converter to be tested. 
-    - This assumes :class:`~prov_interop.harness.HarnessResources` has
-      been initialised by ``prov_interop.interop_tests.harness``.
-    - This assumes ``self.converter`` has been assigned to a sub-class
-      of ``:class:`~prov_interop.converter.Converter`.
-      - If harness configuration has key matching ``config_key``, then
-      its value is assumed to be a configuration file for the converter.
-    - Else, if an environment variable with the name in
-      ``env_var`` is defined, then this environment variable is assumed
-       to hold a configuration file for the converter.
-    - Else ``default_file_name`` is used as a configuration file.
-    - The configuration file is assumed to be a YAML file, with 
-      an entry keyed using ``config_key``.
-    - The configuration file is loaded and the values under the
-      converter's key used to configure the converter.
+    """Get the configuration for the converter to be tested within a
+    sub-class. 
+
+    The method assumes the converter has been created and stored in an
+    instance variable. It loads the contents of a YAML file (using
+    :func:`prov_interop.factory.load_yaml`) into a Python
+    dictionary. The file loaded is: 
+
+    - The value of an entry in
+      :class:`prov_interop.harness.HarnessResource` configuration with
+      name `config_key`, if any. 
+    - Else, the file named in the environment variable named in
+      `env_var`, if such an environment variable has been defined. 
+    - Else, `default_file_name`.
+
+    Once loaded, a dictionary entry with whose key is the value of
+    `config_key` is extracted and used to configure the converter via
+    its :meth:`prov_interop.converter.Converter.configure` method. 
+
+    In addition to converter-specific configuration, this
+    configuration can also hold:
+
+    - ``skip-tests``: a list of the indices of zero or more tests that
+      are to be skipped for this converter. 
+
+    If so, then this list is cached in an instance variable.
+
+    An example configuration, in the form of a Python dictionary, and
+    for ProvPy ``prov-convert``, is::
+
+      {
+        "ProvPy": {
+          "executable": "prov-convert"
+          "arguments": "-f FORMAT INPUT OUTPUT"
+          "input-formats": ["json"]
+          "output-formats": ["provn", "provx", "json"]
+          skip-tests: [2, 3, 5]
+        }
+      }
+
+    The corresponding YAML configuration file is::
+
+      ---
+      ProvPy: 
+        executable: prov-convert
+        arguments: -f FORMAT INPUT OUTPUT
+        input-formats: [json]
+        output-formats: [provn, provx, json]
+        skip-tests: [2, 3, 5]
 
     :param config_key: Key to access converter-specific configuration
     :type config_key: str or unicode
@@ -106,11 +162,10 @@ class ConverterTestCase(unittest.TestCase):
     :param default_file_name: Default configuration file name
     :type file_name: str or unicode
     :raises IOError: if the file is not found
-    :raises ConfigError: if there is no entry with ``config_key``
-    within the configuration, or if converter-specific
-    configuration information is missing.
-    :raises YamlError: if the configuration file does not parse
-    into a dict
+    :raises ConfigError: if there is no entry with value `config_key`
+      within the configuration, or if converter-specific
+      configuration information is missing
+    :raises YamlError: if the file is an invalid YAML file
     """
     config_file_name = None
     if config_key in harness.harness_resources.configuration:
@@ -126,12 +181,14 @@ class ConverterTestCase(unittest.TestCase):
         ConverterTestCase.SKIP_TESTS]
 
   def skip_member_of_skip_set(self, index):
-    """Raise a SkipTest error if this test case is to be skipped 
-    for this converter.
+    """Raise a :class:`nose.plugins.skip.SkipTest` if this test
+    case is marked as to be skipped for the converter. Tests to be
+    skipped are recorded in the optional ``skip-tests``
+    configuration. 
 
     :param index: Test case index
     :type index: int
-    :raises SkipTest:
+    :raises nose.plugins.skip.SkipTest: always
     """
     print(("Skipping as " + str(index) + " in skip-tests"))
     raise SkipTest(("Test case " + str(index) +
@@ -139,19 +196,19 @@ class ConverterTestCase(unittest.TestCase):
                     " skip-tests"))
 
   def skip_unsupported_format(self, index, format, format_type):
-    """Raise a SkipTest error if a specific conversion is to be
-    skipped because the converter does not support one of the
-    formats. 
+    """Raise a :class:`nose.plugins.skip.SkipTest` if a specific
+    conversion is to be skipped because the converter does not support
+    one of the formats. 
 
     :param index: Test case index
     :type index: int
-    :param format: one of the formats in ``prov_interop.standards``
+    :param format: one of the formats in :mod:`prov_interop.standards`
     :type format: str or unicode
     :param format_type: Converter configuration key indicating 
-    which format is not supported (e.g. "input-format" or
-    "output-format"
+      which format is not supported (e.g. ``input-format`` or
+      ``output-format``
     :type format_type: str or unicode
-    :raises SkipTest:
+    :raises nose.plugins.skip.SkipTest: always
     """
     print(("Skipping as " + str(index) + " in skip-tests"))
     print(("Skipping as " + format + " not in converter's " + format_type))
@@ -162,39 +219,57 @@ class ConverterTestCase(unittest.TestCase):
   @parameterized.expand(harness.harness_resources.test_cases, 
                         testcase_func_name=test_case_name)
   def test_case(self, index, ext_in, file_ext_in, ext_out, file_ext_out):
-    """Test converter's conversion of a file in one format to another
-    format. 
+    """Test a converter's conversion of a file in one format to
+    another format. 
 
-    The comparator registered for the output format is used to
-    compare the file output by the converter to the given output file,
-    which is assumed to be semantically equivalent to the input
-    file. The test succeeds if the comparator deems the converter's
-    output file to be semantially equivalent to the given output file.
-    
-    If the test case index is recorded as one of those to be skipped
-    for the converter, or if the input or output formats are not
-    supported by the converter, then the test is skipped.
+    This generic test method implements the following test procedure: 
+
+    - If the test case `index` is in the optional ``skip-tests``
+      configuration for the converter then the test is skipped, by
+      raising :class:`nose.plugins.skip.SkipTest`. 
+    - If `ext_in` or `ext_out` are not in the ``input-formats`` or
+      ``output-formats`` for the converter then the test is skipped,
+      again by raising :class:`nose.plugins.skip.SkipTest`. 
+    - The converter translates ``testcaseNNNN/file_ext_in`` to 
+      ``out.ext_out``.
+    - The comparator for `ext_out` registered with
+      :class:`prov_interop.harness.HarnessResources` is retrieved. 
+    - The comparator compares ``testcaseNNNN/file.ext_out`` to 
+      ``out.ext_out`` for equivalence, which results in either success
+      or failure. 
+
+    :mod:`nose_parameterized`, in conjunction with the test case
+    tuples cached in :class:`prov_interop.harness.HarnessResources`,
+    is used to dynamically create test methods for each test case
+    tuple. When this class is loaded, :mod:`nose_parameterized`
+    will iterate through each of the test cases and create
+    corresponding test methods::
+
+      test_case_1_json_json
+      test_case_1_provx_json
+      test_case_1_json_provx
+      test_case_1_provx_provx
+      ...
+
+    The arguments passed into each test method, `(index, ext_in,
+    file_ext_in, ext_out, file_ext_out)` are those from the tuple that
+    was used to create that method.  
 
     :param index: Test case index
     :type index: int
     :param ext_in: input format, one of the formats in
-    ``prov_interop.standards``
+      :mod:`prov_interop.standards`
     :type ext_in: str or unicode
-    :param file_ext_in: input file path, assumed to be of format
-    ``ext_in`` 
+    :param file_ext_in: input file, assumed to have extension `ext_in`
     :type file_ext_in: str or unicode
     :param ext_out: output format, one of the formats in
-    ``prov_interop.standards`` 
+      :mod:`prov_interop.standards`
     :type ext_out: str or unicode
-    :param file_ext_out: output file path, assumed to be of format
-    ``ext_out`` 
+    :param file_ext_out: output file, assumed to have extension `ext_out`
     :type file_ext_out: str or unicode
-    :param format_type: Converter configuration key indicating 
-    which format is not supported (e.g. "input-format" or
-    "output-format"
-    :type format_type: str or unicode
-    :raises SkipTest: if the test case is to be skipped, or the input
-    format or output format are not supported by the converter.
+    :raises nose.plugins.skip.SkipTest: if the test case is to be
+      skipped, or the input format or output format are not supported
+      by the converter
     """
     print(("Test case: " + str(index) + " from " + ext_in + " to " + ext_out))
     if index in self.skip_tests:
