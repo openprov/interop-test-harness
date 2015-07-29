@@ -2,7 +2,7 @@
 
 Usage::
 
-    usage: set-yaml-value.py [-h] file replacements [replacements ...]
+    usage: set_yaml_value.py [-h] file replacements [replacements ...]
 
     Replace values in a YAML file
 
@@ -49,17 +49,17 @@ def replace_value(key, value, content):
   Replace value in a multi-dimensional dict given a fully-qualified
   path to the value to be replaced e.g. calling::
 
-      replace_value('comparators.ProvPyComparator.executable', 
-                    'run',
-                    content)
+    replace_value('comparators.ProvPyComparator.executable', 
+                  'run',
+                  content)
 
-  is equivalent to doing: 
+  is equivalent to doing::
 
-      content['compatators']['ProvPyComparator']['executable'] = 'run'
+    content['comparators']['ProvPyComparator']['executable'] = 'run'
 
   If there is no matching key then this is a no-op.
 
-  :param key: Fully qualified key
+  :param key: Fully-qualified key
   :type key: str or unicode
   :param value: Replacement value
   :type value: str or unicode
@@ -77,22 +77,36 @@ def replace_value(key, value, content):
       return
   sub_content[replace_key] = value
 
-parser = argparse.ArgumentParser(description="Replace values in a YAML file")
-parser.add_argument("file", help="File")
-parser.add_argument("replacements", 
-                    nargs="+", 
-                    help="Replacements of form NAME=VALUE where name is a path of keys through a YAML file e.g. comparators.ProvPyComparator.executable")
+def set_yaml_value(file_name, replacements):
+  """
+  Replace values in a YAML file. Each replacement value is of form
+  ``NAME=VALUE`` where ``NAME`` is a path of keys through a YAML file
+  e.g. ``comparators.ProvPyComparator.executable`` and ``VALUE``
+  is a replacement value for the current value of the final key in
+  the path.
 
-args = parser.parse_args()
-file_name = args.file
-replacements = args.replacements
+  :param file_name: File name
+  :type file_name: str or unicode
+  :param replacements: Replacement values
+  :type replacements: list of str or unicode
+  """
+  with open(file_name, 'r') as f:
+    content = yaml.load(f)
 
-with open(file_name, 'r') as f:
-  content = yaml.load(f)
+  for replacement in replacements:
+    [key,value] = replacement.split("=", 1)
+    replace_value(key, value, content)
 
-for replacement in replacements:
-  [key,value] = replacement.split("=", 1)
-  replace_value(key, value, content)
+  with open(file_name, 'w') as f:
+    f.write(str(yaml.safe_dump(content)))
 
-with open(file_name, 'w') as f:
-  f.write(str(yaml.safe_dump(content)))
+if __name__ == "__main__":
+  parser = argparse.ArgumentParser(
+    description="Replace values in a YAML file")
+  parser.add_argument("file", help="File")
+  parser.add_argument(
+    "replacements", 
+    nargs="+", 
+    help="Replacements of form NAME=VALUE where name is a path of keys through a YAML file e.g. comparators.ProvPyComparator.executable")
+  args = parser.parse_args()
+  set_yaml_value(args.file, args.replacements)

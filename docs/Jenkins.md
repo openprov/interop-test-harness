@@ -137,12 +137,12 @@ cd test-harness
 CONFIG_DIR=localconfig
 rm -rf $CONFIG_DIR
 cp -r config/ $CONFIG_DIR
-python prov_interop/set-yaml-value.py $CONFIG_DIR/harness.yaml test-cases="$WORKSPACE/testcases"
-python prov_interop/set-yaml-value.py $CONFIG_DIR/harness.yaml comparators.ProvPyComparator.executable="python $WORKSPACE/ProvPy/scripts/prov-compare"
-python prov_interop/set-yaml-value.py $CONFIG_DIR/provpy.yaml ProvPy.executable="python $WORKSPACE/ProvPy/scripts/prov-convert"
-python prov_interop/set-yaml-value.py $CONFIG_DIR/provtoolbox.yaml ProvToolbox.executable="$WORKSPACE/ProvToolbox/toolbox/target/appassembler/bin/provconvert"
+python prov_interop/set_yaml_value.py $CONFIG_DIR/harness.yaml test-cases="$WORKSPACE/testcases"
+python prov_interop/set_yaml_value.py $CONFIG_DIR/harness.yaml comparators.ProvPyComparator.executable="python $WORKSPACE/ProvPy/scripts/prov-compare"
+python prov_interop/set_yaml_value.py $CONFIG_DIR/provpy.yaml ProvPy.executable="python $WORKSPACE/ProvPy/scripts/prov-convert"
+python prov_interop/set_yaml_value.py $CONFIG_DIR/provtoolbox.yaml ProvToolbox.executable="$WORKSPACE/ProvToolbox/toolbox/target/appassembler/bin/provconvert"
 cat localconfig/*
-python prov_interop/set-yaml-value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization="ApiKey user:12345qwert"
+python prov_interop/set_yaml_value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization="ApiKey user:12345qwert"
 ```
 
 Add step to run all interoperability tests:
@@ -223,7 +223,7 @@ You can browse the nosetests test results. These are hierarchically organised by
 Edit jenkins/config-interop.xml and in the line:
 
 ```
-python prov_interop/set-yaml-value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization=&quot;ApiKey user:12345qwert&quot;
+python prov_interop/set_yaml_value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization=&quot;ApiKey user:12345qwert&quot;
 ```
 
 replace `user:12345qwert` with your ProvStore username and API key.

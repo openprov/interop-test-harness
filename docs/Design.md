@@ -954,7 +954,7 @@ These need to be edited to reflect the local execution environment before they c
 * `provpy.yaml` needs `executable` to be set to either `prov-convert` or `python /home/user/ProvPy/scripts/prov-convert` (with the path to the location of ProvPy) depending upon whether the ProvPy library or Git repository are being used.
 * `provtoolbox.yaml` needs `executable` to be set to the location `provtoolbox` which will depend on whether the ProvToolbox binary or source release, or Git repository is being used.
 
-`prov_interop/set-yaml-value.py` provides a simple command-line tool that can be used to set configuration values in YAML files. Given the fully-qualified path of keys to the value to be replaced, and a file name, it performs the replacement. For example, given `localconfig/provstore.yaml`
+`prov_interop/set_yaml_value.py` provides a simple command-line tool that can be used to set configuration values in YAML files. Given the fully-qualified path of keys to the value to be replaced, and a file name, it performs the replacement. For example, given `localconfig/provstore.yaml`
 
 ```
 ---
@@ -969,7 +969,7 @@ ProvStore:
 Running:
 
 ```
-$ python prov_interop/set-yaml-value.py localconfig/provstore.yaml \
+$ python prov_interop/set_yaml_value.py localconfig/provstore.yaml \
   ProvStore.authorization="ApiKey user:12345qwerty"
 ```
 
@@ -1000,7 +1000,7 @@ comparators:
 Running:
 
 ```
-$ python prov_interop/set-yaml-value.py localconfig/harness.yaml \
+$ python prov_interop/set_yaml_value.py localconfig/harness.yaml \
   comparators.ProvPyComparator.executable="python /home/mjj/ProvPy/scripts/prov-compare"
 ```
 
