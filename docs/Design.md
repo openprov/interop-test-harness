@@ -682,7 +682,7 @@ An example configuration, in the form of a Python dictionary, and for ProvPy `pr
 
 ```
 {
-"ProvPy: {
+"ProvPy": {
   "executable": "prov-convert"
   "arguments": "-f FORMAT INPUT OUTPUT"
   "input-formats": ["json"]
