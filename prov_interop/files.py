@@ -31,11 +31,11 @@ import yaml
 def load_yaml(env_var, default_file_name, file_name = None):
   """Load the contents of a YAML file.
 
-  - If ``file_name`` is provided then the contents of the file are
+  - If `file_name` is provided then the contents of the file are
     loaded and returned.
-  - Else, if an environment variable with name ``env_var`` is defined, 
+  - Else, if an environment variable with name `env_var` is defined, 
     then the contents of the file named in that variable are loaded.
-  - Else, the contents of the default file, ``default_file_name``, are
+  - Else, the contents of the default file, `default_file_name`, are
     loaded and returned.
   
   :param env_var: Environment variable with file name

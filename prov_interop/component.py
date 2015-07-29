@@ -47,11 +47,10 @@ class ConfigurableComponent(object):
   def check_configuration(self, keys):
     """Check configuration contains keys.
 
-    :param config: Configuration
-    :type config: dict or list
     :param keys: Keys to check for
     :type keys: dict or list
-    :raises ConfigError: if config does not contain one of the keys
+    :raises ConfigError: if the class's configuration does not 
+      contain one of the keys 
     """
     for key in keys:
       if key not in self._config:
@@ -63,7 +62,7 @@ class ConfigurableComponent(object):
 
     :param config: Component-specific configuration
     :type config: dict
-    :raises ConfigError: if config is not a dict
+    :raises ConfigError: if `config` is not a dict
     """
     if type(config) is not dict:
       raise ConfigError("config must be a dictionary")
@@ -119,7 +118,7 @@ class CommandLineComponent(ConfigurableComponent):
   @property
   def arguments(self):
     """Get the arguments as a list. The ``arguments`` value provided
-  during configuration is split upon spaces and returned.
+   during configuration is split upon spaces and returned.
     
     :return: arguments
     :rtype: list of str or unicode
@@ -157,7 +156,7 @@ class CommandLineComponent(ConfigurableComponent):
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if ``config`` does not hold the above entries
+    :raises ConfigError: if `config` does not hold the above entries
     """
     super(CommandLineComponent, self).configure(config)
     self.check_configuration([CommandLineComponent.EXECUTABLE, 
@@ -200,7 +199,7 @@ class RestComponent(ConfigurableComponent):
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if ``config`` does not hold the above entries
+    :raises ConfigError: if `config` does not hold the above entries
     """
     super(RestComponent, self).configure(config)
     self.check_configuration([RestComponent.URL])

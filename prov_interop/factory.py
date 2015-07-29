@@ -39,7 +39,7 @@ def get_class(name):
   :type name: str or unicode
   :return: Class specified in name
   :rtype: classobj
-  :raises ValueError: if ``name`` is not module-prefixed
+  :raises ValueError: if `name` is not module-prefixed
   :raises ImportError: if module cannot be loaded
   :raises AttributeError: if class cannot be found
   """
@@ -62,7 +62,7 @@ def get_instance(name):
   :type name: str or unicode
   :return: Instance of class specified in name
   :rtype: instance
-  :raises ValueError: if ``name`` is not module-prefixed
+  :raises ValueError: if `name` is not module-prefixed
   :raises ImportError: if module cannot be loaded
   :raises AttributeError: if class cannot be found
   :raises TypeError: 

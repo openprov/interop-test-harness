@@ -61,7 +61,7 @@ class Comparator(ConfigurableComponent):
     """Configure comparator. The configuration must hold:
 
     - ``formats``: formats supported by the comparator, each of which
-       must be one of those in mod:`prov_interop.standards`. 
+      must be one of those in :mod:`prov_interop.standards`. 
 
     A valid configuration is::
 
@@ -71,7 +71,7 @@ class Comparator(ConfigurableComponent):
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if ``config`` does not hold the above entries
+    :raises ConfigError: if `config` does not hold the above entries
     """
     super(Comparator, self).configure(config)
     self.check_configuration([Comparator.FORMATS])
@@ -92,9 +92,9 @@ class Comparator(ConfigurableComponent):
       raise ComparisonError("Unsupported format: " + format)
 
   def compare(self, file1, file2):
-    """Compare files. ``file1`` and ``file`` hold the documents to be
-    compared.  The file extensions of ``file1`` and ``file2`` must each be
-    one of those in mod:`prov_interop.standards`. If the documents are 
+    """Compare files. `file1` and `file` hold the documents to be
+    compared.  The file extensions of `file1` and `file2` must each be
+    one of those in :mod:`prov_interop.standards`. If the documents are 
     semantically equivalent then ``True`` is returned, else ``False`` is
     returned.  
 
@@ -102,7 +102,7 @@ class Comparator(ConfigurableComponent):
     :type file1: str or unicode
     :param file2: File
     :type file2: str or unicode
-    :return: ``True`` (success) if files are equivalent, else ``False`` (fail)
+    :return: ``True`` or ``False``
     :rtype: bool
     :raises ComparisonError: if either of the files cannot be found
     """

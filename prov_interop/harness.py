@@ -1,4 +1,4 @@
-"""Interoperability test harness resources.
+"""Managing test harness configuration.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -36,13 +36,13 @@ from prov_interop.component import ConfigError
 from prov_interop.component import ConfigurableComponent
 
 class HarnessResources(ConfigurableComponent):
-  """Interoperability test harness resources."""
+  """Manages test harness configuration including the test cases."""
 
   TEST_CASES_DIR = "test-cases"
   """str or unicode: configuration key for test cases directory"""
 
   COMPARATORS = "comparators"
-  """str or unicode: configuration key list of comparators"""
+  """str or unicode: configuration key for comparators"""
 
   CLASS = "class"
   """str or unicode: configuration key for comparator class names"""
@@ -65,19 +65,21 @@ class HarnessResources(ConfigurableComponent):
   def test_cases_dir(self):
     """Get test cases directory.
 
-    :returns: directory name
+    :return: directory name
     :rtype: list of str or unicode
     """
     return self._test_cases_dir
 
   @property
   def test_cases(self):
-    """Get test cases.
+    """Get test cases. Test cases are a list of zero or more tuples of
+    form:: 
 
-    :returns: list of tuple: zero or more test case tuples of form
-      (test case index, ocument 1 format, full path to document 1,
-      document 2 format, full path to document 2) where formats are
-      assumed to be as in ``prov_interop.standards``
+      (test case index, format1, file1, format2, file2)
+
+    where formats are in :mod:`prov_interop.standards`.
+
+    :return: test cases
     :rtype: list of tuple of (int, str or unicode, str or unicode, str
       or unicode, str or unicode)
     """
@@ -85,49 +87,69 @@ class HarnessResources(ConfigurableComponent):
 
   @property
   def comparators(self):
-    """Get dictionary of comparators, keyed by name.
+    """Get dictionary of comparators, keyed by name, where names
+    are those provided in the comparator configuration.
 
-    :returns: comparators
-    :rtype: dict from str or unicode to instances of
-      :class:`~prov_interop.comparator.Comparator`
+    :return: comparators
+    :rtype: dict from str or unicode to 
+      :class:`prov_interop.comparator.Comparator`
     """
     return self._comparators
 
   @property
   def format_comparators(self):
     """Gets dictionary of comparators keyed by formats.
-    Formats are as defined in ``prov_interop.standards``.
+    Formats are in :mod:`prov_interop.standards`.
 
-    :returns: comparators
-    :rtype: dict from str or unicode to instances of 
-      :class:`~prov_interop.comparator.Comparator`
+    :return: comparators
+    :rtype: dict from str or unicode to 
+      :class:`prov_interop.comparator.Comparator`
     """
     return self._format_comparators
 
   def register_comparators(self, comparators):
-    """Populate dictionaries mapping both comparator names and formats
-    to instances of :class:`~prov_interop.comparator.Comparator`. 
-    ``comparators`` must include entries:: 
+    """Populate a dictionary of comparators, keyed by comparator name,
+    and a dictionary of comparators, keyed by format. `comparators`
+    must hold a list of comparator configurations keyed by name. Each
+    configuration consists of:
 
-        Comparator nick-name
-          class: ... class name...
-          ...comparator class-specific configuration...
+    - ``class``: name of class that manages invocations of that comparator.
+    - Configuration values required by the value of ``class``.
 
-    For example::
+    A valid value for `comparators` is::
 
-        ProvPyComparator: 
-          class: prov_interop.provpy.comparator.ProvPyComparator
-          executable: prov-compare
-          arguments: -f FORMAT1 -F FORMAT2 FILE1 FILE2
-          formats: [provx, json]
+      {
+        "ProvPyComparator": 
+        {
+          "class": "prov_interop.provpy.comparator.ProvPyComparator",
+          "executable": "prov-compare",
+          "arguments": "-f FORMAT1 -F FORMAT2 FILE1 FILE2",
+          "formats": ["provx", "json"],
+        }
+      }
+
+    This method populates `comparators`, a dictionary of
+    :class:`prov_interop.comparator.Comparator` objects, keyed by
+    comparator name. The `class` determines the comparator object to
+    create and the associated configuration is used to configure it
+    - this uses dynamic object creation (see
+    :mod:`prov_interop.factory`). Using the above configuration
+    there would be a mapping from ``ProvPyComparator`` to an instance
+    of :class:`prov_interop.provpy.comparator.ProvPyComparator`. 
+    
+    It also populates `format_comparators`, a dictionary of
+    :class:`prov_interop.comparator.Comparator` objects, keyed by
+    formats in :mod:`prov_interop.standards`. Using the above
+    configuration there would be mappings from both ``provx`` and
+    ``json`` to an instance of
+    :class:`prov_interop.provpy.comparator.ProvPyComparator`.  
 
     :param comparators: Mapping of comparator names to 
       class names and comparator-specific configuration
     :type config: dict
-    :raises ConfigError: if ``comparators`` is empty,
-      comparator-specific configuration is missing ``class``, or there
-      is a problem loading, creating or configuring an instance of a 
-      sub-class of :class:`~prov_interop.comparator.Comparator`.
+    :raises ConfigError: if no comparators are defined, or there are
+      any problems creating their instances or configuring the
+      comparators then a `ConfigError` is raised. 
     """
     if len(comparators) == 0:
       raise ConfigError("There must be at least one comparator defined")
@@ -144,18 +166,63 @@ class HarnessResources(ConfigurableComponent):
         self._format_comparators[format] = comparator
 
   def register_test_cases(self, test_cases_dir, format_filter):
-    """Create and register list of test cases.
- 
-    - Initialise an empty list of test cases.
-    - Get test cases directory from.
-    - For each child directory, whose name is prefixed by "testcase":
+    """Populate a list of test cases.
 
-      - Filter its files to get only those which have an extension 
-        matching one of the formats in ``prov_interop.standards`` and 
-        for which the format is recorded in ``format_filter``.
-      - Calculate possible combinations of pairs of the filtered files 
-        to get a set of (test-case-number, format1, file1, format2, 
-        file2) tuples and add these to``test_cases``.
+    This method populates a list of test cases, each of which is 
+    a tuple of form::
+
+      (test case index, format1, file1, format2, file2)
+
+    where ``file1`` and ``file2`` have extension ``format1`` and
+    ``format2`` respectively and both ``format1`` and ``format2`` are
+    in :mod:`prov_interop.standards`. For example::
+
+      (1, "json", "/home/user/test-cases/testcase1.json", 
+          "provx", "/home/user/test-cases/testcase1.provx")
+      (1, "trig", "/home/user/test-cases/testcase1.trig", 
+          "provx", "/home/user/test-cases/testcase1.provx")
+
+    The method traverses `test_cases_dir`, looking for
+    sub-directories whose name matches the pattern
+    ``testcase[0-9][0-9]*``. For each directory, it filters its files to
+    get only those which have an extension in both
+    :mod:`prov_interop.standards` and `format_filter`, a subset of
+    :mod:`prov_interop.standards` (a list of the formats for which a
+    comparator has been registered). From the files left it calculates
+    all possible combinations of pairs of files and creates tuples as
+    above. So, if `test_cases_dir` contains::
+
+      testcase1/
+        README.md
+        testcase1.json
+        testcase1.provn
+        testcase1.provx
+        testcase1.trig
+        testcase1.ttl
+      testcase3/
+        README.md
+        primer.json
+        primer.provn
+        primer.trig
+        primer.ttl
+      example/
+        example.json
+
+    and `format_filter` is ``["json", "provx"]`` this would give
+    the test case tuples::
+
+      [
+        (1, json, /home/user/test-cases/testcase1.json
+            json, /home/user/test-cases/testcase1.json),
+        (1, json, /home/user/test-cases/testcase1.json
+            provx, /home/user/test-cases/testcase1.provx),
+        (1, provx, /home/user/test-cases/testcase1.provx
+            json, /home/user/test-cases/testcase1.json),
+        (1, provx, /home/user/test-cases/testcase1.provx
+            provx, /home/user/test-cases/testcase1.provx),
+        (3, json, /home/user/test-cases/primer.json
+            json, /home/user/test-cases/primer.json)
+      ]
 
     :param test_cases_dir: Test cases directory
     :type config: str or unicode
@@ -191,38 +258,45 @@ class HarnessResources(ConfigurableComponent):
         self._test_cases.extend(test_case_tests)
 
   def configure(self, config):
-    """Configure harness. ``config`` must hold entries::
+    """Configure harness. The configuration must hold:
 
-        test-cases: ...test cases directory...
-        comparators:
-          Comparator nick-name
-            class: ... class name...
-            ...class-specific configuration...
-        ...other configuration...
+    - ``test-cases``: location of test cases directory.
+    - ``comparators``: a list of comparator configurations keyed by
+       name. Each configuration consists of: 
 
-    For example::
+      - ``class``: name of class that manages invocations of that comparator.
+      - Configuration values required by the class named in ``class``.
 
-        test-cases: /home/user/interop/test-cases
-        comparators:
-          ProvPyComparator: 
-            class: prov_interop.provpy.comparator.ProvPyComparator
-            executable: prov-compare
-            arguments: -f FORMAT1 -F FORMAT2 FILE1 FILE2
-            formats: [provx, json]
+    A valid configuration is::
 
-    Other configuration is saved but not processed by this method.
-    
-    :func:`register_comparators` is called to create and populate
-    available comparators.
+      {
+        "test-cases": "/home/user/test-cases",
+        "comparators": 
+        {
+          "ProvPyComparator": 
+          {
+            "class": "prov_interop.provpy.comparator.ProvPyComparator",
+            "executable": "prov-compare",
+            "arguments": "-f FORMAT1 -F FORMAT2 FILE1 FILE2",
+            "formats": ["provx", "json"],
+          }
+        }
+      }
 
-    :func:`register_test_cases` is called to create applicable test
-    cases based on directories in ``test-cases`` and formats 
-    supported by available comparators.
+    This method invokes methods to populate data structures needed to
+    run interoperability tests using the test cases:
+
+    - :func:`register_comparators` is called to create the
+      comparators.
+    - :func:`register_test_cases` is called to create applicable test 
+      cases based on those in ``test-cases`` and the available
+      comparators. 
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if ``config`` does not hold the above
-      entries, or problems arise invoking :func:`configure`
+    :raises ConfigError: if `config` does not hold the above
+      entries, if no comparators are defined, or there are any
+      problems creating their instances or configuring the comparators
     """
     super(HarnessResources, self).configure(config)
     self.check_configuration(

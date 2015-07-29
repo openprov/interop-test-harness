@@ -1,4 +1,4 @@
-"""Manages invocation of ProvPy prov-convert script.
+"""Manages invocation of ProvPy ``prov-convert`` script.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -35,7 +35,7 @@ from prov_interop.converter import ConversionError
 from prov_interop.converter import Converter
 
 class ProvPyConverter(Converter, CommandLineComponent):
-  """Manages invocation of ProvPy prov-convert script."""
+  """Manages invocation of ProvPy ``prov-convert`` script."""
 
   FORMAT = "FORMAT"
   """str or unicode: token for output format in command-line specification"""
@@ -49,9 +49,9 @@ class ProvPyConverter(Converter, CommandLineComponent):
   LOCAL_FORMATS = {
     standards.PROVX: "xml"
   }
-  """dict: mapping from formats in ``prov_interop.standards`` to
-       formats understood by prov-convert
-` """
+  """dict: mapping from formats in :mod:`prov_interop.standards` to
+  formats understood by ``prov-convert``
+  """
 
   def __init__(self):
     """Create converter.
@@ -59,49 +59,61 @@ class ProvPyConverter(Converter, CommandLineComponent):
     super(ProvPyConverter, self).__init__()
 
   def configure(self, config):
-   """Configure converter. ``config`` must hold entries::
+    """Configure converter. The configuration must hold:
 
-        executable: ...executable...
-        arguments: ...arguments including tokens INPUT, OUTPUT...
-        input-formats: [...list of formats from prov_interop.standards...]
-        output-formats: [...list of formats from prov_interop.standards...]
+    - :class:`prov_interop.converter.Converter` configuration
+    - :class:`prov_interop.component.CommandLineComponent` configuration
 
-    For example::
+    ``arguments`` must have tokens ``FORMAT``, ``INPUT``, ``OUTPUT``,
+    which are place-holders for the output format, input file and
+    output file. 
 
-        executable: prov-convert
-        arguments: -f FORMAT INPUT OUTPUT
-        input-formats: [json]
-        output-formats: [provn, provx, json]
+    A valid configuration is::
 
-    Executables and arguments are split on whitespace and stored as lists.
+      {
+         "executable": "prov-convert"
+         "arguments": "-f FORMAT INPUT OUTPUT"
+         "input-formats": ["json"]
+         "output-formats": ["provn", "provx", "json"]
+      }
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if ``config`` does not hold the above entries
+    :raises ConfigError: if `config` does not hold the above entries
     """
-   super(ProvPyConverter, self).configure(config)
-   for token in [ProvPyConverter.FORMAT,
-                 ProvPyConverter.INPUT, 
-                 ProvPyConverter.OUTPUT]:
-     if token not in self._arguments:
-       raise ConfigError("Missing token " + token)
+    super(ProvPyConverter, self).configure(config)
+    for token in [ProvPyConverter.FORMAT,
+                  ProvPyConverter.INPUT, 
+                  ProvPyConverter.OUTPUT]:
+      if token not in self._arguments:
+        raise ConfigError("Missing token " + token)
 
   def convert(self, in_file, out_file):
-    """Convert input file into output file. Each file must have an
-    extension matching a format in ``prov_interop.standards``
-.
-    ``INPUT``, ``OUTPUT`` and ``FORMAT`` tokens from configuration
-    ``arguments`` value are replaced with ``in_file`` and ``out_file``
-    values and ``out_file`` format, then prepended with ``executable``
-    value to create command-line invocation.
+    """Convert input file into output file. 
 
-    :param in_file: Input file name
+    - Input and output formats are derived from `in_file` and
+      `out_file` file extensions.  
+    - A check is done to see that `in_file` exists and that the input
+      and output format are in ``input-formats`` and
+      ``output-formats`` respectively. 
+    - ``executable`` and ``arguments`` are used to create a
+      command-line invocation, with ``FORMAT``, ``INPUT`` and
+      ``OUTPUT`` being replaced with the output format, `in_file`, and
+      `out_file`  
+    - If the output format is ``provx`` then ``xml`` is used as
+      ``FORMAT`` (as ``prov-convert`` does not recognise ``provx``).
+    - A check is done to see that `out_file` exists.
+
+    An example command-line invocation is::
+
+      prov-convert -f xml testcase1.json testcase1.provx
+
+    :param in_file: Input file
     :type in_file: str or unicode
-    :param out_file: Output file name
+    :param out_file: Output file
     :type out_file: str or unicode
-    :raises ConversionError: if the input file is not found, the
-      return code is non-zero, the return code is zero but the output 
-      file is not found, or the input format is invalid
+    :raises ConversionError: if the input file cannot be found, or
+      the exit code of ``prov-convert`` is non-zero
     :raises OSError: if there are problems invoking the converter
       e.g. the script is not found
     """

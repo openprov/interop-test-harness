@@ -1,4 +1,4 @@
-"""Manages invocation of ProvPy prov-compare script.
+"""Manages invocation of ProvPy ``prov-compare`` script.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -35,7 +35,7 @@ from prov_interop.comparator import ComparisonError
 from prov_interop.comparator import Comparator
 
 class ProvPyComparator(Comparator, CommandLineComponent):
-  """Manages invocation of ProvPy prov-compare script."""
+  """Manages invocation of ProvPy ``prov-compare`` script."""
 
   FORMAT1 = "FORMAT1"
   """str or unicode: token for file1's format in command-line specification"""
@@ -47,14 +47,14 @@ class ProvPyComparator(Comparator, CommandLineComponent):
   """str or unicode: token for file1 in command-line specification"""
 
   FILE2 = "FILE2"
-  """str or unicode: token for file1 in command-line specification"""
+  """str or unicode: token for file2 in command-line specification"""
 
   LOCAL_FORMATS = {
     standards.PROVX: "xml"
   }
-  """dict: mapping from formats in ``prov_interop.standards`` to
-       formats understood by prov-compare
-` """
+  """dict: mapping from formats in :mod:`prov_interop.standards` to
+  formats understood by ``prov-compare``
+  """
 
   def __init__(self):
     """Create comparator.
@@ -62,23 +62,26 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     super(ProvPyComparator, self).__init__()
 
   def configure(self, config):
-    """Configure comparator. ``config`` must hold entries::
+    """Configure comparator. The configuration must hold:
 
-        executable: ...executable...
-        arguments: ...arguments including tokens INPUT, OUTPUT...
-        formats: [...list of formats from prov_interop.standards...]
+    - :class:`prov_interop.comparator.Comparator` configuration
+    - :class:`prov_interop.component.CommandLineComponent` configuration
 
-    For example::
+    ``arguments`` must have tokens ``FORMAT1``, ``FORMAT2``,
+    ``FILE1``, ``FILE2``, which are place-holders for the the files and
+    their formats. 
 
-        executable: prov-compare
-        arguments: -f FORMAT1 -F FORMAT2 FILE1 FILE2
-        formats: [provx, json]
+    A valid configuration is::
 
-    Executables and arguments are split on whitespace and stored as lists.
+      {
+        "executable": "prov-compare"
+        "arguments": "-f FORMAT1 -F FORMAT2 FILE1 FILE2"
+        "formats": ["provx", "json"]
+      }
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if ``config`` does not hold the above entries
+    :raises ConfigError: if `config` does not hold the above entries
     """
     super(ProvPyComparator, self).configure(config)
     for token in [ProvPyComparator.FORMAT1,
@@ -89,24 +92,30 @@ class ProvPyComparator(Comparator, CommandLineComponent):
         raise ConfigError("Missing token " + token)
 
   def compare(self, file1, file2):
-    """Compare two files. Each file must have an extension matching a
-    format in ``prov_interop.standards``.
+    """Compare files.
 
-    ``FORMAT1``, ``FORMAT2``, ``FILE1`` and ``FILE2`` tokens from
-    configuration ``arguments`` value are replaced with ``file1`` and
-    ``file2`` formats and ``file1`` and ``file2`` values and output
-    format, then prepended with ``executable`` value to create
-    command-line invocation.
+    - File formats are derived from `file1` and `file1` file extensions.
+    - A check is done to see that `file1` and `file2` exist and that
+      their formats are in ``formats``. 
+    - ``executable`` and ``arguments`` are used to create a
+      command-line invocation, with ``FORMAT1``, ``FORMAT2``,
+      ``FILE1`` and ``FILE2`` being replaced with the file formats,
+      `in_file`, and `out_file` 
+    - If either format is ``provx`` then ``xml`` is used (as
+      ``prov-compare`` does not recognise ``provx``). 
 
-    :param file1: File name
+    An example command-line invocation is::
+
+      prov-compare -f xml -F xml testcase1.provx converted.provx
+
+    :param file1: File
     :type file1: str or unicode
-    :param file2: File name
+    :param file2: File
     :type file2: str or unicode
-    :returns: True (success) if files are equivalent, else False (fail)
+    :return: ``True`` or ``False``
     :rtype: bool
-    :raises ComparisonError: if either of the files are not found,
-      or the files or formats are invalid, or the return code is 
-      neither 0 nor 1
+    :raises ComparisonError: if either of the files cannot be found,
+      or the exit code of ``prov-compare`` is neither 0 nor 1
     :raises OSError: if there are problems invoking the comparator
       e.g. the script is not found
     """

@@ -89,7 +89,7 @@ class Converter(ConfigurableComponent):
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if ``config`` does not hold the above entries
+    :raises ConfigError: if `config` does not hold the above entries
     """
     super(Converter, self).configure(config)
     self.check_configuration(
@@ -117,10 +117,10 @@ class Converter(ConfigurableComponent):
       raise ConversionError("Unsupported input format: " + out_format)
 
   def convert(self, in_file, out_file):
-    """Convert input file into output file. ``in_file`` holds the
+    """Convert input file into output file. `in_file` holds the
     document to be converted. If the conversion is successful then
-    ``out_file`` holds the converted document. The file extensions of
-    ``in_file`` and ``out_file`` must each be one of those in
+    `out_file` holds the converted document. The file extensions of
+    `in_file` and `out_file` must each be one of those in
     :mod:`prov_interop.standards`.
 
     :param in_file: Input file
