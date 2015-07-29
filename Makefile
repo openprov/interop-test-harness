@@ -12,17 +12,7 @@ clean-pyc:
 .PHONY: apidocs
 apidocs:
 	rm -f apidocs/prov_interop.rst
-	rm -f prov_interop.interop_tests.rst
-	rm -f prov_interop.provpy.rst
-	rm -f prov_interop.provstore.rst
-	rm -f prov_interop.provtoolbox.rst
-	rm -f prov_interop.provtranslator.rst
-	rm -f prov_interop.rst
-	rm -f prov_interop.tests.provpy.rst
-	rm -f prov_interop.tests.provstore.rst
-	rm -f prov_interop.tests.provtoolbox.rst
-	rm -f prov_interop.tests.provtranslator.rst
-	rm -f prov_interop.tests.rst
+	rm -f prov_interop.*
 	rm -f apidocs/modules.rst
 	rm -rf apidocs/_build
 	sphinx-apidoc -o apidocs/ prov_interop
