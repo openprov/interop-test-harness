@@ -1,4 +1,4 @@
-"""Manages invocation of ProvToolbox provconvert script.
+"""Manages invocation of ProvToolbox `provconvert` script.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -34,7 +34,7 @@ from prov_interop.converter import ConversionError
 from prov_interop.converter import Converter
 
 class ProvToolboxConverter(Converter, CommandLineComponent):
-  """Manages invocation of ProvToolbox provconvert script."""
+  """Manages invocation of ProvToolbox `provconvert` script."""
 
   INPUT = "INPUT"
   """str or unicode: token for input file in command-line specification"""
@@ -47,26 +47,26 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
     super(ProvToolboxConverter, self).__init__()
 
   def configure(self, config):
-    """Configure converter. ``config`` must hold entries::
+    """Configure converter. The configuration must hold:
 
-        executable: ...executable...
-        arguments: ...rguments including tokens INPUT, OUTPUT...
-        input-formats: [...list of formats from prov_interop.standards...]
-        output-formats: [...list of formats from prov_interop.standards...]
+    - :class:`prov_interop.converter.Converter` configuration
+    - :class:`prov_interop.component.CommandLineComponent` configuration
 
-    For example::
+    ``arguments`` must have tokens ``INPUT``, ``OUTPUT`` which are
+    place-holders for the input file and output file. 
 
-        executable: /home/user/ProvToolbox/bin/provconvert
-        arguments: -infile INPUT -outfile OUTPUT
-        input-formats: [provn, ttl, trig, provx, json]
-        output-formats: [provn, ttl, trig, provx, json]
+    A valid configuration is::
 
-    Executables and arguments are split on whitespace and stored as lists.
+      {
+        "executable": "/home/user/ProvToolbox/bin/provconvert"
+        "arguments": "-infile INPUT -outfile OUTPUT"
+        "input-formats": ["provn", "ttl", "trig", "provx", "json"]
+        "output-formats": ["provn", "ttl", "trig", "provx", "json"]
+      }
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if ``config`` does not hold the above
-    entries
+    :raises ConfigError: if `config` does not hold the above entries
     """
     super(ProvToolboxConverter, self).configure(config)
     for token in [ProvToolboxConverter.INPUT, ProvToolboxConverter.OUTPUT]:
@@ -74,23 +74,29 @@ class ProvToolboxConverter(Converter, CommandLineComponent):
         raise ConfigError("Missing token " + token)
 
   def convert(self, in_file, out_file):
-    """Convert input file into output file. Each file must have an
-    extension matching a format in ``prov_interop.standards``
-.
-    ``INPUT`` and ``OUTPUT`` tokens from configuration ``arguments``
-    value are replaced with ``in_file`` and ``out_file`` values, then
-    prepended with ``executable`` value to create command-line
-    invocation.
+    """Convert input file into output file. 
 
-    :param in_file: Input file name
+    - Input and output formats are derived from `in_file` and
+      `out_file` file extensions.  
+    - A check is done to see that `in_file` exists and that the input
+      and output format are in ``input-formats`` and
+      ``output-formats`` respectively. 
+    - ``executable`` and ``arguments`` are used to create a
+      command-line invocation, with ``INPUT`` and ``OUTPUT`` being
+      replaced with `in_file`, and `out_file`  
+
+    An example command-line invocation is::
+
+      /home/user/ProvToolbox/bin/provconvert -infile testcase1.json -outfile testcase1.provx
+
+    :param in_file: Input file
     :type in_file: str or unicode
-    :param out_file: Output file name
+    :param out_file: Output file
     :type out_file: str or unicode
-    :raises ConversionError: if the input file is not found, the
-    return code is non-zero, the return code is zero but the output
-    file is not found, the input or output formats are invalid
+    :raises ConversionError: if the input file cannot be found, or
+      the exit code of ``provconvert`` is non-zero
     :raises OSError: if there are problems invoking the converter
-    e.g. the script is not found
+      e.g. the script is not found
     """
     super(ProvToolboxConverter, self).convert(in_file, out_file)
     in_format = os.path.splitext(in_file)[1][1:]
