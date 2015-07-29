@@ -1,4 +1,4 @@
-"""Interoperability tests for ProvPy prov-convert.
+"""Interoperability tests for ProvPy ``prov-convert``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -32,21 +32,43 @@ from prov_interop.interop_tests.test_converter import ConverterTestCase
 
 @istest
 class ProvPyTestCase(ConverterTestCase):
+  """Interoperability tests for ProvPy ``prov-convert``.
+ 
+  Its configuration, loaded via
+  :meth:`prov_interop.interop_tests.test_converter.ConverterTestCase.configure`,
+  is expected to be in a YAML file: 
+  
+  - Either provided as the value of a ``ProvPy`` key in the
+    :class:`prov_interop.harness.HarnessResource` configuration. 
+  - Or, named in an environment variable, 
+    ``PROVPY_TEST_CONFIGURATION``.
+  - Or in ``localconfig/provpy.yaml``.
+
+  The configuration itself, within this file, is expected to have the
+  key `ProvPy``. 
+
+  A valid YAML configuration file is::
+
+    ---
+    ProvPy:
+      executable: prov-convert
+      arguments: -f FORMAT INPUT OUTPUT
+      input-formats: [json]
+      output-formats: [provn, provx, json]
+      skip-tests: []
+  """
 
   CONFIGURATION_FILE_ENV = "PROVPY_TEST_CONFIGURATION"
-  """str or unicode: environment variable holding ProvPy
-  interoperability test harness configuration file name  
+  """str or unicode: environment variable holding configuration file name  
   """
 
   DEFAULT_CONFIGURATION_FILE="localconfig/provpy.yaml"
-  """str or unicode: default interoperability test harness configuration
-  file name
+  """str or unicode: default configuration file name
   """
 
   CONFIGURATION_KEY="ProvPy"
   """str or unicode: key for ProvPy configuration in configuration
   file"""
-
 
   def setUp(self):
     super(ProvPyTestCase, self).setUp()

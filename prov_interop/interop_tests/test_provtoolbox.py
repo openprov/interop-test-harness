@@ -1,4 +1,4 @@
-"""Interoperability tests for ProvToolbox provconvert.
+"""Interoperability tests for ProvToolbox ``provconvert``.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -32,15 +32,38 @@ from prov_interop.interop_tests.test_converter import ConverterTestCase
 
 @istest
 class ProvToolboxTestCase(ConverterTestCase):
+  """Interoperability tests for ProvToolbox ``provconvert``.
+ 
+  Its configuration, loaded via
+  :meth:`prov_interop.interop_tests.test_converter.ConverterTestCase.configure`,
+  is expected to be in a YAML file: 
+  
+  - Either provided as the value of a ``ProvToolbox`` key in the
+    :class:`prov_interop.harness.HarnessResource` configuration. 
+  - Or, named in an environment variable, 
+    ``PROVTOOLBOX_TEST_CONFIGURATION``.
+  - Or in ``localconfig/provtoolbox.yaml``.
+
+  The configuration itself, within this file, is expected to have the
+  key `ProvToolbox``. 
+
+  A valid YAML configuration file is::
+
+    ---
+    ProvToolbox:
+      executable: provconvert
+      arguments: -infile INPUT -outfile OUTPUT
+      input-formats: [provn, ttl, trig, provx, json]
+      output-formats: [provn, ttl, trig, provx, json]
+      skip-tests: []
+  """
 
   CONFIGURATION_FILE_ENV = "PROVTOOLBOX_TEST_CONFIGURATION"
-  """str or unicode: environment variable holding ProvToolbox
-  interoperability test harness configuration file name
+  """str or unicode: environment variable holding configuration file name
   """
 
   DEFAULT_CONFIGURATION_FILE="localconfig/provtoolbox.yaml"
-  """str or unicode: default interoperability test harness configuration
-  file name
+  """str or unicode: default configuration file name
   """
 
   CONFIGURATION_KEY="ProvToolbox"

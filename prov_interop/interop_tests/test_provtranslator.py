@@ -56,6 +56,7 @@ class ProvTranslatorTestCase(ConverterTestCase):
       output-formats: [provn, ttl, trig, provx, json]
       skip-tests: []
   """
+
   CONFIGURATION_FILE_ENV = "PROVTRANSLATOR_TEST_CONFIGURATION"
   """str or unicode: environment variable holding configuration file name  
   """
