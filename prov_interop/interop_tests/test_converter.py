@@ -282,13 +282,4 @@ class ConverterTestCase(unittest.TestCase):
     self.converter.convert(file_ext_in, self.converter_ext_out)
     comparator = harness.harness_resources.format_comparators[ext_out]
     are_equivalent = comparator.compare(file_ext_out, self.converter_ext_out)
-    msg = ""
-    if not are_equivalent:
-      with open(self.converter_ext_out) as f: 
-        expected = f.read()
-      with open(file_ext_out) as f: 
-        actual = f.read()
-      msg = "Comparison failure for converted file " + ext_out + \
-          "\nCanonical file " + file_ext_out + ":\n" + expected + \
-          "\nConverted file:\n:" + actual
     self.assertTrue(are_equivalent, msg=msg)
