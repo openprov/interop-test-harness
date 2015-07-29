@@ -74,7 +74,7 @@ class ProvStoreConverter(Converter, RestComponent):
   def authorization(self):
     """Get authorization header value.
     
-    :returns: authoriation header
+    :return: authoriation header
     :rtype: str or unicode
     """
     return self._authorization
