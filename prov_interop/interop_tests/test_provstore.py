@@ -1,4 +1,4 @@
-"""Interoperability tests for ProvStore service.
+"""Interoperability tests for ProvStore.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -32,15 +32,37 @@ from prov_interop.interop_tests.test_converter import ConverterTestCase
 
 @istest
 class ProvStoreTestCase(ConverterTestCase):
+  """Interoperability tests for ProvStore.
+  
+  Its configuration, loaded via
+  :meth:`prov_interop.interop_tests.test_converter.ConverterTestCase.configure`,
+  is expected to be in a YAML file: 
+  
+  - Either provided as the value of a ``ProvStore`` key in the
+    :class:`prov_interop.harness.HarnessResource` configuration. 
+  - Or, named in an environment variable, 
+    ``PROVSTORE_TEST_CONFIGURATION``.
+  - Or in ``localconfig/provstore.yaml``.
 
+  The configuration itself, within this file, is expected to have the
+  key `ProvStore``. 
+
+  A valid YAML configuration file is::
+
+    ---
+    ProvStore:
+      url: https://provenance.ecs.soton.ac.uk/store/api/v0/documents/
+      authorization: ApiKey user:12345qwerty
+      input-formats: [provn, ttl, trig, provx, json]
+      output-formats: [provn, ttl, trig, provx, json]
+      skip-tests: []
+  """
   CONFIGURATION_FILE_ENV = "PROVSTORE_TEST_CONFIGURATION"
-  """str or unicode: environment variable holding ProvStore
-  interoperability test harness configuration file name  
+  """str or unicode: environment variable holding configuration file name  
   """
 
   DEFAULT_CONFIGURATION_FILE="localconfig/provstore.yaml"
-  """str or unicode: default interoperability test harness configuration
-  file name
+  """str or unicode: default configuration file name
   """
 
   CONFIGURATION_KEY="ProvStore"
