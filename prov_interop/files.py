@@ -1,4 +1,4 @@
-"""File utilities.
+"""Functions to load `YAML <http://yaml.org/>`_ files.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -29,13 +29,14 @@ import os
 import yaml
 
 def load_yaml(env_var, default_file_name, file_name = None):
-  """Load content from a YAML file.
+  """Load the contents of a YAML file.
+
   - If ``file_name`` is provided then the contents of the file are
-  loaded and returned.
-  - Else, if an environment variable with name ``env_var`` is defined,
-  then the contents of the file named in that variable are loaded.
-  - Else, the contents of the default file, ``default_file_name``, 
-  are loaded.
+    loaded and returned.
+  - Else, if an environment variable with name ``env_var`` is defined, 
+    then the contents of the file named in that variable are loaded.
+  - Else, the contents of the default file, ``default_file_name``, are
+    loaded and returned.
   
   :param env_var: Environment variable with file name
   :type env_var: str or unicode
@@ -43,10 +44,10 @@ def load_yaml(env_var, default_file_name, file_name = None):
   :type file_name: str or unicode
   :param file_name: File name (optional)
   :type file_name: str or unicode
-  :returns: content
+  :return: content
   :rtype: dict
   :raises IOError: if the file is not found
-  :raises YamlError: if the file does not parse into a dict
+  :raises YamlError: if the file does not contain a valid YAML document
   """
   if (file_name is None):
     try:
@@ -61,7 +62,7 @@ def load_yaml(env_var, default_file_name, file_name = None):
 
 
 class YamlError(Exception):
-  """File does not contain YAML document."""
+  """File does not contain a valid YAML document."""
 
   def __init__(self, filename):
     """Create error.
@@ -72,9 +73,9 @@ class YamlError(Exception):
     self._filename = filename
 
   def __str__(self):
-    """Get error as formatted string.
+    """Get error as a formatted string.
 
-    :returns: formatted string
+    :return: formatted string
     :rtype: str or unicode
     """
     return repr(self._filename + " does not contain a valid YAML document")
@@ -83,7 +84,7 @@ class YamlError(Exception):
   def filename(self):
     """Get file name.
 
-    :returns: file name
+    :return: file name
     :rtype: str or unicode
     """
     return self._filename

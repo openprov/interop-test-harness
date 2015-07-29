@@ -39,7 +39,7 @@ class ConfigurableComponent(object):
   def configuration(self):
     """Get configuration.
 
-    :returns: configuration
+    :return: configuration
     :rtype: dict
     """
     return self._config
@@ -58,9 +58,10 @@ class ConfigurableComponent(object):
         raise ConfigError("Missing " + key)
 
   def configure(self, config):
-    """Configure component.
+    """Configure component. Any configuration not specific to a
+    component is ignored.
 
-    :param config: Configuration
+    :param config: Component-specific configuration
     :type config: dict
     :raises ConfigError: if config is not a dict
     """
@@ -83,14 +84,14 @@ class ConfigError(Exception):
   def __str__(self):
     """Get error as formatted string.
 
-    :returns: formatted string
+    :return: formatted string
     :rtype: str or unicode
     """
     return repr(self._value)
 
 
 class CommandLineComponent(ConfigurableComponent):
-  """Base class for configurable command-line components."""
+  """Base class for command-line components."""
 
   EXECUTABLE = "executable"
   """str or unicode: configuration key for executable"""
@@ -106,34 +107,53 @@ class CommandLineComponent(ConfigurableComponent):
 
   @property
   def executable(self):
-    """Get the executable as a list.
-    
-    :returns: executable
-    :rtype: str or unicode
+    """Get the executable as a list of strings. The ``executable``
+    value provided during configuration is split upon spaces and
+    returned.
+   
+    :return: executable
+    :rtype: list of str or unicode
     """
     return self._executable
 
   @property
   def arguments(self):
-    """Get the arguments as a list.
+    """Get the arguments as a list. The ``arguments`` value provided
+  during configuration is split upon spaces and returned.
     
-    :returns: arguments
-    :rtype: list of str or unicode or int or float
+    :return: arguments
+    :rtype: list of str or unicode
     """
     return self._arguments
 
   def configure(self, config):
-    """Configure component. Configuration must hold entries::
+    """Configure component. The configuration must hold:
 
-        executable: ...executable...
-        arguments: ...arguments...
+    - ``executable``: the name of the executable. This may be a single
+      executable file name or an executable name and a script
+      name. Executables may be prefixed with their absolute path
+      depending on whether or not they are on the system path. 
+    - ``arguments``: arguments for the executable.
 
-    For example::
+    Valid configurations include::
 
-        executable: prov-convert
-        arguments: -f FORMAT INPUT OUTPUT
+      {
+        "executable": "/home/user/ProvToolbox/bin/provconvert",
+        "arguments": "-infile INPUT -outfile OUTPUT"
+      }
+      {
+        "executable": "prov-convert",
+        "arguments": "-f FORMAT INPUT OUTPUT"
+      }
+      {
+        "executable": "python /home/user/ProvPy/scripts/prov-convert",
+        "arguments": "-f FORMAT INPUT OUTPUT"
+      }
 
-    Executables and arguments are split on whitespace and stored as lists.
+    Both values may include tokens that can be replaced at run time
+    with actual values. This is the responsibility of sub-classes. For
+    example, `INPUT` and `OUTPUT` would be replaced with input and
+    output file names. 
 
     :param config: Configuration
     :type config: dict
@@ -147,7 +167,7 @@ class CommandLineComponent(ConfigurableComponent):
 
 
 class RestComponent(ConfigurableComponent):
-  """Base class for configurable REST-ful components."""
+  """Base class for REST-ful components."""
 
   URL = "url"
   """str or unicode: configuration key for REST endpoint URL"""
@@ -162,19 +182,21 @@ class RestComponent(ConfigurableComponent):
   def url(self):
     """Get the URL.
     
-    :returns: URL
+    :return: URL
     :rtype: str or unicode
     """
     return self._url
 
   def configure(self, config):
-    """Configure component. Configuration must hold entries::
+    """Configure component. The configuration must hold:
 
-        url: ...REST endpoint URL...
+    - ``url``: REST endpoint for POST requests.
 
-    For example::
+    A valid configuration is::
 
-        url: https://provenance.ecs.soton.ac.uk/validator/provapi/documents/
+      {
+        "url": "https://provenance.ecs.soton.ac.uk/validator/provapi/documents/"
+      }
 
     :param config: Configuration
     :type config: dict

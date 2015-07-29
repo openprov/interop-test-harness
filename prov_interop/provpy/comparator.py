@@ -39,15 +39,21 @@ class ProvPyComparator(Comparator, CommandLineComponent):
 
   FORMAT1 = "FORMAT1"
   """str or unicode: token for file1's format in command-line specification"""
+
   FORMAT2 = "FORMAT2"
   """str or unicode: token for file2's format in command-line specification"""
+
   FILE1 = "FILE1"
   """str or unicode: token for file1 in command-line specification"""
+
   FILE2 = "FILE2"
   """str or unicode: token for file1 in command-line specification"""
-  LOCAL_FORMATS = {standards.PROVX: "xml"}
+
+  LOCAL_FORMATS = {
+    standards.PROVX: "xml"
+  }
   """dict: mapping from formats in ``prov_interop.standards`` to
-  formats understood by prov-compare
+       formats understood by prov-compare
 ` """
 
   def __init__(self):
@@ -96,14 +102,13 @@ class ProvPyComparator(Comparator, CommandLineComponent):
     :type file1: str or unicode
     :param file2: File name
     :type file2: str or unicode
-    :returns: True (success) if files are equivalent, else False
-    (fail)
+    :returns: True (success) if files are equivalent, else False (fail)
     :rtype: bool
     :raises ComparisonError: if either of the files are not found,
-    or the files or formats are invalid, or the return code is neither
-    0 nor 1
+      or the files or formats are invalid, or the return code is 
+      neither 0 nor 1
     :raises OSError: if there are problems invoking the comparator
-    e.g. the script is not found
+      e.g. the script is not found
     """
     super(ProvPyComparator, self).compare(file1, file2)
     format1 = os.path.splitext(file1)[1][1:]

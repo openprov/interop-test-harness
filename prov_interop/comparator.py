@@ -32,7 +32,10 @@ from prov_interop.component import ConfigError
 from prov_interop.component import ConfigurableComponent
 
 class Comparator(ConfigurableComponent):
-  """Base class for comparators."""
+  """Base class for comparators. Comparators compare PROV documents to
+  see if they are semantically equivalent. Comparators, in conjunction
+  with test cases, are used to validate converters.
+  """
 
   FORMATS = "formats"
   """str or unicode: configuration key for supported formats
@@ -46,22 +49,25 @@ class Comparator(ConfigurableComponent):
 
   @property
   def formats(self):
-    """Gets formats supported by the comparator. Formats are defined
-    in ``prov_interop.standards``.
+    """Get formats supported by the comparator, each of which is a
+    format from :mod:`prov_interop.standards`.
 
-    :returns: formats
+    :return: formats
     :rtype: list of str or unicode
     """
     return self._formats
 
   def configure(self, config):
-    """Configure comparator. ``config`` must hold entries::
+    """Configure comparator. The configuration must hold:
 
-        formats: [...list of formats from prov_interop.standards...]
+    - ``formats``: formats supported by the comparator, each of which
+       must be one of those in mod:`prov_interop.standards`. 
 
-    For example::
+    A valid configuration is::
 
-        formats: [provx, json]
+      {
+        "formats": ["provx", "json"]
+      }
 
     :param config: Configuration
     :type config: dict
@@ -86,17 +92,19 @@ class Comparator(ConfigurableComponent):
       raise ComparisonError("Unsupported format: " + format)
 
   def compare(self, file1, file2):
-    """Compare two files. Each file must have an extension matching a
-    format in ``prov_interop.standards``.
+    """Compare files. `file1` and `file` hold the documents to be
+    compared.  The file extensions of `file1` and `file2` must each be
+    one of those in mod:`prov_interop.standards`. If the documents are 
+    semantically equivalent then `True` is returned, else `False` is
+    returned.  
 
-    :param file1: File name
+    :param file1: File
     :type file1: str or unicode
-    :param file2: File name
+    :param file2: File
     :type file2: str or unicode
-    :returns: True (success) if files are equivalent, else False 
-    (fail)
+    :return: True (success) if files are equivalent, else False (fail)
     :rtype: bool
-    :raises ComparisonError: if either of the files are not found
+    :raises ComparisonError: if either of the files cannot be found
     """
     for f in [file1, file2]:
       if not os.path.isfile(f):
@@ -117,7 +125,7 @@ class ComparisonError(Exception):
   def __str__(self):
     """Get error as formatted string.
 
-    :returns: formatted string
+    :return: formatted string
     :rtype: str or unicode
     """
     return repr(self._value)

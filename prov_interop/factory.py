@@ -1,4 +1,4 @@
-"""Utilities for dynamic object creation.
+"""Dynamic class loading and object creation.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -30,14 +30,14 @@ import importlib
 import yaml
 
 def get_class(name):
-  """Load class given a module-prefixed class name. A valid
+  """Load a class given a module-prefixed class name. A valid
   module-prefixed class name is, for example,
-  ``prov_interop.component.Component``. An invalid class name is
+  ``prov_interop.component.Component``. An invalid class name is 
   ``Component``.
-   
+
   :param name: Module-prefixed class name
   :type name: str or unicode
-  :returns: Class specified in name
+  :return: Class specified in name
   :rtype: classobj
   :raises ValueError: if ``name`` is not module-prefixed
   :raises ImportError: if module cannot be loaded
@@ -52,18 +52,20 @@ def get_class(name):
   return clazz
 
 def get_instance(name):
-  """Return instance of class given a module-prefixed class name. A
-  valid module-prefixed class name is, for example,
+  """Return an instance of a class given a module-prefixed class
+  name. A valid module-prefixed class name is, for example,
   ``prov_interop.component.Component``. An invalid class name is
-  ``Component``. The class must have a 0-arity constructor.
+  ``Component``. This function assumes the class has a zero-arity
+  constructor.
 
   :param name: Module-prefixed class name
   :type name: str or unicode
-  :returns: Instance of class specified in name
+  :return: Instance of class specified in name
   :rtype: instance
   :raises ValueError: if ``name`` is not module-prefixed
   :raises ImportError: if module cannot be loaded
   :raises AttributeError: if class cannot be found
-  :raises TypeError: if class constructor has non-0 arity constructor
+  :raises TypeError: 
+    if class constructor does not have a zero-arity constructor
   """
   return get_class(name)()

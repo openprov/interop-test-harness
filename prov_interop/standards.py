@@ -1,4 +1,4 @@
-"""W3C PROV constants.
+"""Canonical names for W3C `PROV <http://www.w3.org/TR/prov-overview/>`_ formats.
 """
 # Copyright (c) 2015 University of Southampton
 #

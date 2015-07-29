@@ -1,4 +1,4 @@
-"""HTTP constants.
+"""Constants relating to HTTP requests.
 """
 # Copyright (c) 2015 University of Southampton
 #

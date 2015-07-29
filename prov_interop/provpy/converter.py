@@ -39,13 +39,18 @@ class ProvPyConverter(Converter, CommandLineComponent):
 
   FORMAT = "FORMAT"
   """str or unicode: token for output format in command-line specification"""
+
   INPUT = "INPUT"
   """str or unicode: token for input file in command-line specification"""
+
   OUTPUT = "OUTPUT"
   """str or unicode: token for output file in command-line specification"""
-  LOCAL_FORMATS = {standards.PROVX: "xml"}
+
+  LOCAL_FORMATS = {
+    standards.PROVX: "xml"
+  }
   """dict: mapping from formats in ``prov_interop.standards`` to
-  formats understood by prov-convert
+       formats understood by prov-convert
 ` """
 
   def __init__(self):
@@ -95,10 +100,10 @@ class ProvPyConverter(Converter, CommandLineComponent):
     :param out_file: Output file name
     :type out_file: str or unicode
     :raises ConversionError: if the input file is not found, the
-    return code is non-zero, the return code is zero but the output
-    file is not found, or the input format is invalid
+      return code is non-zero, the return code is zero but the output 
+      file is not found, or the input format is invalid
     :raises OSError: if there are problems invoking the converter
-    e.g. the script is not found
+      e.g. the script is not found
     """
     super(ProvPyConverter, self).convert(in_file, out_file)
     in_format = os.path.splitext(in_file)[1][1:]

@@ -32,7 +32,10 @@ from prov_interop.component import ConfigError
 from prov_interop.component import ConfigurableComponent
 
 class Converter(ConfigurableComponent):
-  """Base class for converters."""
+  """Base class for converters. Converters convert, or transform, PROV
+  documents from one format into another. Converters are the
+  components that are tested by the test harness.
+  """ 
 
   INPUT_FORMATS = "input-formats"
   """str or unicode: configuration key for supported input formats
@@ -50,34 +53,39 @@ class Converter(ConfigurableComponent):
 
   @property
   def input_formats(self):
-    """Gets input formats supported by the converter. Formats are
-    defined in ``prov_interop.standards``.
+    """Get input formats supported by the converter, each of which is
+    a format from  :mod:`prov_interop.standards`.
 
-    :returns: formats
+    :return: formats
     :rtype: list of str or unicode
     """
     return self._input_formats
 
   @property
   def output_formats(self):
-    """Gets ouput formats supported by the converter. Formats are
-    defined in ``prov_interop.standards``.
+    """Get output formats supported by the converter, each of which is
+    a format from  :mod:`prov_interop.standards`.
 
-    :returns: formats
+    :return: formats
     :rtype: list of str or unicode
     """
     return self._output_formats
 
   def configure(self, config):
-    """Configure converter. ``config`` must hold entries::
+    """Configure converter. The configuration must hold:
 
-        input-formats: [...list of formats from prov_interop.standards...]
-        output-formats: [...list of formats from prov_interop.standards...]
+    - ``input-formats``: input formats supported by the converter, each
+      of which must be one of those in :mod:`prov_interop.standards`.
+    - ``output-formats``: output formats supported by the converter,
+      each of which must be one of those in
+      :mod:`prov_interop.standards`.
 
-    For example::
+    A valid configuration is::
 
-        input-formats: [json]
-        output-formats: [provn, provx, json]
+      {
+        "input-formats": ["json"], 
+        "output-formats": ["provn", "provx", "json"]
+      }
 
     :param config: Configuration
     :type config: dict
@@ -109,14 +117,17 @@ class Converter(ConfigurableComponent):
       raise ConversionError("Unsupported input format: " + out_format)
 
   def convert(self, in_file, out_file):
-    """Convert input file into output file. Each file must have an
-    extension matching a format in ``prov_interop.standards``.
+    """Convert input file into output file. `in_file` holds the
+    document to be converted. If the conversion is successful then
+    `out_file` holds the converted document. The file extensions of
+    `in_file` and `out_file` must each be one of those in
+    :mod:`prov_interop.standards`.
 
-    :param in_file: Input file name
+    :param in_file: Input file
     :type in_file: str or unicode
-    :param out_file: Output file name
+    :param out_file: Output file
     :type out_file: str or unicode
-    :raises ConversionError: if the input file is not found
+    :raises ConversionError: if the input file cannot be found
     """
     if not os.path.isfile(in_file):
       raise ConversionError("Input file not found: " + in_file)
@@ -136,7 +147,7 @@ class ConversionError(Exception):
   def __str__(self):
     """Get error as formatted string.
 
-    :returns: formatted string
+    :return: formatted string
     :rtype: str or unicode
     """
     return repr(self._value)

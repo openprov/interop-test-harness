@@ -40,10 +40,13 @@ class HarnessResources(ConfigurableComponent):
 
   TEST_CASES_DIR = "test-cases"
   """str or unicode: configuration key for test cases directory"""
+
   COMPARATORS = "comparators"
   """str or unicode: configuration key list of comparators"""
+
   CLASS = "class"
   """str or unicode: configuration key for comparator class names"""
+
   TEST_CASE_PREFIX="testcase"
   """str or unicode: assumed prefix for individual test case
   directories and files
@@ -72,11 +75,11 @@ class HarnessResources(ConfigurableComponent):
     """Get test cases.
 
     :returns: list of tuple: zero or more test case tuples of form
-    (test case index, ocument 1 format, full path to document 1,
-    document 2 format, full path to document 2) where formats are
-    assumed to be as in ``prov_interop.standards``
+      (test case index, ocument 1 format, full path to document 1,
+      document 2 format, full path to document 2) where formats are
+      assumed to be as in ``prov_interop.standards``
     :rtype: list of tuple of (int, str or unicode, str or unicode, str
-    or unicode, str or unicode)
+      or unicode, str or unicode)
     """
     return self._test_cases
 
@@ -86,7 +89,7 @@ class HarnessResources(ConfigurableComponent):
 
     :returns: comparators
     :rtype: dict from str or unicode to instances of
-    :class:`~prov_interop.comparator.Comparator`
+      :class:`~prov_interop.comparator.Comparator`
     """
     return self._comparators
 
@@ -119,12 +122,12 @@ class HarnessResources(ConfigurableComponent):
           formats: [provx, json]
 
     :param comparators: Mapping of comparator names to 
-    class names and comparator-specific configuration
+      class names and comparator-specific configuration
     :type config: dict
     :raises ConfigError: if ``comparators`` is empty,
-    comparator-specific configuration is missing ``class``, or there
-    is a problem loading, creating or configuring an instance of a 
-    sub-class of :class:`~prov_interop.comparator.Comparator`.
+      comparator-specific configuration is missing ``class``, or there
+      is a problem loading, creating or configuring an instance of a 
+      sub-class of :class:`~prov_interop.comparator.Comparator`.
     """
     if len(comparators) == 0:
       raise ConfigError("There must be at least one comparator defined")
@@ -146,16 +149,18 @@ class HarnessResources(ConfigurableComponent):
     - Initialise an empty list of test cases.
     - Get test cases directory from.
     - For each child directory, whose name is prefixed by "testcase":
+
       - Filter its files to get only those which have an extension 
         matching one of the formats in ``prov_interop.standards`` and 
         for which the format is recorded in ``format_filter``.
       - Calculate possible combinations of pairs of the filtered files 
         to get a set of (test-case-number, format1, file1, format2, 
         file2) tuples and add these to``test_cases``.
+
     :param test_cases_dir: Test cases directory
     :type config: str or unicode
     :param format_filter: List of formats such that only test cases
-    within these formats will be considered
+      within these formats will be considered
     :type format_filter: list of str or unicode
     :raises ConfigError: if the directory is not found
     """
@@ -217,7 +222,7 @@ class HarnessResources(ConfigurableComponent):
     :param config: Configuration
     :type config: dict
     :raises ConfigError: if ``config`` does not hold the above
-    entries, or problems arise invoking :func:`configure`
+      entries, or problems arise invoking :func:`configure`
     """
     super(HarnessResources, self).configure(config)
     self.check_configuration(
