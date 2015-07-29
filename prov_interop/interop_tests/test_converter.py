@@ -282,4 +282,4 @@ class ConverterTestCase(unittest.TestCase):
     self.converter.convert(file_ext_in, self.converter_ext_out)
     comparator = harness.harness_resources.format_comparators[ext_out]
     are_equivalent = comparator.compare(file_ext_out, self.converter_ext_out)
-    self.assertTrue(are_equivalent, msg=msg)
+    self.assertTrue(are_equivalent)
