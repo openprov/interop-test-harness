@@ -1,16 +1,19 @@
-"""Dummy ProvToolbox provconvert. 
-Mimics the behaviour of ProvToolbox prov-onvert. 
+"""Dummy ProvToolbox ``provconvert`` which mimics the behaviour of 
+ProvToolbox ``prov-convert``. 
 
-provconvert returns 1 if: 
+``provconvert`` returns 1 if: 
+
 - No input file.
 - Input file is not a valid PROV document.
 - Input format is not supported.
 
-provconvert returns 0 if:
+``provconvert`` returns 0 if:
+
 - Conversion is successful.
 - Output file format is not supported.
 
 For:
+
 - No input file.
 - Input file is not a valid PROV document.
 - Input format is not supported.
@@ -22,11 +25,11 @@ This script behaves similarly (though it does no PROV validation).
 
 If the inputs are valid it just copies the input file to the output file. 
 
-Usage:
+Usage::
 
-    usage: provconvert-dummy.py -infile infile -outfile outfile
+    usage: provconvert_dummy.py -infile infile -outfile outfile
 
-    Mock ProvToolbox provconvert.
+    Dummy ProvToolbox provconvert.
 
     positional arguments:
       infile       Input file
@@ -66,28 +69,39 @@ import os.path
 import shutil
 import sys
 
-parser = argparse.ArgumentParser(description="Dummy ProvToolbox provconvert.")
-parser.add_argument('-infile', metavar="file", 
-                    help="Input file",
-                    nargs='?', 
-                    required=True)
-parser.add_argument('-outfile', metavar="file", 
-                    help="Output file",
-                    nargs='?', 
-                    required=True)
-args = parser.parse_args()
-print("Running dummy ProvToolbox provconvert...")
-if not os.path.isfile(args.infile):
-  print(("No such file " + args.infile))
-  sys.exit(1)
-formats = ["provn", "ttl", "rdf", "trig", "provx", "xml", "json"]
-in_format = os.path.splitext(args.infile)[1][1:]
-if in_format not in formats:
-  print(("Unsupported input file format " + in_format))
-  sys.exit(1)
-out_format = os.path.splitext(args.outfile)[1][1:]
-if out_format not in formats:
-  print(("Unsupported output file format " + out_format))
+def convert(in_file, out_file):
+  """
+  Mimic `provconvert` behaviour.
+
+  :param in_file: Input file
+  :type in_file: str or unicode
+  :param out_file: Output file
+  :type out_file: str or unicode
+  """
+  if not os.path.isfile(in_file):
+    # No such file
+    sys.exit(1)
+  formats = ["provn", "ttl", "rdf", "trig", "provx", "xml", "json"]
+  in_format = os.path.splitext(in_file)[1][1:]
+  if in_format not in formats:
+    # Unsupported input file format
+    sys.exit(1)
+  out_format = os.path.splitext(out_file)[1][1:]
+  if out_format not in formats:
+    # Unsupported output file format
+    sys.exit(0)
+  shutil.copyfile(in_file, out_file)
+
+if __name__ == "__main__":
+  parser = argparse.ArgumentParser(description="Dummy ProvToolbox provconvert.")
+  parser.add_argument('-infile', metavar="file", 
+                      help="Input file",
+                      nargs='?', 
+                      required=True)
+  parser.add_argument('-outfile', metavar="file", 
+                      help="Output file",
+                      nargs='?', 
+                      required=True)
+  args = parser.parse_args()
+  convert(args.infile, args.outfile)
   sys.exit(0)
-shutil.copyfile(args.infile, args.outfile)
-sys.exit(0)

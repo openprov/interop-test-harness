@@ -1,9 +1,10 @@
 """Unit tests for :mod:`prov_interop.provpy.converter`.
 
-These tests rely on a ``prov-convert-dummy.py`` script,
-that mimics ProvPy's ``prov-convert`` executable
-in terms of parameters and return codes, being available
-in the same directory as this module.     
+These tests rely on the
+:mod:`prov_interop.tests.provpy.prov_convert_dummy.py` script,
+(that mimics ProvPy's ``prov-convert`` script
+in terms of parameters and return codes) being available 
+in the same directory as this module.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -51,7 +52,7 @@ class ProvPyConverterTestCase(unittest.TestCase):
     self.config[ProvPyConverter.EXECUTABLE] = "python"
     script = os.path.join(
       os.path.dirname(os.path.abspath(inspect.getfile(
-            inspect.currentframe()))), "prov-convert-dummy.py")
+            inspect.currentframe()))), "prov_convert_dummy.py")
     self.config[ProvPyConverter.ARGUMENTS] = " ".join(
       [script,
        "-f", ProvPyConverter.FORMAT,
@@ -87,7 +88,7 @@ class ProvPyConverterTestCase(unittest.TestCase):
 
   def test_configure_no_format(self):
     self.config[ProvPyConverter.ARGUMENTS] = " ".join(
-      ["prov-convert-dummy.py",
+      ["prov_convert_dummy.py",
        ProvPyConverter.INPUT,
        ProvPyConverter.OUTPUT])
     with self.assertRaises(ConfigError):
@@ -95,7 +96,7 @@ class ProvPyConverterTestCase(unittest.TestCase):
 
   def test_configure_no_input(self):
     self.config[ProvPyConverter.ARGUMENTS] = " ".join(
-      ["prov-convert-dummy.py",
+      ["prov_convert_dummy.py",
        "-f", ProvPyConverter.FORMAT,
        ProvPyConverter.OUTPUT])
     with self.assertRaises(ConfigError):
@@ -103,7 +104,7 @@ class ProvPyConverterTestCase(unittest.TestCase):
 
   def test_configure_no_output(self):
     self.config[ProvPyConverter.ARGUMENTS] = " ".join(
-      ["prov-convert-dummy.py",
+      ["prov_convert_dummy.py",
        "-f", ProvPyConverter.FORMAT,
        ProvPyConverter.INPUT])
     with self.assertRaises(ConfigError):

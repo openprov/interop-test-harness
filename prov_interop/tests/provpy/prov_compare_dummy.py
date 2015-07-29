@@ -1,14 +1,17 @@
-"""Dummy ProvPy prov-compare. 
-Mimics the behaviour of ProvPy prov-compare. 
+"""Dummy ProvPy ``prov-compare`` which mimics the behaviour of 
+ProvPy ``prov-compare``. 
 
-prov-compare returns 2 if: 
+``prov-compare`` returns 2 if: 
+
 - No files.
 - Files are not valid PROV documents.
 
-prov-compare returns 1 if: 
+``prov-compare`` returns 1 if: 
+
 - Files are valid PROV documents but not equivalent.
 
-prov-compare returns 0 if: 
+``prov-compare`` returns 0 if: 
+
 - Files are valid PROV documents and are equivalent.
 
 This script behaves similarly (though it does no PROV validation). 
@@ -16,11 +19,11 @@ This script behaves similarly (though it does no PROV validation).
 If the inputs and formats are valid and the file names have
 the same contents then it returns 0 else it returns 1
 
-Usage:
+Usage::
 
-    usage: prov-compare-dummy.py [-h] -f [FORMAT] infile outfile
+    usage: prov_compare_dummy.py [-h] -f [FORMAT] infile outfile
 
-    Mock ProvPy prov-compare.
+    Dummy ProvPy prov-compare.
 
     positional arguments:
       infile       Input file
@@ -61,29 +64,44 @@ import os
 import shutil
 import sys
 
-parser = argparse.ArgumentParser(description="Dummy ProvPy prov-compare.")
-parser.add_argument("-f", metavar="FORMAT1",
-                    help="File 1 format - one of xml, json", 
-                    nargs="?", 
-                    required=True)
-parser.add_argument("-F", metavar="FORMAT2", 
-                    help="Fole 2 format - one of xml, json", 
-                    nargs="?", 
-                    required=True)
-parser.add_argument("file1", help="File 1")
-parser.add_argument("file2", help="File 2")
-args = parser.parse_args()
-print("Running dummy ProvPy prov-compare...")
-for file_name in [args.file1, args.file2]:
-  if not os.path.isfile(file_name):
-    print(("No such file " + file_name))
-    sys.exit(2)
-formats = ["xml", "json"]
-for format in [args.f, args.F]:
-  if format not in formats:
-    print(("Unsupported format " + format))
-    sys.exit(2)
-if not filecmp.cmp(args.file1, args.file2, shallow=False):
-  print("Documents do not match")
-  sys.exit(1)
-sys.exit(0)
+def compare(file1, format1, file2, format2):
+  """
+  Mimic `prov-compare` behaviour.
+
+  :param file1: File
+  :type file1: str or unicode
+  :param format1: `file1` format
+  :type format1: str or unicode
+  :param file2: File
+  :type file2: str or unicode
+  :param format2: `file2` format
+  :type format2: str or unicode
+  """
+  for file_name in [file1, file2]:
+    if not os.path.isfile(file_name):
+      print(("No such file " + file_name))
+      sys.exit(2)
+  formats = ["xml", "json"]
+  for format in [format1, format2]:
+    if format not in formats:
+      # Unsupported format
+      sys.exit(2)
+  if not filecmp.cmp(file1, file2, shallow=False):
+    # Documents do not match
+    sys.exit(1)
+
+if __name__ == "__main__":
+  parser = argparse.ArgumentParser(description="Dummy ProvPy prov_compare.")
+  parser.add_argument("-f", metavar="FORMAT1",
+                      help="File 1 format - one of xml, json", 
+                      nargs="?", 
+                      required=True)
+  parser.add_argument("-F", metavar="FORMAT2", 
+                      help="File 2 format - one of xml, json", 
+                      nargs="?", 
+                      required=True)
+  parser.add_argument("file1", help="File 1")
+  parser.add_argument("file2", help="File 2")
+  args = parser.parse_args()
+  compare(args.file1, args.f, args.file2, args.F)
+  sys.exit(0)

@@ -877,8 +877,8 @@ AUTHORIZATION = "Authorization"
 For unit testing `provpy.converter` and `provpy.comparator`, simple scripts which mimic the behaviour of `prov-convert` and `prov-compare` are available:
 
 ```
-provpy/prov-compare-dummy.py
-provpy/prov-convert-dummy.py
+provpy/prov_compare_dummy.py
+provpy/prov_convert_dummy.py
 ```
 
 These accept the same command-line arguments and exit with the same exit codes, but don't do any conversion (the input file is just copied to the output file) or comparison (the files are considered equal if their contents are the same).
@@ -886,7 +886,7 @@ These accept the same command-line arguments and exit with the same exit codes, 
 Likewise, for unit testing `provtoolbox.converter`, a simple script which mimics the behaviour of `provconvert`:
 
 ```
-provtoolbox/provconvert-dummy.py
+provtoolbox/provconvert_dummy.py
 ```
 
 ### `provstore` and `provtranslator` packages

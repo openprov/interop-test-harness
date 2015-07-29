@@ -1,8 +1,9 @@
 """Unit tests for :mod:`prov_interop.provtoolbox.converter`.
 
-These tests rely on a ``provconvert-dummy.py`` script,
-that mimics ProvToolbox's ``provconvert`` executable 
-in terms of parameters and return codes, being available 
+These tests rely on the
+:mod:`prov_interop.tests.provtoolbox.provconvert_dummy.py` script,
+(that mimics ProvToolbox's ``provconvert`` executable 
+in terms of parameters and return codes) being available 
 in the same directory as this module.
 """
 # Copyright (c) 2015 University of Southampton
@@ -51,7 +52,7 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
     self.config[ProvToolboxConverter.EXECUTABLE] = "python"
     script = os.path.join(
       os.path.dirname(os.path.abspath(inspect.getfile(
-            inspect.currentframe()))), "provconvert-dummy.py")
+            inspect.currentframe()))), "provconvert_dummy.py")
     self.config[ProvToolboxConverter.ARGUMENTS] = " ".join(
       [script,
        "-infile", ProvToolboxConverter.INPUT,
@@ -84,13 +85,13 @@ class ProvToolboxConverterTestCase(unittest.TestCase):
 
   def test_configure_no_input(self):
     self.config[ProvToolboxConverter.ARGUMENTS] = \
-        "provconvert-dummy.py -outfile " + ProvToolboxConverter.OUTPUT
+        "provconvert_dummy.py -outfile " + ProvToolboxConverter.OUTPUT
     with self.assertRaises(ConfigError):
       self.provtoolbox.configure(self.config)
 
   def test_configure_no_output(self):
     self.config[ProvToolboxConverter.ARGUMENTS] = \
-        "provconvert-dummy.py -infile " + ProvToolboxConverter.INPUT 
+        "provconvert_dummy.py -infile " + ProvToolboxConverter.INPUT 
     with self.assertRaises(ConfigError):
       self.provtoolbox.configure(self.config)
 

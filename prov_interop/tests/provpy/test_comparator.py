@@ -1,8 +1,9 @@
 """Unit tests for :mod:`prov_interop.provpy.comparator`.
 
-These tests rely on a ``prov-compare-dummy.py`` script,
-that mimics ProvPy's ``prov-compare`` executable
-in terms of parameters and return codes, being available
+These tests rely on the
+:mod:`prov_interop.tests.provpy.prov_compare_dummy.py` script,
+(that mimics ProvPy's ``prov-compare`` script
+in terms of parameters and return codes) being available 
 in the same directory as this module.
 """
 # Copyright (c) 2015 University of Southampton
@@ -52,7 +53,7 @@ class ProvPyComparatorTestCase(unittest.TestCase):
     self.config[ProvPyComparator.EXECUTABLE] = "python"
     script = os.path.join(
       os.path.dirname(os.path.abspath(inspect.getfile(
-            inspect.currentframe()))), "prov-compare-dummy.py")
+            inspect.currentframe()))), "prov_compare_dummy.py")
     self.config[ProvPyComparator.ARGUMENTS] = " ".join(
       [script,
        "-f", ProvPyComparator.FORMAT1,
@@ -84,7 +85,7 @@ class ProvPyComparatorTestCase(unittest.TestCase):
 
   def test_configure_no_format1(self):
     self.config[ProvPyComparator.ARGUMENTS] = " ".join(
-      ["prov-compare-dummy.py",
+      ["prov_compare_dummy.py",
        "-F", ProvPyComparator.FORMAT2,
        ProvPyComparator.FILE1,
        ProvPyComparator.FILE2])
@@ -93,7 +94,7 @@ class ProvPyComparatorTestCase(unittest.TestCase):
 
   def test_configure_no_format2(self):
     self.config[ProvPyComparator.ARGUMENTS] = " ".join(
-      ["prov-compare-dummy.py",
+      ["prov_compare_dummy.py",
        "-f", ProvPyComparator.FORMAT1,
        ProvPyComparator.FILE1,
        ProvPyComparator.FILE2])
@@ -102,7 +103,7 @@ class ProvPyComparatorTestCase(unittest.TestCase):
 
   def test_configure_no_file1(self):
     self.config[ProvPyComparator.ARGUMENTS] = " ".join(
-      ["prov-compare-dummy.py",
+      ["prov_compare_dummy.py",
        "-f", ProvPyComparator.FORMAT1,
        "-F", ProvPyComparator.FORMAT2,
        ProvPyComparator.FILE2])
@@ -111,7 +112,7 @@ class ProvPyComparatorTestCase(unittest.TestCase):
 
   def test_configure_no_file2(self):
     self.config[ProvPyComparator.ARGUMENTS] = " ".join(
-      ["prov-compare-dummy.py",
+      ["prov_compare_dummy.py",
        "-f", ProvPyComparator.FORMAT1,
        "-F", ProvPyComparator.FORMAT2,
        ProvPyComparator.FILE1])

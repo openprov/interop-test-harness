@@ -1,12 +1,14 @@
-"""Dummy ProvPy prov-convert. 
-Mimics the behaviour of ProvPy prov-convert. 
+"""Dummy ProvPy ``prov-convert`` which mimics the behaviour of 
+ProvPy ``prov-convert``.
 
-prov-convert returns 2 if: 
+``prov-convert`` returns 2 if: 
+
 - No input file.
 - Input file is not a valid PROV document.
 - Output format is not supported.
 
-prov-convert returns 0 if: 
+``prov-convert`` returns 0 if: 
+
 - Conversion is successful.
 
 For:
@@ -20,11 +22,11 @@ This script behaves similarly (though it does no PROV validation).
 
 If the inputs are valid it just copies the input file to the output file. 
 
-Usage:
+Usage::
 
-    usage: prov-convert-dummy.py [-h] -f [FORMAT] infile outfile
+    usage: prov_convert_dummy.py [-h] -f [FORMAT] infile outfile
 
-    Mock ProvPy prov-convert.
+    Dummy ProvPy prov-convert.
 
     positional arguments:
       infile       Input file
@@ -64,23 +66,34 @@ import os
 import shutil
 import sys
 
-parser = argparse.ArgumentParser(description="Dummy ProvPy prov-convert.")
-parser.add_argument("-f", metavar="FORMAT", 
-                    help="Output format - one of provn, xml, json", 
-                    nargs="?", 
-                    required=True)
-parser.add_argument("infile", help="Input file")
-parser.add_argument("outfile", help="Output file")
-args = parser.parse_args()
-print("Running dummy ProvPy prov-convert...")
-if not os.path.isfile(args.infile):
-  print(("No such file " + args.infile))
-  sys.exit(2)
-formats = ["provn", "xml", "json"]
-if args.f not in formats:
-  print(("Unsupported format " + args.f))
-  with open(args.outfile, "w+"):
-    pass
-  sys.exit(2)
-shutil.copyfile(args.infile, args.outfile)
-sys.exit(0)
+def convert(in_file, out_file):
+  """
+  Mimic `prov-convert` behaviour.
+
+  :param in_file: Input file
+  :type in_file: str or unicode
+  :param out_file: Output file
+  :type out_file: str or unicode
+  """
+  if not os.path.isfile(in_file):
+    # "No such file
+    sys.exit(2)
+  formats = ["provn", "xml", "json"]
+  if args.f not in formats:
+    # "Unsupported format
+    with open(out_file, "w+"):
+      pass
+    sys.exit(2)
+  shutil.copyfile(in_file, out_file)
+
+if __name__ == "__main__":
+  parser = argparse.ArgumentParser(description="Dummy ProvPy prov_convert.")
+  parser.add_argument("-f", metavar="FORMAT", 
+                      help="Output format - one of provn, xml, json", 
+                      nargs="?", 
+                      required=True)
+  parser.add_argument("infile", help="Input file")
+  parser.add_argument("outfile", help="Output file")
+  args = parser.parse_args()
+  convert(args.infile, args.outfile)
+  sys.exit(0)
