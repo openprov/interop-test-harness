@@ -64,6 +64,15 @@ The interoperability test harness includes unit tests for the harness itself. Th
 
 For details, see [Interoperability test harness design and implementation](./docs/Design.md).
 
+## API documentation
+
+To create API documentation in `apidocs/_build/html`:
+
+```
+$ pip install sphinx
+$ make apidocs
+```
+
 ## Author
 
 Developed by [The Software Sustainability Institute](http://www.software.ac.uk>) and the [Provenance Tool Suite](http://provenance.ecs.soton.ac.uk/) team at [Electronics and Computer Science](http://www.ecs.soton.ac.uk) at the [University of Southampton](http://www.soton.ac.uk).

@@ -3,6 +3,9 @@
 *.py[cod]
 .python-version
 nosetests.xml
+apidocs/_build
+apidocs/modules.rst
+apidocs/prov_interop.rst
 
 ## Emacs
 
