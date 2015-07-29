@@ -1,4 +1,4 @@
-"""Test classes for ``prov_interop.harness``.
+"""Unit tests for :mod:`prov_interop.harness`.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -38,7 +38,7 @@ from prov_interop.harness import HarnessResources
 from prov_interop.provpy.comparator import ProvPyComparator
 
 class DummyComparator(Comparator):
-  """Dummy comparator for testing ``prov_interop.harness``.
+  """Dummy comparator.
   """
 
   def __init__(self):
@@ -47,25 +47,31 @@ class DummyComparator(Comparator):
     super(DummyComparator, self).__init__()
 
   def configure(self, config):
-    """Configure comparator. ``config`` must hold entries::
+    """Configure comparator. The configuration must hold:
 
-        formats: [...list of formats from prov_interop.standards...]
+    - ``formats``: formats supported by the comparator, each of which
+      must be one of those in :mod:`prov_interop.standards`.
+
+    A valid configuration is::
+
+      {
+        "formats": ["provx", "json"]
+      }
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if ``config`` does not hold the above entries
+    :raises ConfigError: if `config` does not hold the above entries
     """
     super(DummyComparator, self).configure(config)
 
   def compare(self, file1, file2):
-    """This is a no-op.
+    """This does nothing but return ``True`` always.
 
-    :param file1: File name
+    :param file1: File
     :type file1: str or unicode
-    :param file2: File name
+    :param file2: File
     :type file2: str or unicode
-    :returns: True always
-    :rtype: bool
+    :return: ``True`` always
     """
     return True
 

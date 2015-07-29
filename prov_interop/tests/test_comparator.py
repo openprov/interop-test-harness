@@ -1,4 +1,4 @@
-"""Test classes for ``prov_interop.comparator``.
+"""Unit tests for :mod:`prov_interop.comparator`.
 """
 # Copyright (c) 2015 University of Southampton
 #

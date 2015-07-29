@@ -1,4 +1,4 @@
-"""Test classes for ``prov_interop.factory``.
+"""Unit tests for :mod:`prov_interop.factory`.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -44,7 +44,7 @@ class Counter:
   def counter(self):
     """Gets counter value.
 
-    :returns: counter value
+    :return: counter value
     :rtype: int
     """
     return self._counter

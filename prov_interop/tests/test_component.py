@@ -1,4 +1,4 @@
-"""Test classes for ``prov_interop.component``.
+"""Unit tests for :mod:`prov_interop.component`.
 """
 # Copyright (c) 2015 University of Southampton
 #
