@@ -44,9 +44,11 @@ class ProvStoreConverter(Converter, RestComponent):
     standards.TTL: "text/turtle",
     standards.TRIG: "application/trig",
     standards.PROVX: "application/xml",
-    standards.JSON: "application/json"}
-  """dict: mapping from formats in ``prov_interop.standards`` to
-    content types"""
+    standards.JSON: "application/json"
+  }
+  """dict: mapping from :mod:`prov_service_tests.standards` formats to
+  content types understood by ProvStore
+  """
 
   CONTENT = "content"
   """str or unicode: key for request document content"""
@@ -78,47 +80,69 @@ class ProvStoreConverter(Converter, RestComponent):
     return self._authorization
 
   def configure(self, config):
-   """Configure converter. ``config`` must hold entries::
+    """Configure converter. The configuration must hold:
 
+    - :class:`prov_interop.converter.Converter` configuration
+    - :class:`prov_interop.component.RestComponent` configuration
+    - ``authorization``: value for ``Authorization`` HTTP header. For
+      ProvStore, this is of form ``ApiKey USER:APIKEY`` where ``USER``
+      is a ProvStore user name, and ``APIKEY`` is the user's ProvStore
+      API key. 
 
-        url: ...endpoint URL...
-        authorization: ... ProvStore authorixation header...
-        input-formats: [...list of formats from prov_interop.standards...]
-        output-formats: [...list of formats from prov_interop.standards...]
+    A valid configuration is::
 
-    For example::
-
-        url: https://provenance.ecs.soton.ac.uk/validator/provapi/documents/
-        authorization: ApiKey user:12345qwerty
-        input-formats: [provn, ttl, trig, provx, json]
-        output-formats: [provn, ttl, trig, provx, json]
+      {
+        "url": "https://provenance.ecs.soton.ac.uk/store/api/v0/documents/"
+        "authorization": "ApiKey user:12345qwerty"
+        "input-formats": ["provn", "ttl", "trig", "provx", "json"]
+        "output-formats": ["provn", "ttl", "trig", "provx", "json"]
+      }
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if ``config`` does not hold the above entries
+    :raises ConfigError: if `config` does not hold the above entries
     """
-   super(ProvStoreConverter, self).configure(config)
-   self.check_configuration([ProvStoreConverter.AUTHORIZATION])
-   self._authorization = config[ProvStoreConverter.AUTHORIZATION]
+    super(ProvStoreConverter, self).configure(config)
+    self.check_configuration([ProvStoreConverter.AUTHORIZATION])
+    self._authorization = config[ProvStoreConverter.AUTHORIZATION]
 
   def convert(self, in_file, out_file):
-    """Convert input file into output file. Each file must have an
-    extension matching a format in
-    ``prov_interop.standards``. Conversion is done in three stages:
+    """Convert input file into output file. 
 
-    - Issue a POST request to deposit ``in_file`` into ProvStore.
-    - Issue a GET request to request the document in the desired
-      output format. This is saved into ``out_file``.
-    - Issue a POST request to remove the document from ProvStore.
+    - Input and output formats are derived from `in_file` and
+      `out_file` file extensions. 
+    - A check is done to see that `in_file` exists and that the input
+      and output format are in `input-formats` and `output-formats`
+      respectively. 
+    - The input and output formats and ``authorization`` are used to
+      set HTTP ``Content-type``, ``Accept`` and ``Authorization``
+      header values, respectively.  
+    - The contents of `in_file` are loaded and used to create a
+      ProvStore compliant HTTP POST request which is submitted to
+      ``url``, to store the document. 
+    - The HTTP status is checked to be 201 CREATED.
+    - The HTTP response is parsed to get the URL of the newly-stored
+      document. 
+    - The output format is used to set the HTTP ``Accept`` header
+      value. 
+    - An HTTP GET request is submitted to the URL of the new document
+      to get it in the desired output format. 
+    - The HTTP status is checked to to be 200 OK.
+    - The HTTP response is parsed to get the converted document, and
+      this is saved to `out_file`. 
+    - An HTTP DELETE request is submitted to the URL of the
+      newly-stored document to remove it. 
+    - The HTTP status is checked to to be 204 NO CONTENT.
 
-    :param in_file: Input file name
+
+    :param in_file: Input file
     :type in_file: str or unicode
-    :param out_file: Output file name
+    :param out_file: Output file
     :type out_file: str or unicode
-    :raises ConversionError: if the input file is not found, or the
-    HTTP response is not 200
-    :raises requests.exceptions.ConnectionError: if there are problems
-    executing any of the requests e.g. the URL cannot be found
+    :raises ConversionError: if the input file cannot be found, or the
+      HTTP response is not 200
+    :raises requests.exceptions.ConnectionError: if there are
+      problems executing the request e.g. the URL cannot be found
     """
     super(ProvStoreConverter, self).convert(in_file, out_file)
     in_format = os.path.splitext(in_file)[1][1:]

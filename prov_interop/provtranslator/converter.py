@@ -43,9 +43,10 @@ class ProvTranslatorConverter(Converter, RestComponent):
     standards.TTL: "text/turtle",
     standards.TRIG: "application/trig",
     standards.PROVX: "application/provenance+xml",
-    standards.JSON: "application/json"}
-  """dict: mapping from formats in ``prov_interop.standards`` to
-  content types 
+    standards.JSON: "application/json"
+  }
+  """dict: mapping from :mod:`prov_service_tests.standards` formats to
+  content types understood by ProvTranslator
   """
 
   def __init__(self):
@@ -54,36 +55,50 @@ class ProvTranslatorConverter(Converter, RestComponent):
     super(ProvTranslatorConverter, self).__init__()
 
   def configure(self, config):
-   """Configure converter. ``config`` must hold entries::
+    """Configure converter. The configuration must hold:
 
-        url: ...endpoint URL...
-        input-formats: [...list of formats from prov_interop.standards...]
-        output-formats: [...list of formats from prov_interop.standards...]
+    - :class:`prov_interop.converter.Converter` configuration
+    - :class:`prov_interop.component.RestComponent` configuration
 
-    For example::
+    A valid configuration is::
 
-        url: https://provenance.ecs.soton.ac.uk/validator/provapi/documents/
-        input-formats: [provn, ttl, trig, provx, json]
-        output-formats: [provn, ttl, trig, provx, json]
+      {
+        "url": "https://provenance.ecs.soton.ac.uk/validator/provapi/documents/"
+        "input-formats": ["provn", "ttl", "trig", "provx", "json"]
+        "output-formats": ["provn", "ttl", "trig", "provx", "json"]
+      }
 
     :param config: Configuration
     :type config: dict
-    :raises ConfigError: if ``config`` does not hold the above entries
+    :raises ConfigError: if `config` does not hold the above entries
     """
-   super(ProvTranslatorConverter, self).configure(config)
+    super(ProvTranslatorConverter, self).configure(config)
 
   def convert(self, in_file, out_file):
-    """Convert input file into output file. Each file must have an
-    extension matching a format in ``prov_interop.standards``.
+    """Convert input file into output file. 
 
-    :param in_file: Input file name
+    - Input and output formats are derived from `in_file` and
+      `out_file` file extensions. 
+    - A check is done to see that `in_file` exists and that the input
+      and output format are in ``input-formats`` and ``output-formats``
+      respectively. 
+    - The input and output formats are used to set HTTP ``Content-type``
+      and ``Accept`` header values, respectively  
+    - The contents of `in_file` are loaded and used to create a
+      ProvTranslator-compliant HTTP POST request which is submitted to
+      ``url``, to convert the document. 
+    - The HTTP status is checked to to be 200 OK.
+    - The HTTP response is parsed to get the converted document, and
+      this is saved to `out_file`.
+
+    :param in_file: Input file
     :type in_file: str or unicode
-    :param out_file: Output file name
+    :param out_file: Output file
     :type out_file: str or unicode
-    :raises ConversionError: if the input file is not found, or the
-    HTTP response is not 200
-    :raises requests.exceptions.ConnectionError: if there are problems
-    executing the request e.g. the URL cannot be found
+    :raises ConversionError: if the input file cannot be found, or the
+      HTTP response is not 200
+    :raises requests.exceptions.ConnectionError: if there are
+      problems executing the request e.g. the URL cannot be found
     """
     super(ProvTranslatorConverter, self).convert(in_file, out_file)
     in_format = os.path.splitext(in_file)[1][1:]
