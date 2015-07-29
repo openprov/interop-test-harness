@@ -1,4 +1,9 @@
-"""Test classes for ``prov_interop.provtoolbox.converter``.
+"""Unit tests for :mod:`prov_interop.provtoolbox.converter`.
+
+These tests rely on a ``provconvert-dummy.py`` script,
+that mimics ProvToolbox's ``provconvert`` executable 
+in terms of parameters and return codes, being available 
+in the same directory as this module.
 """
 # Copyright (c) 2015 University of Southampton
 #

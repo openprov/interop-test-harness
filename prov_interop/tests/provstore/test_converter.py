@@ -1,4 +1,4 @@
-"""Test classes for ``prov_interop.provstore.converter``.
+"""Unit tests for :mod:`prov_interop.provstore.converter`.
 """
 # Copyright (c) 2015 University of Southampton
 #
