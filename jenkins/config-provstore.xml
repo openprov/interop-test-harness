@@ -20,7 +20,7 @@
 </command>
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
-      <command>pip install provpy
+      <command>pip install prov
 prov-compare --version
 </command>
     </hudson.tasks.Shell>
