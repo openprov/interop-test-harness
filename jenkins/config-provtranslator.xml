@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>pyenv local 2.7.6</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>git clone https://github.com/prov-suite/testcases testcases
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>pip install provpy
+prov-compare --version
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>git clone https://github.com/prov-suite/interop-test-harness test-harness
+cd test-harness
+pip install -r requirements.txt
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>cd test-harness
+CONFIG_DIR=localconfig
+rm -rf $CONFIG_DIR
+cp -r config/ $CONFIG_DIR
+python prov_interop/set_yaml_value.py $CONFIG_DIR/harness.yaml test-cases=&quot;$WORKSPACE/testcases&quot;
+cat localconfig/*
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>cd test-harness
+nosetests -v --with-xunit prov_interop.interop_tests.test_provtranslator
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.junit.JUnitResultArchiver plugin="junit@1.2-beta-4">
+      <testResults>test-harness/nosetests.xml</testResults>
+      <keepLongStdio>false</keepLongStdio>
+      <testDataPublishers/>
+      <healthScaleFactor>1.0</healthScaleFactor>
+    </hudson.tasks.junit.JUnitResultArchiver>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.26">
+      <deleteDirs>false</deleteDirs>
+      <cleanupParameter></cleanupParameter>
+      <externalDelete></externalDelete>
+    </hudson.plugins.ws__cleanup.PreBuildCleanup>
+  </buildWrappers>
+</project>
