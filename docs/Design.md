@@ -486,7 +486,7 @@ A valid configuration is:
 }
 ```
 
-When configured, this class invokes methods to populate data structures needed to run interoperability tests using the test cases.
+When configured, this class invokes the following method to create the comparators:
 
 ```
 def register_comparators(self, comparators)
@@ -496,13 +496,15 @@ This method populates `comparators`, a dictionary of comparator objects, keyed b
 
 It also populates `format_comparators`, a dictionary of comparator instances, keyed by formats in `standards.FORMATS`. Using the above configuration there would be mappings from both `provx` and `json` to an instance of `prov_interop.provpy.comparator.ProvPyComparator`.
 
-If no comparators are defined, or there are any problems creating their instances or configuring the comparators then a `ConfigError` is raised.
+If there are any problems creating or configuring comparators then a `ConfigError` is raised.
 
 ```
-def register_test_cases(self, test_cases_dir, format_filter)
+def test_cases_generator(self)
 ```
 
-This method populates `test_cases`, a list of test cases, each of which is a tuple of form:
+serves as a [generator](https://wiki.python.org/moin/Generators) for test cases. Using a generator avoids the need to cache all the possible test cases in a list in memory.
+
+Each test case is a tuple of form:
 
 ```
 (test case index, format1, file1, format2, file2)
@@ -542,18 +544,16 @@ example/
 this, together with the configuration, would give the test case tuples:
 
 ```
-[
-  (1, json, /home/user/test-cases/testcase1.json
-      json, /home/user/test-cases/testcase1.json),
-  (1, json, /home/user/test-cases/testcase1.json
-      provx, /home/user/test-cases/testcase1.provx),
-  (1, provx, /home/user/test-cases/testcase1.provx
-      json, /home/user/test-cases/testcase1.json),
-  (1, provx, /home/user/test-cases/testcase1.provx
-      provx, /home/user/test-cases/testcase1.provx),
-  (3, json, /home/user/test-cases/primer.json
-      json, /home/user/test-cases/primer.json)
-]
+(1, json, /home/user/test-cases/testcase1.json
+    json, /home/user/test-cases/testcase1.json),
+(1, json, /home/user/test-cases/testcase1.json
+    provx, /home/user/test-cases/testcase1.provx),
+(1, provx, /home/user/test-cases/testcase1.provx
+    json, /home/user/test-cases/testcase1.json),
+(1, provx, /home/user/test-cases/testcase1.provx
+    provx, /home/user/test-cases/testcase1.provx),
+(3, json, /home/user/test-cases/primer.json
+    json, /home/user/test-cases/primer.json)
 ```
 
 There are tuples only for `json` and `provx`, as those are the only formats for which a comparator has been specified.
@@ -562,9 +562,7 @@ If the directory defined in `test-cases` cannot be found then a `ConfigError` is
 
 ---
 
-## `interop_tests.harness` - bootstrapping the test harness
-
-This module bootstraps the test harness. As soon as this module is loaded, it invokes its own function:
+## `interop_tests.harness` - test harness initialisation
 
 ```
 def initialise_harness_from_file(file_name = None)
@@ -577,8 +575,6 @@ This function creates an instance of `harness.HarnessResources` and then configu
 * Else, `localconfig/harness.yaml`.
 
 The function will not reinitialise the `harness.HarnessResources` instance once it has been created and initialised.
-
-The test harness needs to be bootstrapped as soon as the module is loaded to allow the use of dynamic test method generation from the test cases, as described below.
 
 A valid YAML configuration file, which, when loaded, yields a Python dictionary holding the configuration required by `harness.HarnessResources` is:
 
@@ -623,12 +619,18 @@ To address these requirements, generic test method is provided and [nose_paramet
 The generic test method is defined as:
 
 ```
-@parameterized.expand(harness.harness_resources.test_cases,
+@parameterized.expand(initialise_test_harness(), 
                       testcase_func_name=test_case_name)
 def test_case(self, index, ext_in, file_ext_in, ext_out, file_ext_out):
 ```
 
-When run, `nose_parameterized` will iterate through each of the test cases and create corresponding test methods:
+```
+def initialise_test_harness()
+```
+
+initialises the test harness and provides the test cases as a generator. The test harness is bootstrapped by a call to `interop_tests.harness.initialise_harness_from_file`. This method provides test case tuples by returning the generator, `harness.HarnessResources.test_case_generator` so that nose_parameterized can dynamically creates the test methods.
+
+When run, `nose_parameterized` will iterate through each of the test cases, provided by the generator, and create corresponding test methods:
 
 ```
 test_case_1_json_json
@@ -639,8 +641,6 @@ test_case_1_provx_provx
 ```
 
 The arguments passed into each test method, `(index, ext_in, file_ext_in, ext_out, file_ext_out)` are those from the tuple that was used to create that method. 
-
-This module imports `interop_tests.harness` thereby bootstrapping the test harness. This bootstrapping is necessary so that the list of tuples is available to `nose_parameterized` when it dynamically creates the test methods.
 
 The argument `testcase_func_name=test_case_name` is a `nose_parameterized` callback to another method in this module:
 

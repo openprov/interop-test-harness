@@ -1,10 +1,11 @@
 """Base class for converter interoperability tests.
 
-This module imports :mod:`prov_interop.interop_tests.harness`
-thereby bootstrapping the test harness. This bootstrapping is
-necessary so that the list of tuples is available to
-:mod:`nose_parameterized` when it dynamically creates the test
-methods (see
+The test harness is initialised by a call to
+:func:`prov_interop.interop_tests.harness.initialise_harness_from_file`. This 
+is done within
+:meth:`prov_interop.interop_tests.test_converter.ConverterTestCase.initialise_test_harness`
+which provides tuples to :mod:`nose_parameterized` when it
+dynamically creates the test methods (see
 :meth:`prov_interop.interop_tests.test_converter.ConverterTestCase.test_case`).
 """
 # Copyright (c) 2015 University of Southampton
@@ -38,6 +39,10 @@ import re
 import tempfile
 import unittest
 
+
+import sys
+
+
 from nose_parameterized import parameterized
 from nose.plugins.skip import SkipTest
 from nose.tools import istest
@@ -47,6 +52,7 @@ from prov_interop import standards
 from prov_interop.component import ConfigError
 from prov_interop.converter import Converter
 from prov_interop.files import load_yaml
+from prov_interop.harness import HarnessResources
 from prov_interop.interop_tests import harness
 
 @nottest
@@ -110,11 +116,11 @@ class ConverterTestCase(unittest.TestCase):
 
     The method assumes the converter has been created and stored in an
     instance variable. It loads the contents of a YAML file (using
-    :func:`prov_interop.factory.load_yaml`) into a Python
+    :func:`prov_interop.files.load_yaml`) into a Python
     dictionary. The file loaded is: 
 
     - The value of an entry in
-      :class:`prov_interop.harness.HarnessResource` configuration with
+      :class:`prov_interop.harness.HarnessResources` configuration with
       name `config_key`, if any. 
     - Else, the file named in the environment variable named in
       `env_var`, if such an environment variable has been defined. 
@@ -216,7 +222,36 @@ class ConverterTestCase(unittest.TestCase):
                     " not in " + self.converter.__class__.__name__ + 
                     " " + format_type))
 
-  @parameterized.expand(harness.harness_resources.test_cases, 
+  @nottest
+  def initialise_test_harness():
+    """Initialises the test harness and provide the test cases as a
+    generator. 
+
+    The test harness is bootstrapped by a call to
+    :func:`prov_interop.interop_tests.harness.initialise_harness_from_file`. 
+    This method provides test case tuples by returning the generator,
+    :meth:`prov_interop.harness.HarnessResources.test_cases_generator`,
+    so that :mod:`nose_parameterized` can dynamically creates the test
+    methods (see
+    :meth:`prov_interop.interop_tests.test_converter.ConverterTestCase.test_case`).
+
+    If running Sphinx to create API documentation then the test
+    harness initialisation is not done and, instead, a generator 
+    that contains zero test cases is returned. This is a hack to
+    workaround Sphinx's execution of the Python it parses.
+
+    :returns: test case tuple
+    :rtype: tuple of (int, str or unicode, str or unicode, str or
+      unicode, str or unicode) 
+    :raises ConfigError: if the test cases directory is not found
+    """
+    if "sphinx-build" in sys.argv[0]:
+      return (nothing for nothing in ())
+    else:
+      harness.initialise_harness_from_file()
+      return harness.harness_resources.test_cases_generator()
+
+  @parameterized.expand(initialise_test_harness(), 
                         testcase_func_name=test_case_name)
   def test_case(self, index, ext_in, file_ext_in, ext_out, file_ext_out):
     """Test a converter's conversion of a file in one format to
@@ -239,7 +274,8 @@ class ConverterTestCase(unittest.TestCase):
       or failure. 
 
     :mod:`nose_parameterized`, in conjunction with the test case
-    tuples cached in :class:`prov_interop.harness.HarnessResources`,
+    tuples provided via the generator,
+    :meth:`prov_interop.harness.HarnessResources.test_cases_generator`,
     is used to dynamically create test methods for each test case
     tuple. When this class is loaded, :mod:`nose_parameterized`
     will iterate through each of the test cases and create

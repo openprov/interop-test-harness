@@ -1,6 +1,4 @@
-"""Interoperability test harness boot-strapping.
-
-This module bootstraps the test harness. As soon as this module is loaded, it invokes :func:`initialise_harness_from_file`.
+"""Interoperability test harness initialisation.
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -56,7 +54,7 @@ def initialise_harness_from_file(file_name = None):
   This function creates an instance of
   :class:`prov_interop.harness.HarnessResources` and then configures
   it using configuration loaded from a YAML file (using
-  :func:`prov_interop.factory.load_yaml`). The file loaded is: 
+  :func:`prov_interop.files.load_yaml`). The file loaded is: 
 
   - `file_name` if this argument is provided (when called from within
     this module itself, no value is provided). 
@@ -67,11 +65,7 @@ def initialise_harness_from_file(file_name = None):
 
   The function will not reinitialise the
   :class:`prov_interop.harness.HarnessResources` instance once it has 
-  been created and initialisaed. 
-
-  The test harness needs to be bootstrapped as soon as the module is
-  loaded to allow the use of dynamic test method generation from the
-  test cases, as described below. 
+  been created and initialised. 
 
   A valid YAML configuration file, which, when loaded, yields a Python
   dictionary holding the configuration required by
@@ -107,9 +101,11 @@ def initialise_harness_from_file(file_name = None):
     for format in harness_resources.format_comparators:
       print((" " + format + ":" + 
             harness_resources.format_comparators[format].__class__.__name__))
+    print("Test cases directory:")
     print((harness_resources.test_cases_dir))
-    print((str(len(harness_resources.test_cases)) + " test cases registered:"))
-    for (index, format1, _, format2, _) in harness_resources.test_cases:
+    print("Test cases available:")
+    num_test_cases = 0
+    for (index, format1, _, format2, _) in harness_resources.test_cases_generator():
+      num_test_cases += 1
       print((str(index) + ":" + format1 + "->" + format2))
-
-initialise_harness_from_file()
+    print("Total: " + str(num_test_cases))

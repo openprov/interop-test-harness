@@ -102,7 +102,6 @@ class HarnessResourcesTestCase(unittest.TestCase):
     self.assertEqual("", self.harness.test_cases_dir)
     self.assertEqual({}, self.harness.comparators)
     self.assertEqual({}, self.harness.format_comparators)
-    self.assertEqual([], self.harness.test_cases)
 
   def test_configure(self):
     self.harness.configure(self.config)
@@ -135,9 +134,10 @@ class HarnessResourcesTestCase(unittest.TestCase):
       self.harness.configure(self.config)
 
   def test_register_comparators_none(self):
-    with self.assertRaises(ConfigError):
-      self.harness.register_comparators({})
-
+    self.harness.register_comparators({})
+    self.assertEqual({}, self.harness.comparators)
+    self.assertEqual({}, self.harness.format_comparators)
+    
   def test_register_comparator_class_error(self):
     self.comparators[DummyComparator.__name__][
       HarnessResources.CLASS] = "nosuchmodule.Comparator"
@@ -151,11 +151,15 @@ class HarnessResourcesTestCase(unittest.TestCase):
 
   def test_register_test_cases_non_existant_directory(self):
     with self.assertRaises(ConfigError):
-      self.harness.register_test_cases("nosuchdirectory", [standards.JSON])
+      for test_case in self.harness.test_cases_generator():
+        pass
 
   def test_register_test_cases_empty_test_cases_dir(self):
-    self.harness.register_test_cases(self.test_cases_dir, [standards.JSON])
-    self.assertEqual([], self.harness.test_cases)
+    self.harness.configure(self.config)
+    num_test_cases = 0
+    for test_case in self.harness.test_cases_generator():
+      num_test_cases += 1
+    self.assertEqual(0, num_test_cases)
 
   def test_register_test_cases_no_matching_directories(self):
     # Add directory names that do not match testcaseNNNN
@@ -164,10 +168,25 @@ class HarnessResourcesTestCase(unittest.TestCase):
     # Add file names do match testcaseNNNN
     for name in ["testcase4", "testcase5"]:
       open(os.path.join(self.test_cases_dir, name), "a").close()
-    self.harness.register_test_cases(self.test_cases_dir, [standards.JSON])
-    self.assertEqual([], self.harness.test_cases)
+    self.harness.configure(self.config)
+    num_test_cases = 0
+    for test_case in self.harness.test_cases_generator():
+      num_test_cases += 1
+    self.assertEqual(0, num_test_cases)
 
   def create_cases(self, count, formats):
+    """Create test case directories and files.
+
+    Create `count` directories, named ``testcaseNNNN``. In each,
+    create files ``file.FORMAT`` where ``FORMAT`` is in `formats`,
+    and a file ``file.xxx``.
+
+    :param count: Number of directories to create
+    :type formats: int
+    :param formats: Formats, each of which must be in 
+      :mod:`prov_interop.standards`
+    :type formats: list of str or unicode
+    """
     for index in list(range(1, count + 1)):
       test_case_dir = os.path.join(self.test_cases_dir, 
                                    HarnessResources.TEST_CASE_PREFIX + 
@@ -176,10 +195,24 @@ class HarnessResourcesTestCase(unittest.TestCase):
       for format in formats:
         # Create files both with canonical and non-canonical extensions.
         open(os.path.join(test_case_dir, "file." + format), "a").close()
-        open(os.path.join(test_case_dir, "file.xxx"), "a").close()
-    self.harness.register_test_cases(self.test_cases_dir, formats)
+      open(os.path.join(test_case_dir, "file.xxx"), "a").close()
 
-  def check_cases(self, count, formats):
+  def check_cases(self, count, formats, test_cases):
+    """Check test cases returned by
+    :meth:`prov_interop.harness.HarnessResources.test_cases_generator`.
+   
+    This method complements :meth:`create_cases`.
+
+    :param count: Number of test case directories expected
+    :type formats: int
+    :param formats: Formats, each of which must be in 
+      :mod:`prov_interop.standards`, of files in test case directories 
+    :type formats: list of str or unicode
+    :param test_cases: list of test case tuples of form 
+      `(test case index, format1, file1, format2, file2)`
+    :type test_cases: list of tuple of (int, str or unicode, str or
+      unicode, str or unicode, str or unicode)
+    """
     for index in list(range(1, count + 1)):
       test_case_dir = os.path.join(self.test_cases_dir, 
                                    HarnessResources.TEST_CASE_PREFIX + 
@@ -191,22 +224,29 @@ class HarnessResourcesTestCase(unittest.TestCase):
                            os.path.join(test_case_dir, "file." + format1),
                            format2,
                            os.path.join(test_case_dir, "file." + format2)) 
-                          in self.harness.test_cases,
+                          in test_cases,
                           str(index) + format1 + format2)
 
-  def test_register_test_cases(self):
+  def test_test_cases_generator(self):
+    self.config[HarnessResources.COMPARATORS][DummyComparator.__name__] \
+        [Comparator.FORMATS] = standards.FORMATS
+    self.harness.configure(self.config)
     self.create_cases(3, standards.FORMATS)
-    self.harness.register_test_cases(self.test_cases_dir, standards.FORMATS)
+    test_cases = []
+    for test_case in self.harness.test_cases_generator():
+      test_cases.append(test_case)
     # 5 formats => 25 tests per test case directory
     # 25 * 3 test case directories => expect 75 test cases
-    self.assertEqual((len(standards.FORMATS) ** 2) * 3, 
-                     len(self.harness.test_cases))
-    self.check_cases(3, standards.FORMATS)
+    self.assertEqual((len(standards.FORMATS) ** 2) * 3, len(test_cases))
+    self.check_cases(3, standards.FORMATS, test_cases)
 
-  def test_register_test_cases_single_format(self):
+  def register_test_cases_single_format(self):
+    self.harness.configure(self.config)
     self.create_cases(3, [standards.JSON])
-    self.harness.register_test_cases(self.test_cases_dir, [standards.JSON])
+    test_cases = []
+    for test_case in self.harness.test_cases_generator():
+      test_cases.append(test_case)
     # 1 format => 1 test per test case directory
     # 1 * 3 test case directories => expect 3 test cases
-    self.assertEqual(3, len(self.harness.test_cases))
-    self.check_cases(3, [standards.JSON])
+    self.assertEqual(3, len(test_cases))
+    self.check_cases(3, [standards.JSON], test_cases)

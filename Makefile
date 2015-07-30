@@ -9,6 +9,8 @@ clean-pyc:
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
 
+export PROV_HARNESS_CONFIGURATION="`pwd`\config\sphinx-harness.yaml"
+
 .PHONY: apidocs
 apidocs:
 	rm -f apidocs/prov_interop.rst

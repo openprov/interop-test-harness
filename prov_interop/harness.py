@@ -59,7 +59,6 @@ class HarnessResources(ConfigurableComponent):
     self._test_cases_dir = ""
     self._comparators = {}
     self._format_comparators = {}
-    self._test_cases = []
 
   @property
   def test_cases_dir(self):
@@ -69,21 +68,6 @@ class HarnessResources(ConfigurableComponent):
     :rtype: list of str or unicode
     """
     return self._test_cases_dir
-
-  @property
-  def test_cases(self):
-    """Get test cases. Test cases are a list of zero or more tuples of
-    form:: 
-
-      (test case index, format1, file1, format2, file2)
-
-    where formats are in :mod:`prov_interop.standards`.
-
-    :return: test cases
-    :rtype: list of tuple of (int, str or unicode, str or unicode, str
-      or unicode, str or unicode)
-    """
-    return self._test_cases
 
   @property
   def comparators(self):
@@ -147,12 +131,9 @@ class HarnessResources(ConfigurableComponent):
     :param comparators: Mapping of comparator names to 
       class names and comparator-specific configuration
     :type config: dict
-    :raises ConfigError: if no comparators are defined, or there are
-      any problems creating their instances or configuring the
-      comparators then a `ConfigError` is raised. 
     """
-    if len(comparators) == 0:
-      raise ConfigError("There must be at least one comparator defined")
+    if (comparators == None) or (len(comparators) == 0):
+      return
     for comparator_name in comparators:
       config = comparators[comparator_name]
       if HarnessResources.CLASS not in config:
@@ -165,11 +146,12 @@ class HarnessResources(ConfigurableComponent):
       for format in comparator.formats:
         self._format_comparators[format] = comparator
 
-  def register_test_cases(self, test_cases_dir, format_filter):
-    """Populate a list of test cases.
+  def test_cases_generator(self):
+    """Return a generator for test cases.
 
-    This method populates a list of test cases, each of which is 
-    a tuple of form::
+    This serves as a generator for test cases. Using a generator
+    avoids the need to cache all the possible test cases in a list in
+    memory. Each test case is a tuple of form::
 
       (test case index, format1, file1, format2, file2)
 
@@ -186,8 +168,7 @@ class HarnessResources(ConfigurableComponent):
     sub-directories whose name matches the pattern
     ``testcase[0-9][0-9]*``. For each directory, it filters its files to
     get only those which have an extension in both
-    :mod:`prov_interop.standards` and `format_filter`, a subset of
-    :mod:`prov_interop.standards` (a list of the formats for which a
+    :mod:`prov_interop.standards` and the formats for which a
     comparator has been registered). From the files left it calculates
     all possible combinations of pairs of files and creates tuples as
     above. So, if `test_cases_dir` contains::
@@ -208,36 +189,31 @@ class HarnessResources(ConfigurableComponent):
       example/
         example.json
 
-    and `format_filter` is ``["json", "provx"]`` this would give
-    the test case tuples::
+    and comparators have been registered for ``["json", "provx"]``
+    this would give the test case tuples::
 
-      [
-        (1, json, /home/user/test-cases/testcase1.json
-            json, /home/user/test-cases/testcase1.json),
-        (1, json, /home/user/test-cases/testcase1.json
-            provx, /home/user/test-cases/testcase1.provx),
-        (1, provx, /home/user/test-cases/testcase1.provx
-            json, /home/user/test-cases/testcase1.json),
-        (1, provx, /home/user/test-cases/testcase1.provx
-            provx, /home/user/test-cases/testcase1.provx),
-        (3, json, /home/user/test-cases/primer.json
-            json, /home/user/test-cases/primer.json)
-      ]
+      (1, json, /home/user/test-cases/testcase1.json
+          json, /home/user/test-cases/testcase1.json),
+      (1, json, /home/user/test-cases/testcase1.json
+          provx, /home/user/test-cases/testcase1.provx),
+      (1, provx, /home/user/test-cases/testcase1.provx
+          json, /home/user/test-cases/testcase1.json),
+      (1, provx, /home/user/test-cases/testcase1.provx
+          provx, /home/user/test-cases/testcase1.provx),
+      (3, json, /home/user/test-cases/primer.json
+          json, /home/user/test-cases/primer.json)
 
-    :param test_cases_dir: Test cases directory
-    :type config: str or unicode
-    :param format_filter: List of formats such that only test cases
-      within these formats will be considered
-    :type format_filter: list of str or unicode
-    :raises ConfigError: if the directory is not found
+    :returns: test case tuple
+    :rtype: tuple of (int, str or unicode, str or unicode, str or
+      unicode, str or unicode) 
+    :raises ConfigError: if the test cases directory is not found
     """
-    if not os.path.isdir(test_cases_dir):
-      raise ConfigError("Directory not found: " + test_cases_dir)
+    if not os.path.isdir(self._test_cases_dir):
+      raise ConfigError("Directory not found: " + self._test_cases_dir)
     pattern = re.compile("^" + HarnessResources.TEST_CASE_PREFIX + "\d+$")
     index_pattern = re.compile("\d+$")
-    self._test_cases = []
-    for test_case in sorted(os.listdir(test_cases_dir)):
-      test_case_dir = os.path.join(test_cases_dir, test_case)
+    for test_case in sorted(os.listdir(self._test_cases_dir)):
+      test_case_dir = os.path.join(self._test_cases_dir, test_case)
       # Only consider directories of form testcaseNNNN.
       if pattern.match(test_case) is not None \
             and os.path.isdir(test_case_dir):
@@ -248,14 +224,12 @@ class HarnessResources(ConfigurableComponent):
           # Only consider files with the supported extensions and which
           # are in format_filter.
           if format in standards.FORMATS and \
-                format in format_filter:
+                format in list(self.format_comparators.keys()):
             files.append((format, os.path.join(test_case_dir, test_file)))
-        # Create all-pairs combination of the files,
-        test_case_tests = [(index, format1, file1, format2, file2) \
-                             for (format1, file1) in files \
-                             for (format2, file2) in files]
-        # Add to current list of all test cases
-        self._test_cases.extend(test_case_tests)
+        # Create all-pairs combination of the files.
+        for (format1, file1) in files:
+          for (format2, file2) in files:
+            yield (index, format1, file1, format2, file2)
 
   def configure(self, config):
     """Configure harness. The configuration must hold:
@@ -283,26 +257,17 @@ class HarnessResources(ConfigurableComponent):
         }
       }
 
-    This method invokes methods to populate data structures needed to
-    run interoperability tests using the test cases:
-
-    - :func:`register_comparators` is called to create the
-      comparators.
-    - :func:`register_test_cases` is called to create applicable test 
-      cases based on those in ``test-cases`` and the available
-      comparators. 
+    This method invokes :func:`register_comparators` to
+    create the comparators.
 
     :param config: Configuration
     :type config: dict
     :raises ConfigError: if `config` does not hold the above
-      entries, if no comparators are defined, or there are any
-      problems creating their instances or configuring the comparators
+      entries, or if there are any problems creating or configuring
+      comparators.
     """
     super(HarnessResources, self).configure(config)
     self.check_configuration(
       [HarnessResources.TEST_CASES_DIR, HarnessResources.COMPARATORS])
     self._test_cases_dir = config[HarnessResources.TEST_CASES_DIR]
     self.register_comparators(config[HarnessResources.COMPARATORS])  
-    self.register_test_cases(
-      self.configuration[HarnessResources.TEST_CASES_DIR],
-      list(self.format_comparators.keys()))      
