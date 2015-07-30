@@ -107,6 +107,10 @@ class ConverterTestCase(unittest.TestCase):
           os.path.isfile(self.converter_ext_out):
       os.remove(self.converter_ext_out)
 
+  def shortDescription(self):
+    """Suppress use of docstring by nose when printing tests being run"""
+    return None
+
   def configure(self, config_key, env_var, default_file_name):
     """Get the configuration for the converter to be tested within a
     sub-class. 
