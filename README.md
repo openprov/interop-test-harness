@@ -56,6 +56,33 @@ Running the interoperability tests under Travis CI require you to:
 
 The test harness can be run stand-alone. See [Running the interoperability test harness standalone](./docs/Standalone.md).
 
+## Writing test jobs
+
+There are a number of options for what versions of tools and services are tested. For example:
+
+* ProvPy
+  - pip package
+  - GitHub repository stable branch (e.g. 1.3.2)
+  - GitHub repository latest version (e.g. master)
+  - Running under Python 2.7 or Python 3.4
+* ProvToolbox:
+  - GitHub repository stable branch (i.e. master)
+  - GitHub repository stable branch source code ZIP
+  - Maven binary release ZIP
+  - rpm package
+* ProvStore
+  - Live, public service.
+  - Development version of service hosted locally.
+* ProvTranslator
+  - Live, public service.
+  - Development version of service hosted locally.
+
+Likewise, it is possible to run the interoperability tests for these tools and services as either a single test job (as the Jenkins example does) or as multiple test jobs (as the Travis CI examples do).
+
+What combination of options is used is purely a configuration issue, relating to how the Travis CI or Jenkins jobs are written and how the test harness is configured (e.g. whether it uses `prov-convert` or `python ProvPy/scripts/prov-convert`, or a public or private service URL).
+
+It is possible (and, indeed, desirable) to set up a Travis CI or Jenkins job for each component to be tested, deploying it and any required comparators, so the test dashboards shows the status of the interoperability testing for that component alone, rather than the status of the tests across all components. 
+
 ## Interoperability test harness unit tests
 
 The interoperability test harness includes unit tests for the harness itself. This respository contains a TravisCI, .travis.yml, job configuration file to run these unit tests.
