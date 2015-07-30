@@ -242,6 +242,32 @@ On the Jenkins dashboard:
 * You should see PTS-Interop
 * Click green "run" icon
 
+## Separate Jenkins job for each component
+
+`jenkins/` contains examples Jenkins configuration files for each component.
+
+Import configuration into Jenkins:
+
+```
+$ mkdir $HOME/.jenkins/jobs/PTS-JOBNAME/
+$ cp jenkins/config-JOBNAME.xml $HOME/.jenkins/jobs/PTS-JOBNAME/config.xml
+```
+
+For `jenkins/config-provstore.xml`, edit `.jenkins/jobs/PTS-ProvStore/config.xml` and in the line:
+
+```
+python prov_interop/set_yaml_value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization=&quot;ApiKey user:12345qwert&quot;
+```
+
+replace `user:12345qwert` with your ProvStore username and API key.
+
+On the Jenkins dashboard:
+
+* Click Manage Jenkins
+* Click Reload configuration from disk
+* You should see PTS-JOBNAME
+* Click green "run" icon
+
 ## Jenkins and interoperability test harness unit tests
 
 `jenkins/config-unit.xml` contains the Jenkins configuration file for a simpe job written to run only the interoperability test harness unit tests.
