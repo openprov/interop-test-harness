@@ -36,12 +36,9 @@ from __future__ import (absolute_import, division, print_function,
 import inspect
 import os
 import re
+import sys
 import tempfile
 import unittest
-
-
-import sys
-
 
 from nose_parameterized import parameterized
 from nose.plugins.skip import SkipTest
