@@ -242,14 +242,6 @@ On the Jenkins dashboard:
 * You should see PTS-Interop
 * Click green "run" icon
 
-## Jenkins directories
-
-Jenkins stores its files in `$HOME/.jenkins`.
-
-Jenkins does the build in job-specific workspace directory, `.jenkins/workspace/JOB`, e.g. `.jenkins/workspace/PTS-Interop/`.
-
-Jenkins job configuration, ``config.xml``, and logs and xUnit test results from all the builds, and the previous workspace, are stored in a job-specific jobs directory, `.jenkins/jobs/JOB`, e.g. `.jenkins/jobs/PTS-Interop/`.
-
 ## Jenkins and interoperability test harness unit tests
 
 `jenkins/config-unit.xml` contains the Jenkins configuration file for a simpe job written to run only the interoperability test harness unit tests.
@@ -267,3 +259,15 @@ On the Jenkins dashboard:
 * Click Reload configuration from disk
 * You should see PTS-Unit
 * Click green "run" icon
+
+## Jenkins directories
+
+Jenkins stores its files in `$HOME/.jenkins`.
+
+Jenkins does the build in job-specific workspace directory, `.jenkins/workspace/JOB`, e.g. `.jenkins/workspace/PTS-Interop/`.
+
+Jenkins job configuration, ``config.xml``, and logs and xUnit test results from all the builds, and the previous workspace, are stored in a job-specific jobs directory, `.jenkins/jobs/JOB`, e.g. `.jenkins/jobs/PTS-Interop/`.
+
+## Jenkins and Apache
+
+Jenkins is also available as an Ubuntu package and can be exposed via Apache web server.See [Installing Jenkins on Ubuntu](https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+Ubuntu) and [Running Jenkins behind Apache](https://wiki.jenkins-ci.org/display/JENKINS/Running+Jenkins+behind+Apache).
