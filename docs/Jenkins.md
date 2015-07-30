@@ -4,7 +4,7 @@ The instructions have been written with reference to the 64-bit [Ubuntu](http://
 
 Other operating systems, or versions of these, may differ in how packages are installed, the versions of these packages available from package managers etc. Consult the relevant documentation for your operating system and the products concerned.
 
-Some dependencies require you to have sudo access to install and configure software (or a local system administrator can do this for you).
+Some dependencies require you to have sudo access to install and configure software (or a local system administrator can do ths for you).
 
 This page assumes that [pyenv](https://github.com/yyuu/pyenv) is used to manage Python versions.
 
@@ -244,47 +244,14 @@ On the Jenkins dashboard:
 
 ## Separate Jenkins job for each component
 
-`jenkins/` contains examples Jenkins configuration files for each component.
+`jenkins/` contains examples Jenkins configuration files for each component. You can import these using the same process as in "Importing a Jenkins job" above.
 
-Import configuration into Jenkins:
-
-```
-$ mkdir $HOME/.jenkins/jobs/PTS-JOBNAME/
-$ cp jenkins/config-JOBNAME.xml $HOME/.jenkins/jobs/PTS-JOBNAME/config.xml
-```
-
-For `jenkins/config-provstore.xml`, edit `.jenkins/jobs/PTS-ProvStore/config.xml` and in the line:
-
-```
-python prov_interop/set_yaml_value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization=&quot;ApiKey user:12345qwert&quot;
-```
-
-replace `user:12345qwert` with your ProvStore username and API key.
-
-On the Jenkins dashboard:
-
-* Click Manage Jenkins
-* Click Reload configuration from disk
-* You should see PTS-JOBNAME
-* Click green "run" icon
+* Replace PTS-Interop with a suitable job name e.g. PTS-ProvPy, PTS-ProvStore, PTS-ProvTranslator, PTS-ProvValidator
+* Only `jenkins/config-provstore.xml` requires you to insert your ProvStore username and API key.
 
 ## Jenkins and interoperability test harness unit tests
 
-`jenkins/config-unit.xml` contains the Jenkins configuration file for a simpe job written to run only the interoperability test harness unit tests.
-
-Import configuration into Jenkins:
-
-```
-$ mkdir $HOME/.jenkins/jobs/PTS-Unit/
-$ cp jenkins/config-unit.xml $HOME/.jenkins/jobs/PTS-Unit/config.xml
-```
-
-On the Jenkins dashboard:
-
-* Click Manage Jenkins
-* Click Reload configuration from disk
-* You should see PTS-Unit
-* Click green "run" icon
+`jenkins/config-unit.xml` contains the Jenkins configuration file for a simpe job written to run only the interoperability test harness unit tests. You can import these using the same process as in "Importing a Jenkins job" above, using PTS-Unit as a job name.
 
 ## Jenkins directories
 
