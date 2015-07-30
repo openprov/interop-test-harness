@@ -642,7 +642,7 @@ test_case_1_provx_provx
 
 The arguments passed into each test method, `(index, ext_in, file_ext_in, ext_out, file_ext_out)` are those from the tuple that was used to create that method. 
 
-**Note:** If running [Sphinx]http://sphinx-doc.org/ to create API documentation then the test harness initialisation is not done and, instead, a generator that contains zero test cases is returned. This is a hack to workaround Sphinx's execution of the Python it parses. Sphinx is detected if `sys.argv[0]` (the current command) contains the text `sphinx-build`.
+**Note:** If running [Sphinx](http://sphinx-doc.org/) to create API documentation then the test harness initialisation is not done and, instead, a generator that contains zero test cases is returned. This is a hack to workaround Sphinx's execution of the Python it parses. Sphinx is detected if `sys.argv[0]` (the current command) contains the text `sphinx-build`.
 
 The argument `testcase_func_name=test_case_name` is a `nose_parameterized` callback to another method in this module:
 
