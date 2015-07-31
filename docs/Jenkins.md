@@ -207,6 +207,14 @@ You can browse the nosetests test results. These are hierarchically organised by
 * Build #NNNN page appears
 * Click Console Output to see commands being run by Jenkins
 
+## Keeping your API key secure
+
+In the above scripts your API key will appear in the console logs that Jenkins exposes. This may be of concern if exposing Jenkins via a web server. There are a number of options available to keeping your API key secure:
+
+* Use a project-wide ProvStore API key, rather than using your individual one, and regularly regenerate it.
+* Set up local copies of the `harness.yml` and `provstore.yml` configuration files with your API key and copy these into the test harness `localconfig/` directory as part of the build script.
+* Explore the ways of [securing Jenkins](https://wiki.jenkins-ci.org/display/JENKINS/Securing+Jenkins).
+
 ## Importing a Jenkins job
 
 `jenkins/PTS-Interop/config.xml` contains the Jenkins configuration file for the job written following the above instructions. Assuming you have already done:
