@@ -77,11 +77,11 @@ There are a number of options for what versions of tools and services are tested
   - Live, public service.
   - Development version of service hosted locally.
 
-Likewise, it is possible to run the interoperability tests for these tools and services as either a single test job (as the Jenkins example does) or as multiple test jobs (as the Travis CI examples do).
+It is possible (and, indeed, desirable) to set up a Travis CI or Jenkins job for each component to be tested, deploying it and any required comparators, so the test dashboards shows the status of the interoperability testing for that component alone, rather than the status of the tests across all components. 
+
+For Jenkins, there is also the option of whether the test jobs clone the repositories of each component every time, or update existing clones that the test jobs assume you have cloned into a directory to which Jenkins has access.
 
 What combination of options is used is purely a configuration issue, relating to how the Travis CI or Jenkins jobs are written and how the test harness is configured (e.g. whether it uses `prov-convert` or `python ProvPy/scripts/prov-convert`, or a public or private service URL).
-
-It is possible (and, indeed, desirable) to set up a Travis CI or Jenkins job for each component to be tested, deploying it and any required comparators, so the test dashboards shows the status of the interoperability testing for that component alone, rather than the status of the tests across all components. 
 
 ## Interoperability test harness unit tests
 
