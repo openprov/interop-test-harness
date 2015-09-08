@@ -47,7 +47,7 @@ class HarnessResources(ConfigurableComponent):
   CLASS = "class"
   """str or unicode: configuration key for comparator class names"""
 
-  TEST_CASE_PREFIX="testcase"
+  TEST_CASE_PREFIX="test-"
   """str or unicode: assumed prefix for individual test case
   directories and files
   """
@@ -159,28 +159,28 @@ class HarnessResources(ConfigurableComponent):
     ``format2`` respectively and both ``format1`` and ``format2`` are
     in :mod:`prov_interop.standards`. For example::
 
-      (1, "json", "/home/user/test-cases/testcase1.json", 
-          "provx", "/home/user/test-cases/testcase1.provx")
-      (1, "trig", "/home/user/test-cases/testcase1.trig", 
-          "provx", "/home/user/test-cases/testcase1.provx")
+      (case1, "json", "/home/user/test-cases/test-case1/testcase1.json",
+          "provx", "/home/user/test-cases/test-case1/testcase1.provx")
+      (case1, "trig", "/home/user/test-cases/test-case1/testcase1.trig",
+          "provx", "/home/user/test-cases/test-case1/testcase1.provx")
 
     The method traverses `test_cases_dir`, looking for
     sub-directories whose name matches the pattern
-    ``testcase[0-9][0-9]*``. For each directory, it filters its files to
+    ``test-([-\w]+)``. For each directory, it filters its files to
     get only those which have an extension in both
     :mod:`prov_interop.standards` and the formats for which a
     comparator has been registered). From the files left it calculates
     all possible combinations of pairs of files and creates tuples as
     above. So, if `test_cases_dir` contains::
 
-      testcase1/
+      test-case1/
         README.md
         testcase1.json
         testcase1.provn
         testcase1.provx
         testcase1.trig
         testcase1.ttl
-      testcase3/
+      test-case3/
         README.md
         primer.json
         primer.provn
@@ -192,15 +192,15 @@ class HarnessResources(ConfigurableComponent):
     and comparators have been registered for ``["json", "provx"]``
     this would give the test case tuples::
 
-      (1, json, /home/user/test-cases/testcase1.json
-          json, /home/user/test-cases/testcase1.json),
-      (1, json, /home/user/test-cases/testcase1.json
+      (case1, json, /home/user/test-cases/testcase1.json
+              json, /home/user/test-cases/testcase1.json),
+      (case1, json, /home/user/test-cases/testcase1.json
+              provx, /home/user/test-cases/testcase1.provx),
+      (case1, provx, /home/user/test-cases/testcase1.provx
+              json, /home/user/test-cases/testcase1.json),
+      (case1, provx, /home/user/test-cases/testcase1.provx
           provx, /home/user/test-cases/testcase1.provx),
-      (1, provx, /home/user/test-cases/testcase1.provx
-          json, /home/user/test-cases/testcase1.json),
-      (1, provx, /home/user/test-cases/testcase1.provx
-          provx, /home/user/test-cases/testcase1.provx),
-      (3, json, /home/user/test-cases/primer.json
+      (case3, json, /home/user/test-cases/primer.json
           json, /home/user/test-cases/primer.json)
 
     :returns: test case tuple
@@ -210,14 +210,15 @@ class HarnessResources(ConfigurableComponent):
     """
     if not os.path.isdir(self._test_cases_dir):
       raise ConfigError("Directory not found: " + self._test_cases_dir)
-    pattern = re.compile("^" + HarnessResources.TEST_CASE_PREFIX + "\d+$")
-    index_pattern = re.compile("\d+$")
+    pattern = re.compile("^" + HarnessResources.TEST_CASE_PREFIX + "([-\w]+)$")
     for test_case in sorted(os.listdir(self._test_cases_dir)):
       test_case_dir = os.path.join(self._test_cases_dir, test_case)
-      # Only consider directories of form testcaseNNNN.
-      if pattern.match(test_case) is not None \
-            and os.path.isdir(test_case_dir):
-        index = int(index_pattern.search(test_case).group(0))
+      # Only consider directories
+      if not os.path.isdir(test_case_dir):
+        continue
+      match = pattern.match(test_case)
+      if match:
+        testcase_id = match.group(1)
         files = []
         for test_file in sorted(os.listdir(test_case_dir)):
           format = os.path.splitext(test_file)[1][1:]
@@ -229,7 +230,7 @@ class HarnessResources(ConfigurableComponent):
         # Create all-pairs combination of the files.
         for (format1, file1) in files:
           for (format2, file2) in files:
-            yield (index, format1, file1, format2, file2)
+            yield (testcase_id, format1, file1, format2, file2)
 
   def configure(self, config):
     """Configure harness. The configuration must hold:
