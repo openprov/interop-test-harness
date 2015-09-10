@@ -1,9 +1,9 @@
 ---
 test-cases: /home/user/test-cases
 comparators:
-  ProvPyComparator: 
-    class: prov_interop.provpy.comparator.ProvPyComparator
-    executable: prov-compare
-    arguments: -f FORMAT1 -F FORMAT2 FILE1 FILE2
+  ProvToolboxComparator:
+    class: prov_interop.provtoolbox.comparator.ProvToolboxComparator
+    executable: provconvert
+    arguments: -infile FILE1 -compare FILE2
     # Formats must be in set [json, provn, provx, trig, ttl]
-    formats: [provx, json]
+    formats: [provn, ttl, trig, provx, json]
