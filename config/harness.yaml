@@ -6,4 +6,4 @@ comparators:
     executable: provconvert
     arguments: -infile FILE1 -compare FILE2
     # Formats must be in set [json, provn, provx, trig, ttl]
-    formats: [provn, trig, provx, json]
+    formats: [provn, ttl, trig, provx, json]
