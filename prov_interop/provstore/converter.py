@@ -26,6 +26,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import json
+import os
 import os.path
 import requests
 
@@ -158,7 +159,7 @@ class ProvStoreConverter(Converter, RestComponent):
                http.AUTHORIZATION: self._authorization}
     store_request = {ProvStoreConverter.CONTENT: doc, 
                      ProvStoreConverter.PUBLIC: True, 
-                     ProvStoreConverter.REC_ID: in_file}
+                     ProvStoreConverter.REC_ID: str(os.getpid()) + "." + in_format}
     response = requests.post(self._url, 
                              headers=headers, 
                              data=json.dumps(store_request))
