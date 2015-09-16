@@ -95,6 +95,8 @@ class ConverterTestCase(unittest.TestCase):
   SKIP_TESTS = "skip-tests"
   """str or unicode: configuration key for tests to skip"""
 
+  _multiprocess_can_split_ = True
+
   def setUp(self):
     super(ConverterTestCase, self).setUp()
     self.converter = None
@@ -308,14 +310,16 @@ class ConverterTestCase(unittest.TestCase):
       skipped, or the input format or output format are not supported
       by the converter
     """
-    print(("Test case: " + str(index) + " from " + ext_in + " to " + ext_out))
+    print(("Test case: " + str(index) + 
+          " from " + ext_in + 
+          " to " + ext_out + " Process: " + str(os.getpid())))
     if index in self.skip_tests:
       self.skip_member_of_skip_set(index)
     if (not ext_in in self.converter.input_formats):
       self.skip_unsupported_format(index, ext_in, Converter.INPUT_FORMATS)
     if (not ext_out in self.converter.output_formats):
       self.skip_unsupported_format(index, ext_out, Converter.OUTPUT_FORMATS)
-    self.converter_ext_out = "out." + ext_out
+    self.converter_ext_out = "out." + str(os.getpid()) + "." + ext_out
     self.converter.convert(file_ext_in, self.converter_ext_out)
     comparator = harness.harness_resources.format_comparators[ext_out]
     are_equivalent = comparator.compare(file_ext_out, self.converter_ext_out)

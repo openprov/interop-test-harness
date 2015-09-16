@@ -120,3 +120,9 @@ $ nosetests -v prov_interop.interop_tests.test_provtoolbox
 $ nosetests -v prov_interop.interop_tests.test_provtranslator
 $ nosetests -v prov_interop.interop_tests.test_provstore
 ```
+
+If you are running on a multi-processor machine then the tests can run in parallel, using nosetests' support for [parallel testing](http://nose.readthedocs.org/en/latest/doc_tests/test_multiprocess/multiprocess.html). Specify the number of processes you want to use using a `--processes` flag e.g.
+
+```
+$ nosetests --processes=4 -v prov_interop.interop_tests
+```
