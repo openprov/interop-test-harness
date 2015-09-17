@@ -35,7 +35,6 @@ from prov_interop.comparator import Comparator
 from prov_interop.component import ConfigurableComponent
 from prov_interop.component import ConfigError
 from prov_interop.harness import HarnessResources
-from prov_interop.provpy.comparator import ProvPyComparator
 
 class DummyComparator(Comparator):
   """Dummy comparator.
