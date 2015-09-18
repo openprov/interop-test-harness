@@ -25,6 +25,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import inspect
 import os
 
 from prov_interop.harness import HarnessResources
@@ -38,7 +39,7 @@ CONFIGURATION_FILE_ENV = "PROV_HARNESS_CONFIGURATION"
 harness configuration file name
 """
 
-DEFAULT_CONFIGURATION_FILE="localconfig/harness.yaml"
+DEFAULT_CONFIGURATION_FILE="harness.yaml"
 """str or unicode: default interoperability test harness configuration
 file name
 """
@@ -92,9 +93,12 @@ def initialise_harness_from_file(file_name = None):
   global CONFIGURATION_FILE_ENV
   global DEFAULT_CONFIGURATION_FILE
   if harness_resources is None:
+    default_config_file = os.path.join(
+      os.path.dirname(os.path.abspath(inspect.getfile(
+        inspect.currentframe()))), DEFAULT_CONFIGURATION_FILE)
     harness_resources = HarnessResources()
     config = load_yaml(CONFIGURATION_FILE_ENV,
-                       DEFAULT_CONFIGURATION_FILE, 
+                       default_config_file,
                        file_name)
     harness_resources.configure(config)
     print("Comparators available:")
