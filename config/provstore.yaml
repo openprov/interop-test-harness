@@ -1,8 +1,0 @@
----
-ProvStore:
-  url: https://provenance.ecs.soton.ac.uk/store/api/v0/documents/
-  authorization: ApiKey API_KEY
-  # Formats must be in set [json, provn, provx, trig, ttl]
-  input-formats: [provn, ttl, trig, provx, json]
-  output-formats: [provn, ttl, trig, provx, json]
-  skip-tests: []
