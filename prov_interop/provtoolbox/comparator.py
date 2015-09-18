@@ -133,7 +133,7 @@ class ProvToolboxComparator(Comparator, CommandLineComponent):
         return_code = subprocess.call(command_line)
         if return_code == 0:
             return True
-        elif return_code == 1:
+        elif return_code == 6:
             return False
         else:
             raise ComparisonError(" ".join(command_line) +
