@@ -1,4 +1,12 @@
 """Unit tests for :mod:`prov_interop.provtoolbox.comparator`.
+
+These tests rely on the
+:mod:`prov_interop.tests.provtoolbox.provconvert_dummy.py` script
+
+(that mimics ProvToolbox's ``provconvert`` executable
+in terms of parameters and return codes when used to compare
+PROV documents) being available in the same directory as this module.
+
 """
 # Copyright (c) 2015 University of Southampton
 #
@@ -25,6 +33,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import inspect
 import os
 import tempfile
 import unittest
@@ -34,17 +43,20 @@ from prov_interop.comparator import ComparisonError
 from prov_interop.component import ConfigError
 from prov_interop.provtoolbox.comparator import ProvToolboxComparator
 
-
 class ProvToolboxComparatorTestCase(unittest.TestCase):
+
     def setUp(self):
         super(ProvToolboxComparatorTestCase, self).setUp()
         self.comparator = ProvToolboxComparator()
         self.file1 = None
         self.file2 = None
         self.config = {
-            ProvToolboxComparator.EXECUTABLE: "provconvert",
+            ProvToolboxComparator.EXECUTABLE: "python",
             ProvToolboxComparator.ARGUMENTS: " ".join(
-                ["-infile", ProvToolboxComparator.FILE1,
+                 [os.path.join(
+                   os.path.dirname(os.path.abspath(inspect.getfile(
+                     inspect.currentframe()))), "provconvert_dummy.py"),
+                 "-infile", ProvToolboxComparator.FILE1,
                  "-compare", ProvToolboxComparator.FILE2]
             ),
             ProvToolboxComparator.FORMATS: [
