@@ -113,7 +113,7 @@ class ConverterTestCase(unittest.TestCase):
     """Suppress use of docstring by nose when printing tests being run"""
     return None
 
-  def configure_converter(self, config):
+  def configure(self, config):
     """Configure a converter using the given configuration.
 
     The method assumes the converter has been created and stored in an
@@ -152,12 +152,11 @@ class ConverterTestCase(unittest.TestCase):
       self.skip_tests = self.converter.configuration[
         ConverterTestCase.SKIP_TESTS]
 
-  def configure(self, config_key, env_var, default_file_name):
+  def get_configuration(self, config_key, env_var, default_file_name):
     """Get the configuration for the converter to be tested within a
     sub-class. 
 
-    The method assumes the converter has been created and stored in an
-    instance variable. It loads the contents of a YAML file (using
+    The method loads the contents of a YAML file (using
     :func:`prov_interop.files.load_yaml`) into a Python
     dictionary. The file loaded is: 
 
@@ -169,8 +168,8 @@ class ConverterTestCase(unittest.TestCase):
     - Else, `default_file_name`.
 
     Once loaded, a dictionary entry with whose key is the value of
-    `config_key` is extracted and used to configure the converter via
-    :meth:`configure_converter`.
+    `config_key` is extracted and returned. This can be used to configure
+    a converter via :meth:`configure`.
 
     An example configuration, in the form of a Python dictionary, and
     for ProvPy ``prov-convert``, is::
@@ -201,6 +200,8 @@ class ConverterTestCase(unittest.TestCase):
     :type env_var: str or unicode
     :param default_file_name: Default configuration file name
     :type file_name: str or unicode
+    :returns: configuration
+    :rtype: dict
     :raises IOError: if the file is not found
     :raises ConfigError: if there is no entry with value `config_key`
       within the configuration, or if converter-specific
@@ -215,7 +216,7 @@ class ConverterTestCase(unittest.TestCase):
                        config_file_name)
     if config_key not in config:
       raise ConfigError("Missing configuration for " + config_key)
-    self.configure_converter(config[config_key])
+    return config[config_key]
 
   def skip_member_of_skip_set(self, index):
     """Raise a :class:`nose.plugins.skip.SkipTest` if this test
