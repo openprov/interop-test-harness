@@ -1,5 +1,5 @@
 ---
-test-cases: /home/user/test-cases
+test-cases: testcases
 comparators:
   ProvToolboxComparator:
     class: prov_interop.provtoolbox.comparator.ProvToolboxComparator
