@@ -9,5 +9,6 @@ install:
   - wget https://repo1.maven.org/maven2/org/openprovenance/prov/toolbox/0.7.1/toolbox-0.7.1-release.zip
   - unzip toolbox-0.7.1-release.zip
   - export PATH=$PATH:$PWD/ProvToolbox/bin/
+  - python setup.py install
 script:
-  - nosetests -v --nocapture prov_interop/tests
+  - nosetests -v --nocapture prov_interop.tests
