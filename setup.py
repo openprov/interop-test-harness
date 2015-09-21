@@ -26,7 +26,7 @@ setup(
     package_dir={
         'prov_interop': 'prov_interop'
     },
-    data_files=[('prov_interop/interop_tests', ['config/harness.yaml'])],
+    data_files=[('prov_interop/interop_tests', ['prov_interop/interop_tests/harness.yaml'])],
     include_package_data=True,
     install_requires=requirements,
     license="Apache Software License",
