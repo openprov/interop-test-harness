@@ -62,7 +62,7 @@ def initialise_harness_from_file(file_name = None):
   - Else, the file named in an environment variable with name
     ``PROV_HARNESS_CONFIGURATION``, if such an environment variable has
     been defined. 
-  - Else, ``localconfig/harness.yaml``.
+  - Else, ``harness.yaml``, co-located with the Python file.
 
   The function will not reinitialise the
   :class:`prov_interop.harness.HarnessResources` instance once it has 
