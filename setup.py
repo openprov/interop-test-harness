@@ -8,11 +8,11 @@ except ImportError:
 
 requirements = [
     'pyyaml',
-    'nose',
-    'nose_parameterized',
 ]
 
 test_requirements = [
+    'nose',
+    'nose_parameterized',
 ]
 
 setup(
