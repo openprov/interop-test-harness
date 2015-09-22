@@ -1,3 +1,5 @@
+PACKAGE=prov_interop
+
 .PHONY: help
 help:
 	@echo "clean-pyc - remove Python file artifacts"
@@ -18,11 +20,11 @@ clean-pyc:
 .PHONY: clean-docs
 clean-docs:
 	rm -f apidocs/modules.rst
-	rm -f apidocs/prov_interop.*
+	rm -f apidocs/$(PACKAGE).*
 	rm -rf apidocs/_build
 
 .PHONY: apidocs
 apidocs: clean-docs
-	sphinx-apidoc -o apidocs/ prov_interop
+	sphinx-apidoc -o apidocs/ $(PACKAGE)
 	$(MAKE) -C apidocs clean
 	$(MAKE) -C apidocs html
