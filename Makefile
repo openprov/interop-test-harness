@@ -8,7 +8,13 @@ help:
 	@echo "apidocs - generate Sphinx HTML API documentation"
 
 .PHONY: clean
-clean: clean-pyc clean-docs
+clean: clean-pyc clean-docs clean-package
+
+.PHONY: clean-package
+clean-package:
+	rm -rf build
+	rm -rf dist
+	rm -rf $(PACKAGE).egg-info
 
 .PHONY: clean-pyc
 clean-pyc:
