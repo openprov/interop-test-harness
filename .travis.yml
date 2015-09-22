@@ -6,5 +6,7 @@ python:
 
 install:
   - python setup.py install
+  - ls -R /home/travis/virtualenv/python2.7.9/lib/python2.7/site-packages/prov*
+
 script:
   - nosetests -v --nocapture prov_interop.tests
