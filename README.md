@@ -49,7 +49,7 @@ $ python setup.py install
 Run unit tests
 
 ```
-$ nosetests prov_interop_tests
+$ nosetests prov_interop.tests
 ```
 
 ---
