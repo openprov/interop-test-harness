@@ -30,6 +30,7 @@ Install dependencies
 $ sudo apt-get install -y git
 $ git clone https://github.com/prov-suite/interop-test-harness
 $ cd interop-test-harness
+$ git checkout package
 $ source ubuntu-dependencies.sh 
 ```
 
