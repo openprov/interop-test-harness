@@ -43,6 +43,7 @@ $ source scripts/install-prov-interop-comparator.sh
 Install package
 
 ```
+$ pip install -r requirements.txt
 $ python setup.py install
 ```
 
