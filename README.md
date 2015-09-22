@@ -14,7 +14,7 @@ The test harness runs under Python 2.7+ and Python 3.
 
 The instructions have been written with reference to the 64-bit [Ubuntu](http://www.ubuntu.com/) 14.04.2 operating system.
 
-Other operating systems, or versions of these, may differ in how packages are istalled, the versions of these packages available from package managers etc. Consult the relevant documentation for your operating system and the products concerned.
+Other operating systems, or versions of these, may differ in how packages are installed, the versions of these packages available from package managers etc. Consult the relevant documentation for your operating system and the products concerned.
 
 Some dependencies require you to have sudo access to install and configure software (or a local system administrator can do this for you).
 
