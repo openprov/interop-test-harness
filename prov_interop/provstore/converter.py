@@ -158,7 +158,7 @@ class ProvStoreConverter(Converter, RestComponent):
                http.ACCEPT: accept_type,
                http.AUTHORIZATION: self._authorization}
     store_request = {ProvStoreConverter.CONTENT: doc, 
-                     ProvStoreConverter.PUBLIC: True, 
+                     ProvStoreConverter.PUBLIC: False,
                      ProvStoreConverter.REC_ID: str(os.getpid()) + "." + in_format}
     response = requests.post(self._url, 
                              headers=headers, 
@@ -171,7 +171,8 @@ class ProvStoreConverter(Converter, RestComponent):
     document_id = response_json[ProvStoreConverter.ID]
     doc_url = self._url + str(document_id)
     accept_type = ProvStoreConverter.CONTENT_TYPES[out_format]
-    headers = {http.ACCEPT: accept_type}
+    headers = {http.ACCEPT: accept_type,
+               http.AUTHORIZATION: self._authorization}
     response = requests.get(doc_url + "." + out_format, 
                             headers=headers, 
                             allow_redirects=True)
