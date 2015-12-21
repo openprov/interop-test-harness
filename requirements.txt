@@ -3,3 +3,4 @@ requests[security]
 nose
 nose_parameterized
 requests-mock
+nose-html-reporting
