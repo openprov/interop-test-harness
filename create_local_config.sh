@@ -9,6 +9,8 @@ PROVPY_CONVERT="python $HOME/ProvPy/scripts/prov-convert"
 PROVTOOLBOX_CONVERT=$HOME/ProvToolbox/toolbox/target/appassembler/bin/provconvert
 # Configure ProvStore
 API_KEY="ApiKey user:12345qwert"
+# Configure ProvScala's provmanagement
+PROVMANAGEMENT=$HOME/provman/bin/provmanagement
 
 # Create local configuration directory with default name expected
 # by tests.
@@ -21,3 +23,4 @@ python prov_interop/set_yaml_value.py $CONFIG_DIR/harness.yaml comparators.ProvP
 python prov_interop/set_yaml_value.py $CONFIG_DIR/provpy.yaml ProvPy.executable="$PROVPY_CONVERT"
 python prov_interop/set_yaml_value.py $CONFIG_DIR/provtoolbox.yaml ProvToolbox.executable="$PROVTOOLBOX_CONVERT"
 python prov_interop/set_yaml_value.py $CONFIG_DIR/provstore.yaml ProvStore.authorization="$API_KEY"
+python prov_interop/set_yaml_value.py $CONFIG_DIR/provman.yaml ProvMan.executable="$PROVMANAGEMENT"

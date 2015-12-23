@@ -1,0 +1,8 @@
+---
+ProvMan:
+  executable: provmanagement
+  arguments: translate --infile INPUT --outfile OUTPUT --inputFormat INFORMAT --outformat OUTFORMAT
+  # Formats must be in set [json, provn, provx, trig, ttl]
+  input-formats: [provn]
+  output-formats: [provn]
+  skip-tests: []
